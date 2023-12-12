@@ -1,0 +1,42 @@
+mixin './relativePath.aeria'        -- mixins can be included from the filesystem
+
+mixin 'github:organization/mixin'   -- they can also be fetched remotely
+mixin 'npm:@organization/mixin'     -- the content of the mixin will simply be concatenated
+
+collections Person {                -- collection names must be capitalized, they'll be later converted to camelCase
+  required {
+    first_name
+    last_name
+    responsible [cond|age < 18]     -- conditions are expressed with templates
+  }
+
+  properties {
+    first_name str
+    last_name str
+    age int
+    responsible Person @indexes([first_name, last_name])
+    friends Person[] @indexes([first_name, last_name]) @constraints([expr|blocked == false])
+  }
+
+  getters {
+    full_name @macro:js (value) => {        -- macros can be used to output text as-it-is
+      return `${first_name} ${last_name}`   -- the :js suffix is just a hint to the IDE to highlight the block as javascript
+    }
+    @end
+  }
+
+  table [         -- array are started and ended with []
+    first_name    -- both , (comma) and \n (new line) are valid array separators
+    last_name
+    age
+  ]
+}
+
+router {
+  POST /person/becomeFriendsWith {
+    returns Person[]
+    documentation @text
+      Invites a person to become friends with you.  -- multiline text is made possible with @text
+    @end
+  }
+}
