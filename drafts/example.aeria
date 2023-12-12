@@ -35,8 +35,8 @@ collections Person {                -- collection names must be capitalized, the
 router {
   POST /person/becomeFriendsWith {
     returns Person[]
-    documentation @text
-      Invites a person to become friends with you.  -- multiline text is made possible with @text
+    documentation @text     -- multiline text is made possible with @text
+      Invites a person to become friends with you.
     @end
   }
 }
