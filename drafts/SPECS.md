@@ -34,7 +34,7 @@
 // conditions
 <cond> ::= "(" <cond> ")" | <cond-expr>
 <cond-expr> ::= <values> <cond-oper> <values>
-<cond-oper> ::= "<" | ">" | "<=" | ">=" | "==" | "!"
+<cond-oper> ::= "<" | ">" | "<=" | ">=" | "=="
 
 // collection
 <collection> ::= "collection" <collection-name> "{" <collection-body> "}"
