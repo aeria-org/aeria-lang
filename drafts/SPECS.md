@@ -46,8 +46,7 @@
 // required
 <required> ::= "required" "{" <required-properties> "}" | ε
 <required-properties> ::= <property-name> <required-attributes> | <property-name> <required-attributes>  <required-properties>
-<required-attributes> ::= "@" <required-attribute-name> "(" <string> ")" | ε
-<required-attribute-name> ::= "cond"
+<required-attributes> ::= "@cond" "(" <cond> ")" | ε
 
 // properties
 <properties> ::= "properties" "{" <property-list> "}"
