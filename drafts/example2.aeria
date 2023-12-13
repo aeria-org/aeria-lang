@@ -1,0 +1,20 @@
+collection User {
+  required {
+    username
+    password
+    person
+  }
+
+  properties {
+    username      str
+    password      str
+    person        Person
+    subcriptions  {
+      subscription_code     str
+      start_date_recurrent  date
+      periodicity           enum     @options([weekly, monthly, bimonthly])
+      plan                  enum     @options([basic, premium])
+      payment_type          enum     @options([credit_card, debit, boleto, free_sale, other])
+    }[]
+  }
+}

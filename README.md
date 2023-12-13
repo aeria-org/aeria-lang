@@ -2,5 +2,5 @@
 
 ## Authors
 
-- Gabriel Augusto (@gabrielolvrp)
+- Gabriel Augusto (@gabrielolivrp)
 - João G. Santos (@minenwerfer)
