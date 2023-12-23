@@ -1,0 +1,24 @@
+contract UserAddContract {
+  request {
+    properties {
+      name  str
+      age   int
+    }
+  }
+  response {
+    properties {
+      success bool
+    }
+  }
+}
+
+router UserRouter {
+  POST /add {
+    contract UserAddContract
+  }
+}
+
+router {
+  GET /hello-world
+  group /user UserRouter
+}

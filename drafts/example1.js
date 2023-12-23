@@ -1,4 +1,4 @@
-exports.person = () => ({
+exports.person = {
   description: {
     $id: "person",
     properties: {
@@ -19,7 +19,10 @@ exports.person = () => ({
         type: "array",
         items: {
           $ref: "person",
-          indexes: ["first_name", "last_name"],
+          indexes: [
+            "first_name",
+            "last_name"
+          ],
           constrants: {
             not: {
               operator: "equal",
@@ -30,6 +33,10 @@ exports.person = () => ({
         },
       },
     },
-    table: ["first_name", "last_name", "age"],
+    table: [
+      "first_name",
+      "last_name",
+      "age"
+    ],
   },
-});
+}

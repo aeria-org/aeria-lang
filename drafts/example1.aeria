@@ -33,10 +33,3 @@ collection Person {                 -- collection names must be capitalized, the
   ]
 }
 
-router {
-  POST /person/becomeFriendsWith Person[] {
-    documentation @text     -- multiline text is made possible with @text
-      Invites a person to become friends with you.
-    @end
-  }
-}
