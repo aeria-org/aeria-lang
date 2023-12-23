@@ -39,4 +39,22 @@ exports.person = {
       "age"
     ],
   },
+  functions: {
+    get,
+    getAll,
+    insert
+  },
+  accessControl: {
+    roles: {
+      root: {
+        grantEverything: true
+      },
+      guest: {
+        grant: [
+          'get',
+          'getAll'
+        ]
+      }
+    }
+  }
 }

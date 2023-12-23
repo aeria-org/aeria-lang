@@ -31,5 +31,11 @@ collection Person {                 -- collection names must be capitalized, the
     last_name,
     age
   ]
+
+  functions {
+    get       @grant([guest])
+    getAll    @grant([guest])
+    insert
+  }
 }
 

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { defineCollection } from "aeria";
+import { defineCollection, get, getAll, insert } from "aeria";
 
 export const person = defineCollection({
   description: {
@@ -45,4 +45,22 @@ export const person = defineCollection({
       "age"
     ],
   },
+  functions: {
+    get,
+    getAll,
+    insert
+  },
+  accessControl: {
+    roles: {
+      root: {
+        grantEverything: true
+      },
+      guest: {
+        grant: [
+          'get',
+          'getAll'
+        ]
+      }
+    }
+  }
 })
