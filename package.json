@@ -1,0 +1,12 @@
+{
+  "name": "aeria-lang",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:gabrielolivrp/aeria-lang.git",
+  "author": "Gabriel Augusto <gabrielolivrp@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "purescript": "^0.15.13",
+    "spago": "^0.21.0"
+  }
+}
