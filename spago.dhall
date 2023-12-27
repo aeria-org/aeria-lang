@@ -15,9 +15,12 @@ to generate this file without the comments in this block.
   [ "console"
   , "effect"
   , "either"
+  , "lists"
   , "maybe"
+  , "control"
   , "parsing"
   , "prelude"
+  , "strings"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
