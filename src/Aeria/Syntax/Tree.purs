@@ -1,6 +1,7 @@
 module Aeria.Syntax.Tree where
 
 import Prelude
+
 import Data.List (List)
 import Data.Maybe (Maybe)
 
@@ -19,15 +20,19 @@ instance showPropertyName :: Show PropertyName where
 type MixinPath = String
 
 data Value
-  = VNumber Number
+  = VInt Int
+  | VFloat Number
   | VString String
   | VBoolean Boolean
   | VVar Name
+  | VArray (List Value)
 instance showValue :: Show Value where
-  show (VNumber n) = "(VNumber " <> show n <> ")"
+  show (VInt n) = "(VInt " <> show n <> ")"
+  show (VFloat s) = "(VFloat " <> show s <> ")"
   show (VString s) = "(VString " <> show s <> ")"
   show (VBoolean b) = "(VBoolean " <> show b <> ")"
   show (VVar n) = "(VVar " <> show n <> ")"
+  show (VArray n) = "(VArray " <> show n <> ")"
 
 data Condition = Condition Value Oper Value
 instance showCondition :: Show Condition where
@@ -88,7 +93,7 @@ data RequiredProperty = RequiredProperty Name Attribute
 instance showRequiredProperty :: Show RequiredProperty where
   show (RequiredProperty n a) = "(RequiredProperty " <> show n <> " " <> show a <> ")"
 
-data Attribute = Attribute Name (Array Condition)
+data Attribute = Attribute Name Value
 instance showAttribute :: Show Attribute where
   show (Attribute n ac) = "(Attribute " <> show n <> " " <> show ac <> ")"
 
@@ -97,7 +102,7 @@ type Properties = List Property
 data Property = Property
   { propertyName        :: PropertyName
   , propertyType        :: Typ
-  , propertyAttributes  :: Array Attribute
+  , propertyAttributes  :: List Attribute
   }
 instance showProperty :: Show Property where
   show (Property {propertyName, propertyType, propertyAttributes}) =

@@ -4,16 +4,28 @@ module Aeria.Syntax.Parser
 
 import Prelude
 
-import Aeria.Syntax.Tree (Collection(..), CollectionName(..), Name(..), Program(..), Properties, Property(..), PropertyName(..), Typ(..))
+import Aeria.Syntax.Tree
+  ( Attribute(..)
+  , Collection(..)
+  , CollectionName(..)
+  , Name(..)
+  , Program(..)
+  , Properties
+  , Property(..)
+  , PropertyName(..)
+  , Typ(..)
+  , Value(..)
+  )
 import Control.Lazy (fix)
 import Data.Either (Either)
+import Data.List (List)
 import Data.Maybe (Maybe(..))
 import Data.String.CodeUnits (fromCharArray)
 import Parsing (ParseError, Parser, runParser)
-import Parsing.Combinators (many, try, (<|>))
+import Parsing.Combinators (choice, many, sepBy, try, (<|>))
 import Parsing.Language (emptyDef)
 import Parsing.String (eof, string)
-import Parsing.String.Basic (alphaNum, letter, lower, oneOf, upper)
+import Parsing.String.Basic (alphaNum, letter, lower, oneOf, skipSpaces, upper)
 import Parsing.Token as P
 
 lang :: P.TokenParser
@@ -62,14 +74,62 @@ pType p = fix \self -> try (tArray self) <|> try tName <|> try tObject
       properties <- p
       pure (TObject properties)
 
+pValue :: Parser String Value
+pValue = fix \self ->
+  choice
+    [ try pFloat
+    , try pInt
+    , try pString
+    , try pBoolean
+    , try pVar
+    , pArray self
+    ]
+  where
+    pInt :: Parser String Value
+    pInt = VInt <$> lang.integer
+
+    pFloat :: Parser String Value
+    pFloat = VFloat <$> lang.float
+
+    pString :: Parser String Value
+    pString = VString <$> lang.stringLiteral
+
+    pBoolean :: Parser String Value
+    pBoolean = VBoolean <$> (pTrue <|> pFalse)
+      where
+        pTrue :: Parser String Boolean
+        pTrue = string "true" $> true
+
+        pFalse :: Parser String Boolean
+        pFalse = string "false" $> false
+
+    pVar :: Parser String Value
+    pVar = do
+      name <- lang.identifier
+      pure $ VVar (Name name)
+
+    pArray :: Parser String Value -> Parser String Value
+    pArray p = VArray <$> lang.brackets go
+      where
+        go :: Parser String (List Value)
+        go = sepBy (skipSpaces *> p <* skipSpaces) lang.comma
+
+pAttribute :: Parser String Attribute
+pAttribute = do
+  _ <- string "@"
+  attributeName <- lang.identifier
+  attributeValue <- lang.parens pValue
+  pure $ Attribute (Name attributeName) attributeValue
+
 pProperty :: Parser String Properties -> Parser String Property
 pProperty p = do
   propertyName <- pPropertyName
   propertyType <- pType p
+  propertyAttributes <- many pAttribute
   pure $ Property
     { propertyName
     , propertyType
-    , propertyAttributes: []
+    , propertyAttributes
     }
 
 pProperties :: Parser String Properties
