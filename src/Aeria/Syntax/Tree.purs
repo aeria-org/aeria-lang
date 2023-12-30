@@ -2,20 +2,42 @@ module Aeria.Syntax.Tree where
 
 import Prelude
 
+import Data.Eq.Generic (genericEq)
+import Data.Generic.Rep (class Generic)
 import Data.List (List)
 import Data.Maybe (Maybe)
+import Data.Show.Generic (genericShow)
 
 data Name = Name String
+
+derive instance genericName :: Generic Name _
+
 instance showName :: Show Name where
-  show (Name n) = "(Name " <> show n <> ")"
+  show = genericShow
+
+instance eqName :: Eq Name where
+  eq = genericEq
+
 
 data CollectionName = CollectionName String
+
+derive instance genericCollectionName :: Generic CollectionName _
+
 instance showCollectionName :: Show CollectionName where
-  show (CollectionName cn) = "(CollectionName " <> show cn <> ")"
+  show = genericShow
+
+instance eqCollectionName :: Eq CollectionName where
+  eq = genericEq
 
 data PropertyName = PropertyName String
+
+derive instance genericPropertyName :: Generic PropertyName _
+
 instance showPropertyName :: Show PropertyName where
-  show (PropertyName pn) = "(PropertyName " <> show pn <> ")"
+  show = genericShow
+
+instance eqPropertyName :: Eq PropertyName where
+  eq = genericEq
 
 type MixinPath = String
 
@@ -26,17 +48,24 @@ data Value
   | VBoolean Boolean
   | VVar Name
   | VArray (List Value)
+
+derive instance genericValue :: Generic Value _
+
 instance showValue :: Show Value where
-  show (VInt n) = "(VInt " <> show n <> ")"
-  show (VFloat s) = "(VFloat " <> show s <> ")"
-  show (VString s) = "(VString " <> show s <> ")"
-  show (VBoolean b) = "(VBoolean " <> show b <> ")"
-  show (VVar n) = "(VVar " <> show n <> ")"
-  show (VArray n) = "(VArray " <> show n <> ")"
+  show x = genericShow x
+
+instance eqValue :: Eq Value where
+  eq x = genericEq x
 
 data Condition = Condition Value Oper Value
+
+derive instance genericCondition :: Generic Condition _
+
 instance showCondition :: Show Condition where
-  show (Condition v1 o v2) = "(Condition " <> show v1 <> " " <> show o <> " " <> show v2 <> ")"
+  show = genericShow
+
+instance eqCondition :: Eq Condition where
+  eq = genericEq
 
 data Oper
   = Lt
@@ -44,33 +73,51 @@ data Oper
   | Lte
   | Gte
   | Eq
+
+derive instance genericOper :: Generic Oper _
+
 instance showOper :: Show Oper where
-  show Lt = "Lt"
-  show Gt = "Gt"
-  show Lte = "Lte"
-  show Gte = "Gte"
-  show Eq = "Eq"
+  show = genericShow
+
+instance eqOper :: Eq Oper where
+  eq = genericEq
 
 data Typ
   = TName Name
   | TArray Typ
   | TObject (List Property)
+
+derive instance genericTyp :: Generic Typ _
+
 instance showTyp :: Show Typ where
-  show (TName n) = "(TName " <> show n <> ")"
-  show (TArray t) = "(TArray " <> show t <> ")"
-  show (TObject lp) = "(TObject " <> show lp <> ")"
+  show x = genericShow x
+
+instance eqTyp :: Eq Typ where
+  eq x = genericEq x
 
 data Macro = Macro Name String
+
+derive instance genericMacro :: Generic Macro _
+
 instance showMacro :: Show Macro where
-  show (Macro n s) = "(Macro " <> show n <> " " <> show s <> ")"
+  show = genericShow
+
+instance eqMacro :: Eq Macro where
+  eq = genericEq
 
 data Program = Program
   { -- mixin :: Maybe MixinPath
    collection :: Collection
   -- , router :: Router
   }
+
+derive instance genericProgram :: Generic Program _
+
 instance showProgram :: Show Program where
-  show (Program {collection}) = "(Program {collection = " <> show collection <> "})"
+  show = genericShow
+
+instance eqProgram :: Eq Program where
+  eq = genericEq
 
 data Collection = Collection
   { collectionName :: CollectionName
@@ -79,23 +126,36 @@ data Collection = Collection
   , getters        :: Maybe Getters
   , table          :: Maybe Table
   }
+
+derive instance genericCollection :: Generic Collection _
+
 instance showCollection :: Show Collection where
-  show (Collection {collectionName, properties, required, getters, table}) =
-    "(Collection {collectionName = " <> show collectionName <>
-    ", properties = " <> show properties <>
-    ", required = " <> show required <>
-    ", getters = " <> show getters <>
-    ", table = " <> show table <> "})"
+  show = genericShow
+
+instance eqCollection :: Eq Collection where
+  eq = genericEq
 
 type Required = Array RequiredProperty
 
 data RequiredProperty = RequiredProperty Name Attribute
+
+derive instance genericRequiredProperty :: Generic RequiredProperty _
+
 instance showRequiredProperty :: Show RequiredProperty where
-  show (RequiredProperty n a) = "(RequiredProperty " <> show n <> " " <> show a <> ")"
+  show = genericShow
+
+instance eqRequiredProperty :: Eq RequiredProperty where
+  eq = genericEq
 
 data Attribute = Attribute Name Value
+
+derive instance genericAttribute :: Generic Attribute _
+
 instance showAttribute :: Show Attribute where
-  show (Attribute n ac) = "(Attribute " <> show n <> " " <> show ac <> ")"
+  show = genericShow
+
+instance eqAttribute :: Eq Attribute where
+  eq = genericEq
 
 type Properties = List Property
 
@@ -104,22 +164,37 @@ data Property = Property
   , propertyType        :: Typ
   , propertyAttributes  :: List Attribute
   }
+
+derive instance genericProperty :: Generic Property _
+
 instance showProperty :: Show Property where
-  show (Property {propertyName, propertyType, propertyAttributes}) =
-    "(Property {propertyName = " <> show propertyName <>
-    ", propertyType = " <> show propertyType <>
-    ", propertyAttributes = " <> show propertyAttributes <> "})"
+  show = genericShow
+
+instance eqProperty :: Eq Property where
+  eq = genericEq
 
 data Getters = Getters
   { getterName :: Name
   , macro      :: Macro
   }
+
+derive instance genericGetters :: Generic Getters _
+
 instance showGetters :: Show Getters where
-  show (Getters {getterName, macro}) = "(Getters {getterName = " <> show getterName <> ", macro = " <> show macro <> "})"
+  show = genericShow
+
+instance eqGetters :: Eq Getters where
+  eq = genericEq
 
 data Table = Table (Array Name)
+
+derive instance genericTable :: Generic Table _
+
 instance showTable :: Show Table where
-  show (Table an) = "(Table " <> show an <> ")"
+  show = genericShow
+
+instance eqTable :: Eq Table where
+  eq = genericEq
 
 data Router = Router
   { httpMethod     :: HttpMethod
@@ -128,24 +203,34 @@ data Router = Router
   , documentation  :: Doc
   }
 
-instance showRoute :: Show Router where
-  show (Router {httpMethod, routePath, routeType, documentation}) =
-    "(Router {httpMethod = " <> show httpMethod <>
-    ", routePath = " <> show routePath <>
-    ", routeType = " <> show routeType <>
-    ", documentation = " <> show documentation <> "})"
+derive instance genericRouter :: Generic Router _
+
+instance showRouter :: Show Router where
+  show = genericShow
+
+instance eqRouter :: Eq Router where
+  eq = genericEq
 
 data HttpMethod
   = POST
   | GET
   | PUT
   | DELETE
+
+derive instance genericHttpMethod :: Generic HttpMethod _
+
 instance showHttpMethod :: Show HttpMethod where
-  show POST = "POST"
-  show GET = "GET"
-  show PUT = "PUT"
-  show DELETE = "DELETE"
+  show = genericShow
+
+instance eqHttpMethod :: Eq HttpMethod where
+  eq = genericEq
 
 data Doc = Doc String
+
+derive instance genericDoc :: Generic Doc _
+
 instance showDoc :: Show Doc where
-  show (Doc s) = "(Doc " <> show s <> ")"
+  show = genericShow
+
+instance eqDoc :: Eq Doc where
+  eq = genericEq
