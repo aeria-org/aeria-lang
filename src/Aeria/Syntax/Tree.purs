@@ -73,6 +73,8 @@ data Oper
   | Lte
   | Gte
   | Eq
+  | Or
+  | And
 
 derive instance genericOper :: Generic Oper _
 
@@ -135,9 +137,9 @@ instance showCollection :: Show Collection where
 instance eqCollection :: Eq Collection where
   eq = genericEq
 
-type Required = Array RequiredProperty
+type Required = List RequiredProperty
 
-data RequiredProperty = RequiredProperty Name Attribute
+data RequiredProperty = RequiredProperty PropertyName (Maybe Condition)
 
 derive instance genericRequiredProperty :: Generic RequiredProperty _
 
@@ -173,20 +175,22 @@ instance showProperty :: Show Property where
 instance eqProperty :: Eq Property where
   eq = genericEq
 
-data Getters = Getters
-  { getterName :: Name
+type Getters = List Getter
+
+data Getter = Getter
+  { propertyName :: PropertyName
   , macro      :: Macro
   }
 
-derive instance genericGetters :: Generic Getters _
+derive instance genericGetters :: Generic Getter _
 
-instance showGetters :: Show Getters where
+instance showGetters :: Show Getter where
   show = genericShow
 
-instance eqGetters :: Eq Getters where
+instance eqGetters :: Eq Getter where
   eq = genericEq
 
-data Table = Table (Array Name)
+data Table = Table (List PropertyName)
 
 derive instance genericTable :: Generic Table _
 
