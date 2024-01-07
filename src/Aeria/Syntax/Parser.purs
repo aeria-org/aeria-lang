@@ -149,12 +149,12 @@ pProperty p = do
 
 pGetter :: Parser String Getter
 pGetter = do
-  propertyName <- pPropertyName
+  getterName <- pPropertyName
   macroLang <- string "@" *> lang.identifier
   macroSource <- manyTill anyChar (lang.reserved "@end")
   pure $ Getter
-    { propertyName,
-      macro: Macro (Name macroLang) (fromCharArray <<< toUnfoldable $ macroSource)
+    { getterName,
+      getterMacro: Macro (Name macroLang) (fromCharArray <<< toUnfoldable $ macroSource)
     }
 
 pProperties :: Parser String Properties
@@ -188,16 +188,16 @@ pCollection = go
 
     pCollection' :: CollectionName -> Parser String Collection
     pCollection' collectionName = do
-      required <- optionMaybe pRequired'
-      properties <- pProperties'
-      table <- optionMaybe pTable'
-      getters <- optionMaybe pGetters'
+      collectionRequired <- optionMaybe pRequired'
+      collectionProperties <- pProperties'
+      collectionTable <- optionMaybe pTable'
+      collectionGetters <- optionMaybe pGetters'
       pure $ Collection
         { collectionName
-        , properties
-        , required
-        , table
-        , getters
+        , collectionProperties
+        , collectionRequired
+        , collectionTable
+        , collectionGetters
         }
 
     pProperties' :: Parser String Properties

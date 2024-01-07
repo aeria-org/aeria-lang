@@ -18,7 +18,6 @@ instance showName :: Show Name where
 instance eqName :: Eq Name where
   eq = genericEq
 
-
 data CollectionName = CollectionName String
 
 derive instance genericCollectionName :: Generic CollectionName _
@@ -38,8 +37,6 @@ instance showPropertyName :: Show PropertyName where
 
 instance eqPropertyName :: Eq PropertyName where
   eq = genericEq
-
-type MixinPath = String
 
 data Value
   = VInt Int
@@ -108,9 +105,7 @@ instance eqMacro :: Eq Macro where
   eq = genericEq
 
 data Program = Program
-  { -- mixin :: Maybe MixinPath
-   collection :: Collection
-  -- , router :: Router
+  {collection :: Collection
   }
 
 derive instance genericProgram :: Generic Program _
@@ -122,11 +117,11 @@ instance eqProgram :: Eq Program where
   eq = genericEq
 
 data Collection = Collection
-  { collectionName :: CollectionName
-  , properties     :: Properties
-  , required       :: Maybe Required
-  , getters        :: Maybe Getters
-  , table          :: Maybe Table
+  { collectionName            :: CollectionName
+  , collectionProperties      :: Properties
+  , collectionRequired        :: Maybe Required
+  , collectionGetters         :: Maybe Getters
+  , collectionTable           :: Maybe Table
   }
 
 derive instance genericCollection :: Generic Collection _
@@ -178,8 +173,8 @@ instance eqProperty :: Eq Property where
 type Getters = List Getter
 
 data Getter = Getter
-  { propertyName :: PropertyName
-  , macro      :: Macro
+  { getterName :: PropertyName
+  , getterMacro      :: Macro
   }
 
 derive instance genericGetters :: Generic Getter _
@@ -198,43 +193,4 @@ instance showTable :: Show Table where
   show = genericShow
 
 instance eqTable :: Eq Table where
-  eq = genericEq
-
-data Router = Router
-  { httpMethod     :: HttpMethod
-  , routePath      :: String
-  , routeType      :: Typ
-  , documentation  :: Doc
-  }
-
-derive instance genericRouter :: Generic Router _
-
-instance showRouter :: Show Router where
-  show = genericShow
-
-instance eqRouter :: Eq Router where
-  eq = genericEq
-
-data HttpMethod
-  = POST
-  | GET
-  | PUT
-  | DELETE
-
-derive instance genericHttpMethod :: Generic HttpMethod _
-
-instance showHttpMethod :: Show HttpMethod where
-  show = genericShow
-
-instance eqHttpMethod :: Eq HttpMethod where
-  eq = genericEq
-
-data Doc = Doc String
-
-derive instance genericDoc :: Generic Doc _
-
-instance showDoc :: Show Doc where
-  show = genericShow
-
-instance eqDoc :: Eq Doc where
   eq = genericEq
