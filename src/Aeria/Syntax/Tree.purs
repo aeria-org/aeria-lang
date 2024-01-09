@@ -43,7 +43,7 @@ data Value
   | VFloat Number
   | VString String
   | VBoolean Boolean
-  | VVar Name
+  | VProperty Name
   | VArray (List Value)
 
 derive instance genericValue :: Generic Value _
@@ -82,7 +82,7 @@ instance eqOper :: Eq Oper where
   eq = genericEq
 
 data Typ
-  = TName Name
+  = TCollection Name
   | TArray Typ
   | TObject (List Property)
 

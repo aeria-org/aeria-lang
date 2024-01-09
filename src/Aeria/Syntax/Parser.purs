@@ -4,7 +4,7 @@ module Aeria.Syntax.Parser
 
 import Prelude hiding (between)
 
-import Aeria.Syntax.Tree (Attribute(..), Collection(..), CollectionName(..), Condition(..), Getter(..), Getters(..), Macro(..), Name(..), Oper(..), Program(..), Properties, Property(..), PropertyName(..), Required, RequiredProperty(..), Table(..), Typ(..), Value(..))
+import Aeria.Syntax.Tree (Attribute(..), Collection(..), CollectionName(..), Condition(..), Getter(..), Getters, Macro(..), Name(..), Oper(..), Program(..), Properties, Property(..), PropertyName(..), Required, RequiredProperty(..), Table(..), Typ(..), Value(..))
 import Control.Lazy (fix)
 import Data.Either (Either)
 import Data.List (List, toUnfoldable)
@@ -12,7 +12,7 @@ import Data.String.CodeUnits (fromCharArray)
 import Parsing (ParseError, Parser, runParser)
 import Parsing.Combinators (choice, many, manyTill, optionMaybe, sepBy, try, (<|>))
 import Parsing.Language (emptyDef)
-import Parsing.String (anyChar, char, eof, string)
+import Parsing.String (anyChar, eof, string)
 import Parsing.String.Basic (alphaNum, letter, lower, oneOf, skipSpaces, upper)
 import Parsing.Token as P
 
@@ -44,12 +44,12 @@ pCollectionName = do
   pure (CollectionName (fromCharArray [char'] <> rest))
 
 pType :: Parser String Properties -> Parser String Typ
-pType p = fix \self -> try (tArray self) <|> try tName <|> try tObject
+pType p = fix \self -> try (tArray self) <|> try tCollection <|> try tObject
   where
-    tName :: Parser String Typ
-    tName = do
+    tCollection :: Parser String Typ
+    tCollection = do
       name <- lang.identifier
-      pure (TName (Name name))
+      pure (TCollection (Name name))
 
     tArray :: Parser String Typ -> Parser String Typ
     tArray self = do
@@ -69,7 +69,7 @@ pValue = fix \self ->
     , try pInt
     , try pString
     , try pBoolean
-    , try pVar
+    , try pProp
     , pArray self
     ]
   where
@@ -91,10 +91,10 @@ pValue = fix \self ->
         pFalse :: Parser String Boolean
         pFalse = lang.reserved "false" $> false
 
-    pVar :: Parser String Value
-    pVar = do
+    pProp :: Parser String Value
+    pProp = do
       name <- lang.identifier
-      pure $ VVar (Name name)
+      pure $ VProperty (Name name)
 
     pArray :: Parser String Value -> Parser String Value
     pArray p = VArray <$> lang.brackets go
