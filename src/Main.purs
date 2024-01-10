@@ -2,7 +2,7 @@ module Main where
 
 import Prelude
 
-import Aeria.Syntax.Parser (runP)
+import Aeria.Syntax.Parser (runCollectionP)
 import Data.Either (Either(..))
 import Effect (Effect)
 import Effect.Console (log)
@@ -24,8 +24,7 @@ example1 = """
 
 main :: Effect Unit
 main = do
-  let tree = runP (example1)
+  let tree = runCollectionP (example1)
   case tree of
     Right t -> log $ show t
     Left err -> log $ show err
-
