@@ -4,7 +4,26 @@ module Aeria.Syntax.Parser
 
 import Prelude hiding (between)
 
-import Aeria.Syntax.Tree (Attribute(..), Collection(..), CollectionName(..), Condition(..), Getter(..), Getters, Macro(..), Name(..), Oper(..), Program(..), Properties, Property(..), PropertyName(..), Required, RequiredProperty(..), Table(..), Typ(..), Value(..))
+import Aeria.Syntax.Tree
+  ( Attribute(..)
+  , Collection(..)
+  , CollectionName(..)
+  , Condition(..)
+  , Getter(..)
+  , Getters
+  , Macro(..)
+  , Name(..)
+  , Oper(..)
+  , Program(..)
+  , Properties
+  , Property(..)
+  , PropertyName(..)
+  , Required
+  , RequiredProperty(..)
+  , Table(..)
+  , Typ(..)
+  , Value(..)
+  )
 import Control.Lazy (fix)
 import Data.Either (Either)
 import Data.List (List, toUnfoldable)
@@ -56,7 +75,13 @@ pCollectionName = do
   pure (CollectionName (fromCharArray [char'] <> rest))
 
 pType :: Parser String Properties -> Parser String Typ
-pType p = fix \self -> try (tArray self) <|> try tPrimitives <|> try tCollection <|> try tObject
+pType p = fix \self ->
+  choice
+    [ try (tArray self)
+    , try tPrimitives
+    , try tCollection
+    , try tObject
+    ]
   where
     tPrimitives :: Parser String Typ
     tPrimitives = lang.reservedOp "str" *> pure TString
