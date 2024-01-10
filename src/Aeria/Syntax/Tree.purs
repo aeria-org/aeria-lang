@@ -82,9 +82,14 @@ instance eqOper :: Eq Oper where
   eq = genericEq
 
 data Typ
-  = TCollection Name
+  = TEnum
+  | TFloat
+  | TString
+  | TInteger
+  | TBoolean
   | TArray Typ
   | TObject (List Property)
+  | TCollection CollectionName
 
 derive instance genericTyp :: Generic Typ _
 
@@ -105,7 +110,7 @@ instance eqMacro :: Eq Macro where
   eq = genericEq
 
 data Program = Program
-  {collection :: Collection
+  { collection :: Collection
   }
 
 derive instance genericProgram :: Generic Program _

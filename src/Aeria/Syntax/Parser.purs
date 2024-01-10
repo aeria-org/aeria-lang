@@ -26,7 +26,19 @@ lang = P.makeTokenParser aeria
       , commentLine = "--"
       , nestedComments = true
       , identStart = letter
-      , reservedNames = ["collection", "properties", "required", "cond", "true", "false"]
+      , reservedNames =
+        [ "collection"
+        , "properties"
+        , "required"
+        , "str"
+        , "bool"
+        , "int"
+        , "float"
+        , "enum"
+        , "cond"
+        , "true"
+        , "false"
+        ]
       , identLetter = alphaNum <|> oneOf [ '_', '\'' ]
       , caseSensitive = true
       }
@@ -44,12 +56,19 @@ pCollectionName = do
   pure (CollectionName (fromCharArray [char'] <> rest))
 
 pType :: Parser String Properties -> Parser String Typ
-pType p = fix \self -> try (tArray self) <|> try tCollection <|> try tObject
+pType p = fix \self -> try (tArray self) <|> try tPrimitives <|> try tCollection <|> try tObject
   where
+    tPrimitives :: Parser String Typ
+    tPrimitives = lang.reservedOp "str" *> pure TString
+      <|> lang.reservedOp "bool" *> pure TBoolean
+      <|> lang.reservedOp "int" *> pure TInteger
+      <|> lang.reservedOp "float" *> pure TFloat
+      <|> lang.reservedOp "enum" *> pure TEnum
+
     tCollection :: Parser String Typ
     tCollection = do
-      name <- lang.identifier
-      pure (TCollection (Name name))
+      name <- pCollectionName
+      pure (TCollection name)
 
     tArray :: Parser String Typ -> Parser String Typ
     tArray self = do
