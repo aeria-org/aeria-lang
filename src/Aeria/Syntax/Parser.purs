@@ -53,6 +53,7 @@ lang = P.makeTokenParser aeria
         , "bool"
         , "int"
         , "float"
+        , "file"
         , "enum"
         , "cond"
         , "true"
@@ -88,6 +89,7 @@ pType p = fix \self ->
       <|> lang.reservedOp "bool" *> pure TBoolean
       <|> lang.reservedOp "int" *> pure TInteger
       <|> lang.reservedOp "float" *> pure TFloat
+      <|> lang.reservedOp "file" *> pure TFile
       <|> lang.reservedOp "enum" *> pure TEnum
 
     tCollection :: Parser String Typ

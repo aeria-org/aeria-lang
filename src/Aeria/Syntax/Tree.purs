@@ -86,6 +86,7 @@ data Typ
   | TFloat
   | TString
   | TInteger
+  | TFile
   | TBoolean
   | TArray Typ
   | TObject (List Property)
