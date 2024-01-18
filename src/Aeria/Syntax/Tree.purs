@@ -54,32 +54,26 @@ instance showValue :: Show Value where
 instance eqValue :: Eq Value where
   eq x = genericEq x
 
-data Condition = Condition Value Oper Value
+data Expr
+  = Value Value
+  | In Expr Expr
+  | Exists Expr
+  | Not Expr
+  | Lt Expr Expr
+  | Gt Expr Expr
+  | Lte Expr Expr
+  | Gte Expr Expr
+  | Eq Expr Expr
+  | Or Expr Expr
+  | And Expr Expr
 
-derive instance genericCondition :: Generic Condition _
+derive instance genericExpr :: Generic Expr _
 
-instance showCondition :: Show Condition where
-  show = genericShow
+instance showExpr :: Show Expr where
+  show x = genericShow x
 
-instance eqCondition :: Eq Condition where
-  eq = genericEq
-
-data Oper
-  = Lt
-  | Gt
-  | Lte
-  | Gte
-  | Eq
-  | Or
-  | And
-
-derive instance genericOper :: Generic Oper _
-
-instance showOper :: Show Oper where
-  show = genericShow
-
-instance eqOper :: Eq Oper where
-  eq = genericEq
+instance eqExpr :: Eq Expr where
+  eq x = genericEq x
 
 data Typ
   = TEnum
@@ -140,7 +134,7 @@ instance eqCollection :: Eq Collection where
 
 type Required = List RequiredProperty
 
-data RequiredProperty = RequiredProperty PropertyName (Maybe Condition)
+data RequiredProperty = RequiredProperty PropertyName (Maybe Expr)
 
 derive instance genericRequiredProperty :: Generic RequiredProperty _
 
@@ -179,8 +173,8 @@ instance eqProperty :: Eq Property where
 type Getters = List Getter
 
 data Getter = Getter
-  { getterName :: PropertyName
-  , getterMacro      :: Macro
+  { getterName      :: PropertyName
+  , getterMacro     :: Macro
   }
 
 derive instance genericGetters :: Generic Getter _

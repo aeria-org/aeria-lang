@@ -4,32 +4,14 @@ module Aeria.Syntax.Parser
 
 import Prelude hiding (between)
 
-import Aeria.Syntax.Tree
-  ( Attribute(..)
-  , Collection(..)
-  , CollectionName(..)
-  , Condition(..)
-  , Getter(..)
-  , Getters
-  , Macro(..)
-  , Name(..)
-  , Oper(..)
-  , Program(..)
-  , Properties
-  , Property(..)
-  , PropertyName(..)
-  , Required
-  , RequiredProperty(..)
-  , Table(..)
-  , Typ(..)
-  , Value(..)
-  )
+import Aeria.Syntax.Tree (Attribute(..), Collection(..), CollectionName(..), Expr(..), Getter(..), Getters, Macro(..), Name(..), Program(..), Properties, Property(..), PropertyName(..), Required, RequiredProperty(..), Table(..), Typ(..), Value(..))
 import Control.Lazy (fix)
 import Data.Either (Either)
 import Data.List (List, toUnfoldable)
 import Data.String.CodeUnits (fromCharArray)
 import Parsing (ParseError, Parser, runParser)
 import Parsing.Combinators (choice, many, manyTill, optionMaybe, sepBy, try, (<|>))
+import Parsing.Expr (Assoc(..), Operator(..), buildExprParser)
 import Parsing.Language (emptyDef)
 import Parsing.String (anyChar, eof, string)
 import Parsing.String.Basic (alphaNum, letter, lower, oneOf, skipSpaces, upper)
@@ -148,17 +130,35 @@ pValue = fix \self ->
         go :: Parser String (List Value)
         go = sepBy (skipSpaces *> p <* skipSpaces) lang.comma
 
-pOper :: Parser String Oper
-pOper = lang.reservedOp "||" *> pure Or
-  <|> lang.reservedOp "&&" *> pure And
-  <|> lang.reservedOp ">" *> pure Gt
-  <|> lang.reservedOp "<" *> pure Lt
-  <|> lang.reservedOp "<=" *> pure Lte
-  <|> lang.reservedOp ">=" *> pure Gte
-  <|> lang.reservedOp "==" *> pure Eq
+pExpr :: Parser String Expr
+pExpr = fix \self -> buildExprParser table (expr self)
+  where
+    table = [[binary "==" Eq AssocLeft],
+             [binary "in" In AssocLeft],
+             [binary ">" Gt AssocLeft,
+              binary "<" Lt AssocLeft,
+              binary ">=" Gte AssocLeft,
+              binary "<=" Lte AssocLeft],
+             [binary "&&" And AssocLeft],
+             [binary "||" Or AssocLeft],
+             [unary "exists" Exists],
+             [unary "!" Not]]
 
-pCondition :: Parser String Condition
-pCondition = Condition <$> pValue <*> pOper <*> pValue
+    binary name fun assoc = Infix go assoc
+      where
+        go = do
+          lang.reservedOp name
+          pure fun
+
+    unary name fun = Prefix go
+      where
+        go = do
+          lang.reservedOp name
+          pure fun
+
+    expr self = lang.parens self <|> value
+
+    value = Value <$> pValue
 
 pAttribute :: Parser String Attribute
 pAttribute = do
@@ -173,14 +173,14 @@ pRequiredProperty = go
     go :: Parser String RequiredProperty
     go = do
       propertyName <- pPropertyName
-      condition <- optionMaybe pCondition'
-      pure $ RequiredProperty propertyName condition
+      expr <- optionMaybe pExpr'
+      pure $ RequiredProperty propertyName expr
 
-    pCondition' :: Parser String Condition
-    pCondition' = do
+    pExpr' :: Parser String Expr
+    pExpr' = do
       _ <- string "@"
       lang.reserved "cond"
-      lang.parens pCondition
+      lang.parens pExpr
 
 pProperty :: Parser String Properties -> Parser String Property
 pProperty p = do
