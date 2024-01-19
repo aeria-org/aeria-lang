@@ -4,7 +4,7 @@ module Aeria.Syntax.Parser
 
 import Prelude hiding (between)
 
-import Aeria.Syntax.Tree (Attribute(..), Collection(..), CollectionName(..), Expr(..), Getter(..), Getters, Macro(..), Name(..), Program(..), Properties, Property(..), PropertyName(..), Required, RequiredProperty(..), Table(..), Typ(..), Value(..))
+import Aeria.Syntax.Tree (Attribute(..), Collection(..), CollectionName(..), Expr(..), Getter(..), Getters, Macro(..), Name(..), Program(..), Properties, Property(..), PropertyName(..), Required, RequiredProperty(..), Table(..), PropertyType(..), Value(..))
 import Control.Lazy (fix)
 import Data.Either (Either)
 import Data.List (List, toUnfoldable)
@@ -57,8 +57,8 @@ pCollectionName = do
   rest <- lang.identifier
   pure (CollectionName (fromCharArray [char'] <> rest))
 
-pType :: Parser String Properties -> Parser String Typ
-pType p = fix \self ->
+pPropertyType :: Parser String Properties -> Parser String PropertyType
+pPropertyType p = fix \self ->
   choice
     [ try (tArray self)
     , try tPrimitives
@@ -66,29 +66,29 @@ pType p = fix \self ->
     , try tObject
     ]
   where
-    tPrimitives :: Parser String Typ
-    tPrimitives = lang.reservedOp "str" *> pure TString
-      <|> lang.reservedOp "bool" *> pure TBoolean
-      <|> lang.reservedOp "int" *> pure TInteger
-      <|> lang.reservedOp "float" *> pure TFloat
-      <|> lang.reservedOp "file" *> pure TFile
-      <|> lang.reservedOp "enum" *> pure TEnum
+    tPrimitives :: Parser String PropertyType
+    tPrimitives = lang.reservedOp "str" *> pure PString
+      <|> lang.reservedOp "bool" *> pure PBoolean
+      <|> lang.reservedOp "int" *> pure PInteger
+      <|> lang.reservedOp "float" *> pure PFloat
+      <|> lang.reservedOp "file" *> pure PFile
+      <|> lang.reservedOp "enum" *> pure PEnum
 
-    tCollection :: Parser String Typ
+    tCollection :: Parser String PropertyType
     tCollection = do
       name <- pCollectionName
-      pure (TCollection name)
+      pure (PCollection name)
 
-    tArray :: Parser String Typ -> Parser String Typ
+    tArray :: Parser String PropertyType -> Parser String PropertyType
     tArray self = do
       _ <- string "[]"
       arrType <- self
-      pure (TArray arrType)
+      pure (PArray arrType)
 
-    tObject :: Parser String Typ
+    tObject :: Parser String PropertyType
     tObject = do
       properties <- p
-      pure (TObject properties)
+      pure (PObject properties)
 
 pValue :: Parser String Value
 pValue = fix \self ->
@@ -133,16 +133,16 @@ pValue = fix \self ->
 pExpr :: Parser String Expr
 pExpr = fix \self -> buildExprParser table (expr self)
   where
-    table = [[binary "==" Eq AssocLeft],
-             [binary "in" In AssocLeft],
-             [binary ">" Gt AssocLeft,
-              binary "<" Lt AssocLeft,
-              binary ">=" Gte AssocLeft,
-              binary "<=" Lte AssocLeft],
-             [binary "&&" And AssocLeft],
-             [binary "||" Or AssocLeft],
-             [unary "exists" Exists],
-             [unary "!" Not]]
+    table = [[binary "==" EEq AssocLeft],
+             [binary "in" EIn AssocLeft],
+             [binary ">" EGt AssocLeft,
+              binary "<" ELt AssocLeft,
+              binary ">=" EGte AssocLeft,
+              binary "<=" ELte AssocLeft],
+             [binary "&&" EAnd AssocLeft],
+             [binary "||" EOr AssocLeft],
+             [unary "exists" EExists],
+             [unary "!" ENot]]
 
     binary name fun assoc = Infix go assoc
       where
@@ -158,7 +158,7 @@ pExpr = fix \self -> buildExprParser table (expr self)
 
     expr self = lang.parens self <|> value
 
-    value = Value <$> pValue
+    value = EValue <$> pValue
 
 pAttribute :: Parser String Attribute
 pAttribute = do
@@ -185,7 +185,7 @@ pRequiredProperty = go
 pProperty :: Parser String Properties -> Parser String Property
 pProperty p = do
   propertyName <- pPropertyName
-  propertyType <- pType p
+  propertyType <- pPropertyType p
   propertyAttributes <- many pAttribute
   pure $ Property
     { propertyName

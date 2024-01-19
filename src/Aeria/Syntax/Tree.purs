@@ -38,6 +38,22 @@ instance showPropertyName :: Show PropertyName where
 instance eqPropertyName :: Eq PropertyName where
   eq = genericEq
 
+data Typ
+  = TInteger
+  | TFloat
+  | TString
+  | TBoolean
+  | TAtom
+  | TArray
+
+derive instance genericTyp :: Generic Typ _
+
+instance showTyp :: Show Typ where
+  show = genericShow
+
+instance eqTyp :: Eq Typ where
+  eq = genericEq
+
 data Value
   = VInt Int
   | VFloat Number
@@ -55,17 +71,17 @@ instance eqValue :: Eq Value where
   eq x = genericEq x
 
 data Expr
-  = Value Value
-  | In Expr Expr
-  | Exists Expr
-  | Not Expr
-  | Lt Expr Expr
-  | Gt Expr Expr
-  | Lte Expr Expr
-  | Gte Expr Expr
-  | Eq Expr Expr
-  | Or Expr Expr
-  | And Expr Expr
+  = EValue Value
+  | EIn Expr Expr
+  | EExists Expr
+  | ENot Expr
+  | ELt Expr Expr
+  | EGt Expr Expr
+  | ELte Expr Expr
+  | EGte Expr Expr
+  | EEq Expr Expr
+  | EOr Expr Expr
+  | EAnd Expr Expr
 
 derive instance genericExpr :: Generic Expr _
 
@@ -75,23 +91,23 @@ instance showExpr :: Show Expr where
 instance eqExpr :: Eq Expr where
   eq x = genericEq x
 
-data Typ
-  = TEnum
-  | TFloat
-  | TString
-  | TInteger
-  | TFile
-  | TBoolean
-  | TArray Typ
-  | TObject (List Property)
-  | TCollection CollectionName
+data PropertyType
+  = PEnum
+  | PFloat
+  | PString
+  | PInteger
+  | PFile
+  | PBoolean
+  | PArray PropertyType
+  | PObject (List Property)
+  | PCollection CollectionName
 
-derive instance genericTyp :: Generic Typ _
+derive instance genericPropertyType :: Generic PropertyType _
 
-instance showTyp :: Show Typ where
+instance showPropertyType :: Show PropertyType where
   show x = genericShow x
 
-instance eqTyp :: Eq Typ where
+instance eqPropertyType :: Eq PropertyType where
   eq x = genericEq x
 
 data Macro = Macro Name String
@@ -158,7 +174,7 @@ type Properties = List Property
 
 data Property = Property
   { propertyName        :: PropertyName
-  , propertyType        :: Typ
+  , propertyType        :: PropertyType
   , propertyAttributes  :: List Attribute
   }
 
