@@ -13,14 +13,19 @@ to generate this file without the comments in this block.
 { name = "aeria-lang"
 , dependencies =
   [ "console"
+  , "control"
   , "effect"
   , "either"
   , "lists"
   , "maybe"
-  , "control"
+  , "ordered-collections"
+  , "foldable-traversable"
   , "parsing"
   , "prelude"
+  , "arrays"
   , "strings"
+  , "transformers"
+  , "tuples"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]

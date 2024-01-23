@@ -2,29 +2,28 @@ module Main where
 
 import Prelude
 
+import Aeria.Semantic.Monad (runSemantic)
 import Aeria.Syntax.Parser (runCollectionP)
 import Data.Either (Either(..))
 import Effect (Effect)
-import Effect.Console (log)
+import Effect.Console (log, logShow)
 
 example1 :: String
 example1 = """
   collection Person {
     properties {
-      name  str
+      name  str           @max(45)
       email str
-      posts []{
-        title       str
-        description str
-        body        str
-      }
     }
   }
 """
 
 main :: Effect Unit
 main = do
-  let tree = runCollectionP (example1)
-  case tree of
-    Right t -> log $ show t
-    Left err -> log $ show err
+  let program = runCollectionP (example1)
+  case program of
+    Right program' ->
+      case runSemantic program' of
+        Right _ -> log "ok"
+        Left err -> logShow err
+    Left err -> logShow err
