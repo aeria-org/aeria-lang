@@ -55,7 +55,7 @@ instance eqTyp :: Eq Typ where
   eq = genericEq
 
 data Value
-  = VInt Int
+  = VInteger Int
   | VFloat Number
   | VString String
   | VBoolean Boolean
@@ -160,6 +160,8 @@ instance showRequiredProperty :: Show RequiredProperty where
 instance eqRequiredProperty :: Eq RequiredProperty where
   eq = genericEq
 
+type Attributes = List Attribute
+
 data Attribute = Attribute Name Value
 
 derive instance genericAttribute :: Generic Attribute _
@@ -175,7 +177,7 @@ type Properties = List Property
 data Property = Property
   { propertyName        :: PropertyName
   , propertyType        :: PropertyType
-  , propertyAttributes  :: List Attribute
+  , propertyAttributes  :: Attributes
   }
 
 derive instance genericProperty :: Generic Property _
@@ -201,12 +203,4 @@ instance showGetters :: Show Getter where
 instance eqGetters :: Eq Getter where
   eq = genericEq
 
-data Table = Table (List PropertyName)
-
-derive instance genericTable :: Generic Table _
-
-instance showTable :: Show Table where
-  show = genericShow
-
-instance eqTable :: Eq Table where
-  eq = genericEq
+type Table = List PropertyName
