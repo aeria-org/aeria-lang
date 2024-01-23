@@ -4,36 +4,20 @@ module Aeria.Syntax.Parser
 
 import Prelude hiding (between)
 
-import Aeria.Syntax.Tree
-  ( Attribute(..)
-  , Collection(..)
-  , CollectionName(..)
-  , Condition(..)
-  , Getter(..)
-  , Getters
-  , Macro(..)
-  , Name(..)
-  , Oper(..)
-  , Program(..)
-  , Properties
-  , Property(..)
-  , PropertyName(..)
-  , Required
-  , RequiredProperty(..)
-  , Table(..)
-  , Typ(..)
-  , Value(..)
-  )
+import Aeria.Syntax.Tree (Attribute(..), Collection(..), CollectionName(..), Expr(..), Getter(..), Getters, Macro(..), Name(..), Program(..), Properties, Property(..), PropertyName(..), Required, RequiredProperty(..), Table, PropertyType(..), Value(..))
 import Control.Lazy (fix)
 import Data.Either (Either)
 import Data.List (List, toUnfoldable)
 import Data.String.CodeUnits (fromCharArray)
 import Parsing (ParseError, Parser, runParser)
 import Parsing.Combinators (choice, many, manyTill, optionMaybe, sepBy, try, (<|>))
+import Parsing.Expr (Assoc(..), Operator(..), buildExprParser)
 import Parsing.Language (emptyDef)
 import Parsing.String (anyChar, eof, string)
 import Parsing.String.Basic (alphaNum, letter, lower, oneOf, skipSpaces, upper)
 import Parsing.Token as P
+
+type ParserM a = Parser String a
 
 lang :: P.TokenParser
 lang = P.makeTokenParser aeria
@@ -53,6 +37,7 @@ lang = P.makeTokenParser aeria
         , "bool"
         , "int"
         , "float"
+        , "file"
         , "enum"
         , "cond"
         , "true"
@@ -62,20 +47,20 @@ lang = P.makeTokenParser aeria
       , caseSensitive = true
       }
 
-pPropertyName :: Parser String PropertyName
+pPropertyName :: ParserM PropertyName
 pPropertyName = do
   char' <- lower
   rest <- lang.identifier
   pure (PropertyName (fromCharArray [char'] <> rest))
 
-pCollectionName :: Parser String CollectionName
+pCollectionName :: ParserM CollectionName
 pCollectionName = do
   char' <- upper
   rest <- lang.identifier
   pure (CollectionName (fromCharArray [char'] <> rest))
 
-pType :: Parser String Properties -> Parser String Typ
-pType p = fix \self ->
+pPropertyType :: ParserM Properties -> ParserM PropertyType
+pPropertyType p = fix \self ->
   choice
     [ try (tArray self)
     , try tPrimitives
@@ -83,107 +68,126 @@ pType p = fix \self ->
     , try tObject
     ]
   where
-    tPrimitives :: Parser String Typ
-    tPrimitives = lang.reservedOp "str" *> pure TString
-      <|> lang.reservedOp "bool" *> pure TBoolean
-      <|> lang.reservedOp "int" *> pure TInteger
-      <|> lang.reservedOp "float" *> pure TFloat
-      <|> lang.reservedOp "enum" *> pure TEnum
+    tPrimitives :: ParserM PropertyType
+    tPrimitives = lang.reservedOp "str" *> pure PString
+      <|> lang.reservedOp "bool" *> pure PBoolean
+      <|> lang.reservedOp "int" *> pure PInteger
+      <|> lang.reservedOp "float" *> pure PFloat
+      <|> lang.reservedOp "file" *> pure PFile
+      <|> lang.reservedOp "enum" *> pure PEnum
 
-    tCollection :: Parser String Typ
+    tCollection :: ParserM PropertyType
     tCollection = do
       name <- pCollectionName
-      pure (TCollection name)
+      pure (PCollection name)
 
-    tArray :: Parser String Typ -> Parser String Typ
+    tArray :: ParserM PropertyType -> ParserM PropertyType
     tArray self = do
       _ <- string "[]"
       arrType <- self
-      pure (TArray arrType)
+      pure (PArray arrType)
 
-    tObject :: Parser String Typ
+    tObject :: ParserM PropertyType
     tObject = do
       properties <- p
-      pure (TObject properties)
+      pure (PObject properties)
 
-pValue :: Parser String Value
+pValue :: ParserM Value
 pValue = fix \self ->
   choice
     [ try pFloat
-    , try pInt
+    , try pInteger
     , try pString
     , try pBoolean
     , try pProp
     , pArray self
     ]
   where
-    pInt :: Parser String Value
-    pInt = VInt <$> lang.integer
+    pInteger :: ParserM Value
+    pInteger = VInteger <$> lang.integer
 
-    pFloat :: Parser String Value
+    pFloat :: ParserM Value
     pFloat = VFloat <$> lang.float
 
-    pString :: Parser String Value
+    pString :: ParserM Value
     pString = VString <$> lang.stringLiteral
 
-    pBoolean :: Parser String Value
+    pBoolean :: ParserM Value
     pBoolean = VBoolean <$> (pTrue <|> pFalse)
       where
-        pTrue :: Parser String Boolean
+        pTrue :: ParserM Boolean
         pTrue = lang.reserved "true" $> true
 
-        pFalse :: Parser String Boolean
+        pFalse :: ParserM Boolean
         pFalse = lang.reserved "false" $> false
 
-    pProp :: Parser String Value
+    pProp :: ParserM Value
     pProp = do
       name <- lang.identifier
       pure $ VProperty (Name name)
 
-    pArray :: Parser String Value -> Parser String Value
+    pArray :: ParserM Value -> ParserM Value
     pArray p = VArray <$> lang.brackets go
       where
-        go :: Parser String (List Value)
+        go :: ParserM (List Value)
         go = sepBy (skipSpaces *> p <* skipSpaces) lang.comma
 
-pOper :: Parser String Oper
-pOper = lang.reservedOp "||" *> pure Or
-  <|> lang.reservedOp "&&" *> pure And
-  <|> lang.reservedOp ">" *> pure Gt
-  <|> lang.reservedOp "<" *> pure Lt
-  <|> lang.reservedOp "<=" *> pure Lte
-  <|> lang.reservedOp ">=" *> pure Gte
-  <|> lang.reservedOp "==" *> pure Eq
+pExpr :: ParserM Expr
+pExpr = fix \self -> buildExprParser table (expr self)
+  where
+    table = [[binary "==" EEq AssocLeft],
+             [binary "in" EIn AssocLeft],
+             [binary ">" EGt AssocLeft,
+              binary "<" ELt AssocLeft,
+              binary ">=" EGte AssocLeft,
+              binary "<=" ELte AssocLeft],
+             [binary "&&" EAnd AssocLeft],
+             [binary "||" EOr AssocLeft],
+             [unary "exists" EExists],
+             [unary "!" ENot]]
 
-pCondition :: Parser String Condition
-pCondition = Condition <$> pValue <*> pOper <*> pValue
+    binary name fun assoc = Infix go assoc
+      where
+        go = do
+          lang.reservedOp name
+          pure fun
 
-pAttribute :: Parser String Attribute
+    unary name fun = Prefix go
+      where
+        go = do
+          lang.reservedOp name
+          pure fun
+
+    expr self = lang.parens self <|> value
+
+    value = EValue <$> pValue
+
+pAttribute :: ParserM Attribute
 pAttribute = do
   _ <- string "@"
   attributeName <- lang.identifier
   attributeValue <- lang.parens pValue
   pure $ Attribute (Name attributeName) attributeValue
 
-pRequiredProperty :: Parser String RequiredProperty
+pRequiredProperty :: ParserM RequiredProperty
 pRequiredProperty = go
   where
-    go :: Parser String RequiredProperty
+    go :: ParserM RequiredProperty
     go = do
       propertyName <- pPropertyName
-      condition <- optionMaybe pCondition'
-      pure $ RequiredProperty propertyName condition
+      expr <- optionMaybe pExpr'
+      pure $ RequiredProperty propertyName expr
 
-    pCondition' :: Parser String Condition
-    pCondition' = do
+    pExpr' :: ParserM Expr
+    pExpr' = do
       _ <- string "@"
       lang.reserved "cond"
-      lang.parens pCondition
+      lang.parens pExpr
 
-pProperty :: Parser String Properties -> Parser String Property
+pProperty :: ParserM Properties -> ParserM Property
 pProperty p = do
   propertyName <- pPropertyName
-  propertyType <- pType p
+  propertyType <- pPropertyType p
   propertyAttributes <- many pAttribute
   pure $ Property
     { propertyName
@@ -191,7 +195,7 @@ pProperty p = do
     , propertyAttributes
     }
 
-pGetter :: Parser String Getter
+pGetter :: ParserM Getter
 pGetter = do
   getterName <- pPropertyName
   macroLang <- string "@" *> lang.identifier
@@ -201,36 +205,36 @@ pGetter = do
       getterMacro: Macro (Name macroLang) (fromCharArray <<< toUnfoldable $ macroSource)
     }
 
-pProperties :: Parser String Properties
+pProperties :: ParserM Properties
 pProperties = fix \self ->
   let pProperty' = try (pProperty self)
   in lang.braces (many pProperty')
 
-pRequired :: Parser String Required
+pRequired :: ParserM Required
 pRequired =
   let pRequiredProperty' = try pRequiredProperty
   in lang.braces (many pRequiredProperty')
 
-pTable :: Parser String Table
+pTable :: ParserM Table
 pTable =
   let pPropertyName' = try pPropertyName
-  in lang.braces (Table <$> many pPropertyName')
+  in lang.braces (many pPropertyName')
 
-pGetters :: Parser String Getters
+pGetters :: ParserM Getters
 pGetters =
   let pGetter' = try pGetter
   in lang.braces (many pGetter')
 
-pCollection :: Parser String Collection
+pCollection :: ParserM Collection
 pCollection = go
   where
-    go :: Parser String Collection
+    go :: ParserM Collection
     go = do
       lang.reserved "collection"
       collectionName <- pCollectionName
       lang.braces (pCollection' collectionName)
 
-    pCollection' :: CollectionName -> Parser String Collection
+    pCollection' :: CollectionName -> ParserM Collection
     pCollection' collectionName = do
       collectionRequired <- optionMaybe pRequired'
       collectionProperties <- pProperties'
@@ -244,24 +248,24 @@ pCollection = go
         , collectionGetters
         }
 
-    pProperties' :: Parser String Properties
+    pProperties' :: ParserM Properties
     pProperties' =  lang.reserved "properties" *> pProperties
 
-    pRequired' :: Parser String Required
+    pRequired' :: ParserM Required
     pRequired' = lang.reserved "required" *> pRequired
 
-    pTable' :: Parser String Table
+    pTable' :: ParserM Table
     pTable' = lang.reserved "table" *> pTable
 
-    pGetters' :: Parser String Getters
+    pGetters' :: ParserM Getters
     pGetters' = lang.reserved "getters" *> pGetters
 
-pProgram :: Parser String Program
+pProgram :: ParserM Program
 pProgram = do
   collection <- pCollection
   pure $ Program { collection }
 
-contents :: forall a. Parser String a -> Parser String a
+contents :: forall a. ParserM a -> ParserM a
 contents p = lang.whiteSpace *> lang.lexeme p <* eof
 
 runCollectionP :: String -> Either ParseError Program
