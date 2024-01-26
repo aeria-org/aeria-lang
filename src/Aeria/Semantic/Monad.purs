@@ -162,8 +162,8 @@ checkCollection = go
 
     extendGetters :: Context -> Getters -> Context
     extendGetters = L.foldl
-      \(Context {properties, getters}) property@(Getter {getterName: (PropertyName name)}) ->
-        let getters' = extend name property getters
+      \(Context {properties, getters}) getter@(Getter {getterName: (PropertyName name)}) ->
+        let getters' = extend name getter getters
           in (Context { getters: getters', properties })
 
 checkRequired :: Required -> SemanticM Unit
@@ -177,9 +177,13 @@ checkRequired = traverse_ $ \(RequiredProperty propertyName condition) -> do
 checkTable :: Table -> SemanticM Unit
 checkTable  = traverse_ $ \propertyName -> do
   property <- lookupProperty propertyName
-  when (property == Nothing) (throwError (UndefinedProperty propertyName))
-  getter <- lookupGetter propertyName
-  when (getter == Nothing) (throwError (UndefinedProperty propertyName))
+  case property of
+    Nothing -> do
+      getter <- lookupGetter propertyName
+      case getter of
+        Nothing -> throwError (UndefinedProperty propertyName)
+        Just _ -> pure unit
+    Just _ -> pure unit
 
 checkGetters :: Getters -> SemanticM Unit
 checkGetters = traverse_ go
