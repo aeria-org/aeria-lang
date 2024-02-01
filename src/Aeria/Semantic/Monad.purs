@@ -32,8 +32,10 @@ data Context = Context
 data PropertyError
   = InvalidAttribute Name
   | AttributeValueMustBe (L.List String)
+  | UnexpectedAttributes
   | TypeMismatch Typ Typ
   | TypesMismatch (L.List Typ) Typ
+  | ArrayTypeMismatch Typ Typ
 
 derive instance genericPropertyError :: Generic PropertyError _
 
@@ -42,9 +44,10 @@ instance showPropertyError :: Show PropertyError where
 
 data SemanticError
   = PropertyError Property PropertyError
-  | InvalidMacroGetter Getter
   | UndefinedProperty PropertyName
+  | InvalidMacroGetter Getter
   | UndefinedGetter PropertyName
+  | ExpectedPropertyExpr Expr
   | Unknown
 
 derive instance genericSemanticError :: Generic SemanticError _
@@ -65,51 +68,80 @@ lookupGetter (PropertyName name) = do
   Context { getters } <- ask
   pure (lookup name getters)
 
-typeOf :: Value -> Typ
-typeOf (VInteger _) = TInteger
-typeOf (VFloat _) = TFloat
-typeOf (VString _) = TString
-typeOf (VBoolean _) = TBoolean
-typeOf (VArray _) = TArray
-typeOf (VProperty _) = TAtom
-
 checkExpr :: Expr -> SemanticM Unit
 checkExpr = go
   where
-    go (EIn expr expr') = checkBinaryExpr expr expr'
-    go (EEq expr expr') = checkBinaryExpr expr expr'
-    go (ELt expr expr') = checkBinaryExpr expr expr'
-    go (EGt expr expr') = checkBinaryExpr expr expr'
-    go (ELte expr expr') = checkBinaryExpr expr expr'
-    go (EGte expr expr') = checkBinaryExpr expr expr'
-    go (EOr expr expr') = checkBinaryExpr expr expr'
-    go (EAnd expr expr') = checkBinaryExpr expr expr'
-    go (ENot expr) = go expr
+    go expr@(EIn e1 e2) = checkBinaryExpr expr e1 e2
+    go expr@(EEq e1 e2) = checkBinaryExpr expr e1 e2
+    go expr@(ELt e1 e2) = checkBinaryExpr expr e1 e2
+    go expr@(EGt e1 e2) = checkBinaryExpr expr e1 e2
+    go expr@(ELte e1 e2) = checkBinaryExpr expr e1 e2
+    go expr@(EGte e1 e2) = checkBinaryExpr expr e1 e2
+    go (EOr e1 e2) = do
+      checkExpr e1
+      checkExpr e2
+    go (EAnd e1 e2) = do
+      checkExpr e1
+      checkExpr e2
+    go (EExists expr) = checkExists expr
+    go (ENot expr) = checkExpr expr
     go (EValue _) = pure unit
-    go (EExists _) = pure unit -- TODO
 
     checkPropertyExists :: Name -> SemanticM Unit
     checkPropertyExists (Name name) = do
       property <- lookupProperty (PropertyName name)
       when (property == Nothing) (throwError (UndefinedProperty (PropertyName name)))
 
-    checkBinaryExpr :: Expr -> Expr -> SemanticM Unit
-    checkBinaryExpr expr expr' =
-      case expr /\ expr' of
-        (EValue (VProperty name)) /\ _  -> checkPropertyExists name
-        _ /\ (EValue (VProperty name)) -> checkPropertyExists name
-        _ /\ _ -> throwError Unknown
+    checkExists :: Expr -> SemanticM Unit
+    checkExists expr =
+      case expr of
+        (EValue (VProperty name)) -> checkPropertyExists name
+        _ -> throwError (ExpectedPropertyExpr expr)
 
-checkArray :: Property -> Value -> Either SemanticError Unit
-checkArray _ (VArray _) = Right unit
-checkArray property v =
-  let received = typeOf v
-    in Left (PropertyError property (TypeMismatch TArray received))
+    checkBinaryExpr :: Expr -> Expr -> Expr -> SemanticM Unit
+    checkBinaryExpr expr e1 e2 =
+      case e1 /\ e2 of
+        (EValue (VProperty name)) /\ _  -> do
+          checkPropertyExists name
+          checkExpr e2
+        _ /\ (EValue (VProperty name)) -> do
+          checkPropertyExists name
+          checkExpr e1
+        _ /\ _ -> throwError (ExpectedPropertyExpr expr)
+
+arrayType :: L.List Value -> Maybe Typ
+arrayType L.Nil = Nothing
+arrayType (a:as) = go as (valueType a)
+  where
+    go L.Nil t = Just t
+    go (x:xs) t
+      | valueType x /= t = Nothing
+      | otherwise = go xs t
+
+valueType :: Value -> Typ
+valueType (VInteger _) = TInteger
+valueType (VFloat _) = TFloat
+valueType (VString _) = TString
+valueType (VBoolean _) = TBoolean
+valueType (VArray _) = TArray
+valueType (VProperty _) = TProperty
+
+checkArrayType :: Typ -> Property -> Value -> Either SemanticError Unit
+checkArrayType expected property (VArray (v:vs)) =
+  case arrayType (v:vs) of
+    Just arrType ->
+      when (arrType /= expected) (Left (PropertyError property $ ArrayTypeMismatch expected arrType))
+    Nothing ->
+      let received = valueType v
+      in Left (PropertyError property (ArrayTypeMismatch expected received))
+checkArrayType expected property value =
+  let received = valueType value
+    in Left (PropertyError property (ArrayTypeMismatch expected received))
 
 checkBoolean :: Property -> Value -> Either SemanticError Unit
 checkBoolean _ (VBoolean _) = Right unit
 checkBoolean property v =
-  let received = typeOf v
+  let received = valueType v
     in Left (PropertyError property (TypeMismatch TBoolean received))
 
 checkNumber :: Property -> Value -> Either SemanticError Unit
@@ -117,13 +149,13 @@ checkNumber _ (VFloat _) = Right unit
 checkNumber _ (VInteger _) = Right unit
 checkNumber property v =
   let expected = L.fromFoldable [TFloat, TInteger]
-      received = typeOf v
+      received = valueType v
     in Left (PropertyError property (TypesMismatch expected received))
 
 checkInteger :: Property -> Value -> Either SemanticError Unit
 checkInteger _ (VInteger _) = Right unit
 checkInteger property value =
-  let received = typeOf value
+  let received = valueType value
     in Left (PropertyError property (TypeMismatch TInteger received))
 
 checkProgram :: Program -> SemanticM Unit
@@ -217,20 +249,22 @@ mkPropertyValidate =
     PArray _ -> checkArrayProperty
 
 checkBooleanProperty :: Property -> Either SemanticError Unit
-checkBooleanProperty (Property { propertyAttributes })
-  | L.length propertyAttributes > 0 = throwError Unknown
+checkBooleanProperty property@(Property { propertyAttributes })
+  | L.length propertyAttributes > 0 = Left (PropertyError property UnexpectedAttributes)
   | otherwise = pure unit
 
 checkArrayProperty :: Property -> Either SemanticError Unit
-checkArrayProperty (Property { propertyType, propertyAttributes })
-  | L.length propertyAttributes > 0 = Left Unknown
-  | otherwise =
-    case propertyType of
-      PArray propertyType' ->
-          case propertyType' of
-            PObject propeprties -> validate propeprties
-            _ -> pure unit
-      _ -> throwError Unknown
+checkArrayProperty property@(Property { propertyType, propertyAttributes }) =
+  case propertyType of
+    PArray propertyType' ->
+        case propertyType' of
+          PObject propeprties -> validate propeprties
+          PCollection _ -> pure unit
+          _ ->
+            if L.length propertyAttributes > 0 then
+              Left (PropertyError property UnexpectedAttributes)
+            else pure unit
+    _ -> Left Unknown
   where
     validate L.Nil = pure unit
     validate (p:ps) =
@@ -239,12 +273,12 @@ checkArrayProperty (Property { propertyType, propertyAttributes })
         Left err -> Left err
 
 checkObjectProperty :: Property -> Either SemanticError Unit
-checkObjectProperty (Property { propertyType, propertyAttributes })
-  | L.length propertyAttributes > 0 = Left Unknown
+checkObjectProperty property@(Property { propertyType, propertyAttributes })
+  | L.length propertyAttributes > 0 = Left (PropertyError property UnexpectedAttributes)
   | otherwise =
     case propertyType of
       PObject properties -> validate properties
-      _ -> throwError Unknown
+      _ -> Left Unknown
   where
     validate L.Nil = pure unit
     validate (p:ps) =
@@ -270,25 +304,25 @@ checkStringProperty property = checkAttributes property validations
       | otherwise =
         let expected = L.fromFoldable formatOptions
           in Left (PropertyError property' (AttributeValueMustBe expected))
-    checkFormat property' v =
-      let received = typeOf v
+    checkFormat property' value =
+      let received = valueType value
         in Left (PropertyError property' (TypeMismatch TString received))
 
     checkType :: Property -> Value -> Either SemanticError Unit
-    checkType property' (VString type_)
-      | elem type_ typeOptions = Right unit
+    checkType property' (VString typ)
+      | elem typ typeOptions = Right unit
       | otherwise =
         let expected = L.fromFoldable typeOptions
           in Left (PropertyError property' (AttributeValueMustBe expected))
-    checkType property' v =
-      let received = typeOf v
+    checkType property' value =
+      let received = valueType value
         in Left (PropertyError property' (TypeMismatch TString received))
 
     checkMask :: Property -> Value -> Either SemanticError Unit
     checkMask _ (VString _) = Right unit
-    checkMask _ (VArray _) = Right unit
-    checkMask property' v =
-      let received = typeOf v
+    checkMask property' arr@(VArray _) = checkArrayType TString property' arr
+    checkMask property' value =
+      let received = valueType value
           expected = L.fromFoldable [TString, TArray]
         in Left (PropertyError property' (TypesMismatch expected received))
 
@@ -312,8 +346,8 @@ checkCollectionProperty :: Property -> Either SemanticError Unit
 checkCollectionProperty property = checkAttributes property validations
   where
     validations = M.fromFoldable
-      [ "indexes" /\ checkArray
-      , "populate" /\ checkArray
+      [ "indexes" /\ checkArrayType TProperty
+      , "populate" /\ checkArrayType TProperty
       , "inline" /\ checkBoolean
       ]
 
@@ -321,14 +355,14 @@ checkFileProperty :: Property -> Either SemanticError Unit
 checkFileProperty property = checkAttributes property validations
   where
     validations = M.fromFoldable
-      [ "accept" /\ checkArray
+      [ "accept" /\ checkArrayType TString
       ]
 
 checkEnumProperty :: Property -> Either SemanticError Unit
 checkEnumProperty property = checkAttributes property validations
   where
     validations = M.fromFoldable
-      [ "options" /\ checkArray
+      [ "options" /\ checkArrayType TString
       ]
 
 checkAttributes :: Property -> M.Map String (Property -> Value -> Either SemanticError Unit) -> Either SemanticError Unit
