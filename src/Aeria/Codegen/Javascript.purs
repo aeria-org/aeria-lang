@@ -35,7 +35,7 @@ codegenProperties properties = JSObjectLiteral (map codegenProperty properties)
   where
   codegenProperty :: Property -> (Tuple String JSExpression)
   codegenProperty ( Property
-      { propertyName: (PropertyName propertyName)
+    { propertyName: (PropertyName propertyName)
     , propertyType
     , propertyAttributes
     }

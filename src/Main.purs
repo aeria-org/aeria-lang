@@ -11,15 +11,15 @@ import Effect.Console (logShow)
 
 example :: String
 example = """
-  collection Person {
+  collection User {
     properties {
-    first_name      str         @min(10) @max(45)
-    last_name       str
-    age             int
-    blocked         bool
-    responsible     []Person    @indexes(["first_name", "last_name"])
+      first_name      str         @minLength(10) @maxLength(45)
+      last_name       str
+      age             int
+      blocked         bool
+      responsible     []Person    @indexes([first_name, last_name])
+    }
   }
-}
 """
 
 main :: Effect Unit

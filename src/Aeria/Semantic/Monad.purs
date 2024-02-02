@@ -305,8 +305,8 @@ checkStringProperty property = checkAttributes property validations
   validations :: M.Map String (Property -> Value -> Either SemanticError Unit)
   validations =
     M.fromFoldable
-      [ "min" /\ checkInteger
-      , "max" /\ checkInteger
+      [ "minLength" /\ checkInteger
+      , "maxLength" /\ checkInteger
       , "format" /\ checkFormat
       , "type" /\ checkType
       , "mask" /\ checkMask
@@ -363,8 +363,8 @@ checkNumberProperty property = checkAttributes property validations
   where
   validations =
     M.fromFoldable
-      [ "min" /\ checkNumber
-      , "max" /\ checkNumber
+      [ "minimum" /\ checkNumber
+      , "maximum" /\ checkNumber
       , "exclusiveMinimum" /\ checkNumber
       , "exclusiveMaximum" /\ checkNumber
       ]
