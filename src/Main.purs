@@ -2,28 +2,32 @@ module Main where
 
 import Prelude
 
+import Aeria.Codegen.Javascript (codegen)
 import Aeria.Semantic.Monad (runSemantic)
 import Aeria.Syntax.Parser (runCollectionP)
 import Data.Either (Either(..))
 import Effect (Effect)
-import Effect.Console (log, logShow)
+import Effect.Console (logShow)
 
-example1 :: String
-example1 = """
+example :: String
+example = """
   collection Person {
     properties {
-      name  str           @max(45)
-      email str
-    }
+    first_name      str         @min(10) @max(45)
+    last_name       str
+    age             int
+    blocked         bool
+    responsible     []Person    @indexes(["first_name", "last_name"])
   }
+}
 """
 
 main :: Effect Unit
 main = do
-  let program = runCollectionP (example1)
+  let program = runCollectionP (example)
   case program of
     Right program' ->
       case runSemantic program' of
-        Right _ -> log "ok"
+        Right _ -> logShow (codegen program')
         Left err -> logShow err
     Left err -> logShow err
