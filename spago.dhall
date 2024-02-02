@@ -22,6 +22,7 @@ to generate this file without the comments in this block.
   , "foldable-traversable"
   , "parsing"
   , "prelude"
+  , "integers"
   , "arrays"
   , "strings"
   , "transformers"
