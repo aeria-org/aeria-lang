@@ -34,41 +34,42 @@ codegenProperties :: Properties -> JSExpression
 codegenProperties properties = JSObjectLiteral (map codegenProperty properties)
   where
   codegenProperty :: Property -> (Tuple String JSExpression)
-  codegenProperty ( Property
+  codegenProperty property@( Property
     { propertyName: (PropertyName propertyName)
-    , propertyType
-    , propertyAttributes
     }
-  ) =
-    let
-      attributes = codegenAttributes propertyAttributes
-      typ = codegenPropertyType propertyType
-    in
-      propertyName /\ (JSObjectLiteral $ typ `L.union` attributes)
+  ) = propertyName /\ (JSObjectLiteral $ go property)
 
   codegenAttributes :: Attributes -> L.List (Tuple String JSExpression)
   codegenAttributes = map (\(Attribute (Name name) value) -> name /\ codegenValue value)
 
-  codegenPropertyType :: PropertyType -> L.List (Tuple String JSExpression)
-  codegenPropertyType =
-    fix \self -> case _ of
-      PEnum -> L.fromFoldable [ "type" /\ JSStringLiteral "string" ]
-      PFloat -> L.fromFoldable [ "type" /\ JSStringLiteral "number" ]
-      PInteger -> L.fromFoldable [ "type" /\ JSStringLiteral "integer" ]
-      PString -> L.fromFoldable [ "type" /\ JSStringLiteral "string" ]
-      PBoolean -> L.fromFoldable [ "type" /\ JSStringLiteral "boolean" ]
-      PFile -> L.fromFoldable [ "$ref" /\ JSStringLiteral "file" ]
-      PArray typ ->
-        L.fromFoldable
-          [ "type" /\ JSStringLiteral "array"
-          , "items" /\ (JSObjectLiteral (self typ))
-          ]
-      PObject properties' ->
-        L.fromFoldable
-          [ "type" /\ JSStringLiteral "object"
-          , "properties" /\ codegenProperties properties'
-          ]
-      PCollection (CollectionName collection) -> L.fromFoldable [ "$ref" /\ JSStringLiteral collection ]
+  go :: Property -> L.List (Tuple String JSExpression)
+  go (Property { propertyName, propertyType, propertyAttributes }) =
+    let
+      attributes = codegenAttributes propertyAttributes
+    in
+      case propertyType of
+        PEnum -> L.fromFoldable [ "type" /\ JSStringLiteral "string" ] `L.union` attributes
+        PFloat -> L.fromFoldable [ "type" /\ JSStringLiteral "number" ] `L.union` attributes
+        PInteger -> L.fromFoldable [ "type" /\ JSStringLiteral "integer" ] `L.union` attributes
+        PString -> L.fromFoldable [ "type" /\ JSStringLiteral "string" ] `L.union` attributes
+        PBoolean -> L.fromFoldable [ "type" /\ JSStringLiteral "boolean" ] `L.union` attributes
+        PFile -> L.fromFoldable [ "$ref" /\ JSStringLiteral "file" ] `L.union` attributes
+        PArray typ ->
+          L.fromFoldable
+            [ "type" /\ JSStringLiteral "array"
+            , "items"
+                /\ ( JSObjectLiteral
+                      (go (Property { propertyName, propertyType: typ, propertyAttributes }) `L.union` attributes)
+                  )
+            ]
+        PObject properties' ->
+          L.fromFoldable
+            [ "type" /\ JSStringLiteral "object"
+            , "properties" /\ codegenProperties properties'
+            ]
+            `L.union`
+              attributes
+        PCollection (CollectionName collection) -> L.fromFoldable [ "$ref" /\ JSStringLiteral collection ] `L.union` attributes
 
 codegenValue :: Value -> JSExpression
 codegenValue =
