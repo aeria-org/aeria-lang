@@ -43,7 +43,7 @@ data Typ
   | TFloat
   | TString
   | TBoolean
-  | TAtom
+  | TProperty
   | TArray
 
 derive instance genericTyp :: Generic Typ _
@@ -99,7 +99,7 @@ data PropertyType
   | PFile
   | PBoolean
   | PArray PropertyType
-  | PObject (List Property)
+  | PObject Properties
   | PCollection CollectionName
 
 derive instance genericPropertyType :: Generic PropertyType _
