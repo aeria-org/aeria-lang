@@ -271,15 +271,10 @@ checkBooleanProperty property@(Property { propertyAttributes })
   | otherwise = pure unit
 
 checkArrayProperty :: Property -> Either SemanticError Unit
-checkArrayProperty property@(Property { propertyType, propertyAttributes }) = case propertyType of
+checkArrayProperty (Property { propertyName, propertyType, propertyAttributes }) = case propertyType of
   PArray propertyType' -> case propertyType' of
     PObject propeprties -> validate propeprties
-    PCollection _ -> pure unit
-    _ ->
-      if L.length propertyAttributes > 0 then
-        Left (PropertyError property UnexpectedAttributes)
-      else
-        pure unit
+    _ -> checkProperty (Property {propertyType: propertyType', propertyAttributes, propertyName})
   _ -> Left Unknown
   where
   validate L.Nil = pure unit
