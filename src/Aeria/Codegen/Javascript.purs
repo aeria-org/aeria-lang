@@ -6,6 +6,7 @@ import Aeria.Syntax.Tree (Attribute(..), Attributes, Collection(..), CollectionN
 import Control.Lazy (fix)
 import Data.Int (toNumber)
 import Data.List as L
+import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple)
 import Data.Tuple.Nested ((/\))
 
@@ -48,7 +49,13 @@ codegenProperties properties = JSObjectLiteral (map codegenProperty properties)
       attributes = codegenAttributes propertyAttributes
     in
       case propertyType of
-        PEnum -> L.fromFoldable [ "type" /\ JSStringLiteral "string" ] `L.union` attributes
+        PEnum ->
+          let
+            options = L.find (\(Attribute (Name x) _) -> x == "options") propertyAttributes
+          in
+            case options of
+              Just (Attribute (Name _) (VArray value)) -> L.fromFoldable [ "enum" /\ JSArrayLiteral (map codegenValue value) ]
+              _ -> L.fromFoldable [ "enum" /\ JSArrayLiteral L.Nil ]
         PFloat -> L.fromFoldable [ "type" /\ JSStringLiteral "number" ] `L.union` attributes
         PInteger -> L.fromFoldable [ "type" /\ JSStringLiteral "integer" ] `L.union` attributes
         PString -> L.fromFoldable [ "type" /\ JSStringLiteral "string" ] `L.union` attributes
