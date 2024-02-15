@@ -6,10 +6,11 @@
   "author": "Gabriel Augusto <gabrielolivrp@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "compile": "yarn spago build && yarn spago run"
+    "compile": "yarn spago run"
   },
   "dependencies": {
     "purescript": "^0.15.13",
-    "spago": "^0.21.0"
+    "spago": "^0.21.0",
+    "purty": "^7.0.0"
   }
 }

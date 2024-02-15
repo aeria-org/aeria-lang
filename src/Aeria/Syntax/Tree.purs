@@ -5,21 +5,15 @@ import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.List (List)
 import Data.Maybe (Maybe)
+import Data.Ord.Generic (genericCompare)
 import Data.Show.Generic (genericShow)
 
-data Name
-  = Name String
+type Ident
+  = String
 
-derive instance genericName :: Generic Name _
-
-instance showName :: Show Name where
-  show = genericShow
-
-instance eqName :: Eq Name where
-  eq = genericEq
-
+-- Nomes de coleção devem começar com a primeira letra maiuscula
 data CollectionName
-  = CollectionName String
+  = CollectionName Ident
 
 derive instance genericCollectionName :: Generic CollectionName _
 
@@ -29,8 +23,12 @@ instance showCollectionName :: Show CollectionName where
 instance eqCollectionName :: Eq CollectionName where
   eq = genericEq
 
+instance ordCollectionName :: Ord CollectionName where
+  compare = genericCompare
+
+-- Nomes de coleção devem começar com a primeira letra minuscula
 data PropertyName
-  = PropertyName String
+  = PropertyName Ident
 
 derive instance genericPropertyName :: Generic PropertyName _
 
@@ -38,6 +36,20 @@ instance showPropertyName :: Show PropertyName where
   show = genericShow
 
 instance eqPropertyName :: Eq PropertyName where
+  eq = genericEq
+
+instance ordPropertyName :: Ord PropertyName where
+  compare = genericCompare
+
+data AttributeName
+  = AttributeName Ident
+
+derive instance genericAttributeName :: Generic AttributeName _
+
+instance showAttributeName :: Show AttributeName where
+  show = genericShow
+
+instance eqAttributeName :: Eq AttributeName where
   eq = genericEq
 
 data Typ
@@ -56,34 +68,34 @@ instance showTyp :: Show Typ where
 instance eqTyp :: Eq Typ where
   eq = genericEq
 
-data Value
-  = VInteger Int
-  | VFloat Number
-  | VString String
-  | VBoolean Boolean
-  | VProperty Name
-  | VArray (List Value)
+data Literal
+  = LInteger Int
+  | LFloat Number
+  | LString String
+  | LBoolean Boolean
+  | LProperty PropertyName
+  | LArray (List Literal)
 
-derive instance genericValue :: Generic Value _
+derive instance genericLiteral :: Generic Literal _
 
-instance showValue :: Show Value where
+instance showLiteral :: Show Literal where
   show x = genericShow x
 
-instance eqValue :: Eq Value where
+instance eqLiteral :: Eq Literal where
   eq x = genericEq x
 
 data Expr
-  = EValue Value
-  | EIn Expr Expr
-  | EExists Expr
-  | ENot Expr
-  | ELt Expr Expr
-  | EGt Expr Expr
+  = ELiteral Literal
   | ELte Expr Expr
   | EGte Expr Expr
+  | EAnd Expr Expr
+  | EIn Expr Expr
+  | ELt Expr Expr
+  | EGt Expr Expr
   | EEq Expr Expr
   | EOr Expr Expr
-  | EAnd Expr Expr
+  | EExists Expr
+  | ENot Expr
 
 derive instance genericExpr :: Generic Expr _
 
@@ -98,11 +110,10 @@ data PropertyType
   | PFloat
   | PString
   | PInteger
-  | PFile
   | PBoolean
+  | PRef CollectionName
   | PArray PropertyType
   | PObject Properties
-  | PCollection CollectionName
 
 derive instance genericPropertyType :: Generic PropertyType _
 
@@ -111,47 +122,6 @@ instance showPropertyType :: Show PropertyType where
 
 instance eqPropertyType :: Eq PropertyType where
   eq x = genericEq x
-
-data Macro
-  = Macro Name String
-
-derive instance genericMacro :: Generic Macro _
-
-instance showMacro :: Show Macro where
-  show = genericShow
-
-instance eqMacro :: Eq Macro where
-  eq = genericEq
-
-data Program
-  = Program
-    { collection :: Collection
-    }
-
-derive instance genericProgram :: Generic Program _
-
-instance showProgram :: Show Program where
-  show = genericShow
-
-instance eqProgram :: Eq Program where
-  eq = genericEq
-
-data Collection
-  = Collection
-    { collectionName :: CollectionName
-    , collectionProperties :: Properties
-    , collectionRequired :: Maybe Required
-    , collectionGetters :: Maybe Getters
-    , collectionTable :: Maybe Table
-    }
-
-derive instance genericCollection :: Generic Collection _
-
-instance showCollection :: Show Collection where
-  show = genericShow
-
-instance eqCollection :: Eq Collection where
-  eq = genericEq
 
 type Required
   = List RequiredProperty
@@ -171,7 +141,7 @@ type Attributes
   = List Attribute
 
 data Attribute
-  = Attribute Name Value
+  = Attribute AttributeName Literal
 
 derive instance genericAttribute :: Generic Attribute _
 
@@ -186,9 +156,9 @@ type Properties
 
 data Property
   = Property
-    { propertyName :: PropertyName
-    , propertyType :: PropertyType
-    , propertyAttributes :: Attributes
+    { name :: PropertyName
+    , type_ :: PropertyType
+    , attributes :: Attributes
     }
 
 derive instance genericProperty :: Generic Property _
@@ -199,13 +169,24 @@ instance showProperty :: Show Property where
 instance eqProperty :: Eq Property where
   eq = genericEq
 
+data Macro
+  = Macro Ident String
+
+derive instance genericMacro :: Generic Macro _
+
+instance showMacro :: Show Macro where
+  show = genericShow
+
+instance eqMacro :: Eq Macro where
+  eq = genericEq
+
 type Getters
   = List Getter
 
 data Getter
   = Getter
-    { getterName :: PropertyName
-    , getterMacro :: Macro
+    { name :: PropertyName
+    , macro :: Macro
     }
 
 derive instance genericGetters :: Generic Getter _
@@ -218,3 +199,33 @@ instance eqGetters :: Eq Getter where
 
 type Table
   = List PropertyName
+
+data Collection
+  = Collection
+    { name :: CollectionName
+    , properties :: Properties
+    , required :: Required
+    , getters :: Getters
+    , table :: Table
+    }
+
+derive instance genericCollection :: Generic Collection _
+
+instance showCollection :: Show Collection where
+  show = genericShow
+
+instance eqCollection :: Eq Collection where
+  eq = genericEq
+
+data Program
+  = Program
+    { collections :: List Collection
+    }
+
+derive instance genericProgram :: Generic Program _
+
+instance showProgram :: Show Program where
+  show = genericShow
+
+instance eqProgram :: Eq Program where
+  eq = genericEq

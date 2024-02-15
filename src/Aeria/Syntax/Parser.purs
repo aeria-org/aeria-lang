@@ -1,12 +1,13 @@
 module Aeria.Syntax.Parser
-  ( runCollectionP
+  ( runProgram
   ) where
 
 import Prelude hiding (between)
-import Aeria.Syntax.Tree (Attribute(..), Collection(..), CollectionName(..), Expr(..), Getter(..), Getters, Macro(..), Name(..), Program(..), Properties, Property(..), PropertyName(..), Required, RequiredProperty(..), Table, PropertyType(..), Value(..))
+import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), Collection(..), CollectionName(..), Expr(..), Getter(..), Getters, Literal(..), Macro(..), Program(..), Properties, Property(..), PropertyName(..), PropertyType(..), Required, RequiredProperty(..), Table)
 import Control.Lazy (fix)
 import Data.Either (Either)
-import Data.List (List, toUnfoldable)
+import Data.List (List(..), toUnfoldable)
+import Data.Maybe (fromMaybe')
 import Data.String.CodeUnits (fromCharArray)
 import Parsing (ParseError, Parser, runParser)
 import Parsing.Combinators (choice, many, manyTill, optionMaybe, sepBy, try, (<|>))
@@ -61,6 +62,12 @@ pCollectionName = do
   rest <- lang.identifier
   pure (CollectionName (fromCharArray [ char' ] <> rest))
 
+pAttributeName :: ParserM AttributeName
+pAttributeName = do
+  char' <- lower
+  rest <- lang.identifier
+  pure (AttributeName (fromCharArray [ char' ] <> rest))
+
 pPropertyType :: ParserM Properties -> ParserM PropertyType
 pPropertyType p =
   fix \self ->
@@ -77,13 +84,12 @@ pPropertyType p =
       <|> lang.reservedOp "bool" *> pure PBoolean
       <|> lang.reservedOp "int" *> pure PInteger
       <|> lang.reservedOp "float" *> pure PFloat
-      <|> lang.reservedOp "file" *> pure PFile
-      <|> lang.reservedOp "enum"*> pure PEnum
+      <|> lang.reservedOp "enum" *> pure PEnum
 
   tCollection :: ParserM PropertyType
   tCollection = do
     name <- pCollectionName
-    pure (PCollection name)
+    pure (PRef name)
 
   tArray :: ParserM PropertyType -> ParserM PropertyType
   tArray self = do
@@ -96,8 +102,8 @@ pPropertyType p =
     properties <- p
     pure (PObject properties)
 
-pValue :: ParserM Value
-pValue =
+pLiteral :: ParserM Literal
+pLiteral =
   fix \self ->
     choice
       [ try pFloat
@@ -108,17 +114,17 @@ pValue =
       , pArray self
       ]
   where
-  pInteger :: ParserM Value
-  pInteger = VInteger <$> lang.integer
+  pInteger :: ParserM Literal
+  pInteger = LInteger <$> lang.integer
 
-  pFloat :: ParserM Value
-  pFloat = VFloat <$> lang.float
+  pFloat :: ParserM Literal
+  pFloat = LFloat <$> lang.float
 
-  pString :: ParserM Value
-  pString = VString <$> lang.stringLiteral
+  pString :: ParserM Literal
+  pString = LString <$> lang.stringLiteral
 
-  pBoolean :: ParserM Value
-  pBoolean = VBoolean <$> (pTrue <|> pFalse)
+  pBoolean :: ParserM Literal
+  pBoolean = LBoolean <$> (pTrue <|> pFalse)
     where
     pTrue :: ParserM Boolean
     pTrue = lang.reserved "true" $> true
@@ -126,15 +132,15 @@ pValue =
     pFalse :: ParserM Boolean
     pFalse = lang.reserved "false" $> false
 
-  pProp :: ParserM Value
+  pProp :: ParserM Literal
   pProp = do
-    name <- lang.identifier
-    pure $ VProperty (Name name)
+    name <- pPropertyName
+    pure $ LProperty name
 
-  pArray :: ParserM Value -> ParserM Value
-  pArray p = VArray <$> lang.brackets go
+  pArray :: ParserM Literal -> ParserM Literal
+  pArray p = LArray <$> lang.brackets go
     where
-    go :: ParserM (List Value)
+    go :: ParserM (List Literal)
     go = sepBy (skipSpaces *> p <* skipSpaces) lang.comma
 
 pExpr :: ParserM Expr
@@ -168,14 +174,14 @@ pExpr = fix \self -> buildExprParser table (expr self)
 
   expr self = lang.parens self <|> value
 
-  value = EValue <$> pValue
+  value = ELiteral <$> pLiteral
 
 pAttribute :: ParserM Attribute
 pAttribute = do
   _ <- string "@"
-  attributeName <- lang.identifier
-  attributeValue <- lang.parens pValue
-  pure $ Attribute (Name attributeName) attributeValue
+  attributeName <- pAttributeName
+  attributeValue <- lang.parens pLiteral
+  pure $ Attribute attributeName attributeValue
 
 pRequiredProperty :: ParserM RequiredProperty
 pRequiredProperty = go
@@ -194,25 +200,25 @@ pRequiredProperty = go
 
 pProperty :: ParserM Properties -> ParserM Property
 pProperty p = do
-  propertyName <- pPropertyName
-  propertyType <- pPropertyType p
-  propertyAttributes <- many pAttribute
+  name <- pPropertyName
+  type_ <- pPropertyType p
+  attributes <- many pAttribute
   pure
     $ Property
-        { propertyName
-        , propertyType
-        , propertyAttributes
+        { name
+        , type_
+        , attributes
         }
 
 pGetter :: ParserM Getter
 pGetter = do
-  getterName <- pPropertyName
-  macroLang <- string "@" *> lang.identifier
-  macroSource <- manyTill anyChar (lang.reserved "@end")
+  name <- pPropertyName
+  lang_ <- string "@" *> lang.identifier
+  code <- manyTill anyChar (lang.reserved "@end")
   pure
     $ Getter
-        { getterName
-        , getterMacro: Macro (Name macroLang) (fromCharArray <<< toUnfoldable $ macroSource)
+        { name
+        , macro: Macro lang_ (fromCharArray <<< toUnfoldable $ code)
         }
 
 pProperties :: ParserM Properties
@@ -250,22 +256,22 @@ pCollection = go
   go :: ParserM Collection
   go = do
     lang.reserved "collection"
-    collectionName <- pCollectionName
-    lang.braces (pCollection' collectionName)
+    name <- pCollectionName
+    lang.braces (pCollection' name)
 
   pCollection' :: CollectionName -> ParserM Collection
-  pCollection' collectionName = do
-    collectionRequired <- optionMaybe pRequired'
-    collectionProperties <- pProperties'
-    collectionTable <- optionMaybe pTable'
-    collectionGetters <- optionMaybe pGetters'
+  pCollection' name = do
+    required <- optionMaybe pRequired'
+    properties <- pProperties'
+    table <- optionMaybe pTable'
+    getters <- optionMaybe pGetters'
     pure
       $ Collection
-          { collectionName
-          , collectionProperties
-          , collectionRequired
-          , collectionTable
-          , collectionGetters
+          { name
+          , properties: properties
+          , required: fromMaybe' (const Nil) required
+          , table: fromMaybe' (const Nil) table
+          , getters: fromMaybe' (const Nil) getters
           }
 
   pProperties' :: ParserM Properties
@@ -282,11 +288,11 @@ pCollection = go
 
 pProgram :: ParserM Program
 pProgram = do
-  collection <- pCollection
-  pure $ Program { collection }
+  collections <- many pCollection
+  pure $ Program { collections }
 
 contents :: forall a. ParserM a -> ParserM a
 contents p = lang.whiteSpace *> lang.lexeme p <* eof
 
-runCollectionP :: String -> Either ParseError Program
-runCollectionP s = runParser s (contents pProgram)
+runProgram :: String -> Either ParseError Program
+runProgram s = runParser s (contents pProgram)
