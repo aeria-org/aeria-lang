@@ -4,16 +4,30 @@ import Prelude
 import Aeria.Codegen.Javascript.Tree (JsTree(..))
 import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), Collection(..), CollectionName(..), Expr(..), Getter(..), Getters, Literal(..), Macro(..), Program(..), Properties, Property(..), PropertyName(..), PropertyType(..), Required, RequiredProperty(..), Table)
 import Control.Lazy (fix)
+import Data.Array (union)
 import Data.Int (toNumber)
 import Data.List as L
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), isNothing)
 import Data.Tuple (Tuple)
 import Data.Tuple.Nested ((/\))
 
-codegen :: Program -> JsTree
-codegen (Program { collections }) = JSExports (map go collections)
+codegen :: Program -> L.List (Tuple String JsTree)
+codegen (Program { collections }) = map go collections
   where
-  go collection@(Collection { name: (CollectionName name) }) = JSExport name (codegenCollection collection)
+  go collection@(Collection { name: (CollectionName name) }) =
+    name
+      /\ ( JSStatments
+            $ L.fromFoldable
+                [ JSImport (JSDestructuringObject $ L.fromFoldable [ JSIdentifier "defineCollection", JSIdentifier "deepMerge" ]) "sonata-api"
+                , JSExport name
+                    ( JSArrow (L.fromFoldable [ "description" ])
+                        $ JSCall "defineCollection"
+                        $ L.fromFoldable
+                            [ JSCall "deepMerge" (L.fromFoldable [ codegenCollection collection, JSIdentifier "description" ])
+                            ]
+                    )
+                ]
+        )
 
 codegenCollection :: Collection -> JsTree
 codegenCollection ( Collection
@@ -29,14 +43,26 @@ codegenCollection ( Collection
         [ "description" /\ codegenDescription
         ]
   where
-  codegenDescription =
-    JSObjectLiteral
-      $ L.fromFoldable
-          [ "$id" /\ JSStringLiteral collectionName
-          , "properties" /\ codegenProperties properties getters
-          , "table" /\ codegenTable table
-          , "required" /\ codegenRequired required
-          ]
+  codegenDescription = JSObjectLiteral (L.fromFoldable description)
+    where
+    description =
+      let
+        description' = union baseDescription tableDescription
+      in
+        union description' requiredDescription
+
+    baseDescription =
+      [ "$id" /\ JSStringLiteral collectionName
+      , "properties" /\ codegenProperties properties getters
+      ]
+
+    tableDescription = case table of
+      L.Nil -> []
+      _ -> [ "table" /\ codegenTable table ]
+
+    requiredDescription = case required of
+      L.Nil -> []
+      _ -> [ "required" /\ codegenRequired required ]
 
 codegenTable :: Table -> JsTree
 codegenTable table = JSArrayLiteral (map (\(PropertyName name) -> JSStringLiteral name) table)
@@ -53,12 +79,17 @@ codegenGetters getters = map go getters
         )
 
 codegenRequired :: Required -> JsTree
-codegenRequired required = JSObjectLiteral (map go required)
+codegenRequired required =
+  if hasCondition then
+    JSArrayLiteral $ map (\(RequiredProperty (PropertyName name) _) -> JSStringLiteral name) required
+  else
+    JSObjectLiteral $ map (\(RequiredProperty (PropertyName name) expr) -> name /\ (codegenObject expr)) required
   where
-  go (RequiredProperty (PropertyName name) expr) = name /\ (codegenExpr' expr)
+  hasCondition = L.all (\(RequiredProperty _ cond) -> isNothing cond) required
 
-  codegenExpr' Nothing = JSBooleanLiteral true
-  codegenExpr' (Just x) = codegenExpr x
+  codegenObject Nothing = JSBooleanLiteral true
+
+  codegenObject (Just cond) = codegenExpr cond
 
 codegenBinaryExpr :: String -> JsTree -> JsTree -> JsTree
 codegenBinaryExpr oper e1 e2 =
@@ -79,23 +110,33 @@ codegenUnaryExpr oper e1 =
 
 codegenExpr :: Expr -> JsTree
 codegenExpr (ELiteral value) = codegenLiteral value
+
 codegenExpr (EExists e1) = codegenUnaryExpr "exists" (codegenExpr e1)
+
 codegenExpr (ENot e1) = codegenUnaryExpr "not" (codegenExpr e1)
+
 codegenExpr (EOr e1 e2) =
   JSObjectLiteral
     $ L.fromFoldable
         [ "or" /\ JSArrayLiteral (codegenExpr e1 L.: codegenExpr e2 L.: L.Nil)
         ]
+
 codegenExpr (EAnd e1 e2) =
   JSObjectLiteral
     $ L.fromFoldable
         [ "and" /\ JSArrayLiteral (codegenExpr e1 L.: codegenExpr e2 L.: L.Nil)
         ]
+
 codegenExpr (EIn e1 e2) = codegenBinaryExpr "in" (codegenExpr e1) (codegenExpr e2)
+
 codegenExpr (ELt e1 e2) = codegenBinaryExpr "lt" (codegenExpr e1) (codegenExpr e2)
+
 codegenExpr (EGt e1 e2) = codegenBinaryExpr "gt" (codegenExpr e1) (codegenExpr e2)
+
 codegenExpr (ELte e1 e2) = codegenBinaryExpr "lte" (codegenExpr e1) (codegenExpr e2)
+
 codegenExpr (EGte e1 e2) = codegenBinaryExpr "gte" (codegenExpr e1) (codegenExpr e2)
+
 codegenExpr (EEq e1 e2) = codegenBinaryExpr "eq" (codegenExpr e1) (codegenExpr e2)
 
 codegenProperties :: Properties -> Getters -> JsTree

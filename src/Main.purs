@@ -2,6 +2,7 @@ module Main where
 
 import Prelude
 
+import Aeria.Codegen.Javascript.Tree (Output(..))
 import Aeria.Driver (compile)
 import Effect (Effect)
 
@@ -32,4 +33,4 @@ example = """
 """
 
 main :: Effect Unit
-main = compile example
+main = compile example "./sonata" CJs
