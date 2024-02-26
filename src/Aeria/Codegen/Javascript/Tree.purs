@@ -9,7 +9,7 @@ import Data.Tuple.Nested ((/\))
 
 data Output
   = CommonJs
-  | CJs
+  | EsNext
 
 data JsTree
   = JSIdentifier String
@@ -47,7 +47,7 @@ ppJsTree out (JSArrayLiteral arr) =
 ppJsTree out (JSExport name expr) =
   case out of
     CommonJs -> "exports." <> name <> " = " <> ppJsTree out expr
-    CJs -> "export const " <> name <> " = " <> ppJsTree out expr
+    EsNext -> "export const " <> name <> " = " <> ppJsTree out expr
 ppJsTree out (JSStatments statments) = L.foldr (\statment rest -> ppJsTree out statment <> "\n" <> rest) "" statments
 ppJsTree out (JSCall funct argum) =
   let argum' = L.foldr (\value rest -> ppJsTree out value <> "," <> rest) "" argum
@@ -59,7 +59,7 @@ ppJsTree out (JSReturn return_) = "return" <> ppJsTree out return_
 ppJsTree out (JSImport functions module_) =
   case out of
     CommonJs -> "const " <> ppJsTree out functions <> " = require(" <> show module_ <> ")"
-    CJs -> "import " <> ppJsTree out functions <> " from " <> show module_
+    EsNext -> "import " <> ppJsTree out functions <> " from " <> show module_
 ppJsTree out (JSDestructuringObject object) =
   let params' = L.foldr (\value rest -> ppJsTree out value <> "," <> rest) "" object
     in "{" <> params' <> "}"

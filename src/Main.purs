@@ -33,4 +33,4 @@ example = """
 """
 
 main :: Effect Unit
-main = compile example "./sonata" CJs
+main = compile example "./.aeria" EsNext

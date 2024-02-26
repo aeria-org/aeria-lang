@@ -24,7 +24,7 @@ writeOutput filePath fileName content = do
 makeExtenssion :: Output -> String
 makeExtenssion = case _ of
   CommonJs -> ".js"
-  CJs -> ".cjs"
+  EsNext -> ".mjs"
 
 compile :: String -> String -> Output -> Effect Unit
 compile source outputPath output = do

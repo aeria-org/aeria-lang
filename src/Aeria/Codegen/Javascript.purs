@@ -19,11 +19,12 @@ codegen (Program { collections }) = map go collections
       /\ ( JSStatments
             $ L.fromFoldable
                 [ JSImport (JSDestructuringObject $ L.fromFoldable [ JSIdentifier "defineCollection", JSIdentifier "deepMerge" ]) "sonata-api"
-                , JSExport name
+                , JSExport name (codegenCollection collection)
+                , JSExport "extendCollection"
                     ( JSArrow (L.fromFoldable [ "description" ])
                         $ JSCall "defineCollection"
                         $ L.fromFoldable
-                            [ JSCall "deepMerge" (L.fromFoldable [ codegenCollection collection, JSIdentifier "description" ])
+                            [ JSCall "deepMerge" (L.fromFoldable [ JSIdentifier name, JSIdentifier "description" ])
                             ]
                     )
                 ]
@@ -31,7 +32,7 @@ codegen (Program { collections }) = map go collections
 
 codegenCollection :: Collection -> JsTree
 codegenCollection ( Collection
-    { name: (CollectionName collectionName)
+  { name: (CollectionName collectionName)
   , required
   , properties
   , getters
