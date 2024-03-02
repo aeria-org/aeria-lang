@@ -3,7 +3,8 @@ module Aeria.Syntax.Parser
   ) where
 
 import Prelude hiding (between)
-import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), Collection(..), CollectionName(..), Expr(..), Getter(..), Getters, Literal(..), Macro(..), Program(..), Properties, Property(..), PropertyName(..), PropertyType(..), Required, RequiredProperty(..), Table)
+
+import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionName(..), Expr(..), Getter(..), Getters, Literal(..), Macro(..), Program(..), Properties, Property(..), PropertyName(..), PropertyType(..), Required, RequiredProperty(..), Table)
 import Control.Lazy (fix)
 import Data.Either (Either)
 import Data.List (List(..), toUnfoldable)
@@ -180,7 +181,9 @@ pAttribute :: ParserM Attribute
 pAttribute = do
   _ <- string "@"
   attributeName <- pAttributeName
-  attributeValue <- lang.parens pLiteral
+  attributeValue <- case attributeName of
+    AttributeName "constraints" -> lang.parens $ AExpr <$> pExpr
+    _ -> lang.parens $ ALiteral <$> pLiteral
   pure $ Attribute attributeName attributeValue
 
 pRequiredProperty :: ParserM RequiredProperty

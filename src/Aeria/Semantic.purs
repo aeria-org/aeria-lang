@@ -1,7 +1,8 @@
 module Aeria.Semantic where
 
 import Prelude
-import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), Collection(..), CollectionName(..), Expr(..), Getter(..), Getters, Ident, Literal(..), Macro(..), Program(..), Properties, Property(..), PropertyName, PropertyType(..), Required, RequiredProperty(..), Table, Typ(..))
+
+import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionName(..), Expr(..), Getter(..), Getters, Ident, Literal(..), Macro(..), Program(..), Properties, Property(..), PropertyName, PropertyType(..), Required, RequiredProperty(..), Table, Typ(..))
 import Control.Monad.Except (Except, runExcept, throwError)
 import Control.Monad.Reader (ReaderT, ask, local, runReaderT)
 import Data.Array (elem)
@@ -337,13 +338,20 @@ checkCollectionProperty context ref property =
   in
     case M.lookup ref collections of
       Nothing -> Left (PropertiesError property (PUndefinedReference ref))
-      Just _ -> mapAttributes property validations
+      Just _ -> do
+        mapAttributesLiteral property literalValidations exprValidations
+
   where
-  validations =
+  literalValidations =
     M.fromFoldable
       [ "indexes" /\ checkArrayType'
       , "populate" /\ checkArrayType'
       , "inline" /\ checkBoolean
+      ]
+
+  exprValidations =
+    M.fromFoldable
+      ["constraints" /\ (\_ _ -> Right unit)
       ]
 
   checkArrayType' property' literal@(LArray values) = do
@@ -357,7 +365,7 @@ checkCollectionProperty context ref property =
   propertyExists' literal = Left (PropertiesError property (PTypeMismatch TArray (inferLiteral literal)))
 
 checkStringProperty :: Property -> Either SemanticError Unit
-checkStringProperty property = mapAttributes property validations
+checkStringProperty property = mapAttributesLiteral property validations M.empty
   where
   validations :: M.Map String (Property -> Literal -> Either SemanticError Unit)
   validations =
@@ -400,7 +408,7 @@ checkStringProperty property = mapAttributes property validations
   formatOptions = [ "date", "date-time" ]
 
 checkNumberProperty :: Property -> Either SemanticError Unit
-checkNumberProperty property = mapAttributes property validations
+checkNumberProperty property = mapAttributesLiteral property validations M.empty
   where
   validations =
     M.fromFoldable
@@ -411,7 +419,7 @@ checkNumberProperty property = mapAttributes property validations
       ]
 
 checkFileProperty :: Property -> Either SemanticError Unit
-checkFileProperty property = mapAttributes property validations
+checkFileProperty property = mapAttributesLiteral property validations M.empty
   where
   validations =
     M.fromFoldable
@@ -419,23 +427,29 @@ checkFileProperty property = mapAttributes property validations
       ]
 
 checkEnumProperty :: Property -> Either SemanticError Unit
-checkEnumProperty property = mapAttributes property validations
+checkEnumProperty property = mapAttributesLiteral property validations M.empty
   where
   validations =
     M.fromFoldable
       [ "options" /\ checkArrayType TString
       ]
 
-mapAttributes ::
+mapAttributesLiteral ::
   Property ->
   M.Map String (Property -> Literal -> Either SemanticError Unit) ->
+  M.Map String (Property -> Expr -> Either SemanticError Unit) ->
   Either SemanticError Unit
-mapAttributes property@(Property { attributes }) fs = traverse_ go attributes
+mapAttributesLiteral property@(Property { attributes }) fl fe = traverse_ go attributes
   where
   go :: Attribute -> Either SemanticError Unit
-  go (Attribute attribute@(AttributeName attributeName) value) = case M.lookup attributeName fs of
-    Just f -> f property value
-    Nothing -> Left (PropertiesError property (PUndefinedAttribute attribute))
+  go (Attribute attribute@(AttributeName attributeName) (ALiteral value)) =
+    case M.lookup attributeName fl of
+      Just f -> f property value
+      Nothing -> Left (PropertiesError property (PUndefinedAttribute attribute))
+  go (Attribute attribute@(AttributeName attributeName) (AExpr value)) =
+    case M.lookup attributeName fe of
+      Just f -> f property value
+      Nothing -> Left (PropertiesError property (PUndefinedAttribute attribute))
 
 checkProgram :: Program -> SemanticM Unit
 checkProgram (Program { collections }) = do

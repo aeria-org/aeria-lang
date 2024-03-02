@@ -141,7 +141,7 @@ type Attributes
   = List Attribute
 
 data Attribute
-  = Attribute AttributeName Literal
+  = Attribute AttributeName AttributeValue
 
 derive instance genericAttribute :: Generic Attribute _
 
@@ -149,6 +149,18 @@ instance showAttribute :: Show Attribute where
   show = genericShow
 
 instance eqAttribute :: Eq Attribute where
+  eq = genericEq
+
+data AttributeValue
+  = ALiteral Literal
+  | AExpr Expr
+
+derive instance genericAttributeValue :: Generic AttributeValue _
+
+instance showAttributeValue :: Show AttributeValue where
+  show = genericShow
+
+instance eqAttributeValue :: Eq AttributeValue where
   eq = genericEq
 
 type Properties

@@ -1,8 +1,9 @@
 module Aeria.Codegen.Javascript where
 
 import Prelude
+
 import Aeria.Codegen.Javascript.Tree (JsTree(..))
-import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), Collection(..), CollectionName(..), Expr(..), Getter(..), Getters, Literal(..), Macro(..), Program(..), Properties, Property(..), PropertyName(..), PropertyType(..), Required, RequiredProperty(..), Table)
+import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionName(..), Expr(..), Getter(..), Getters, Literal(..), Macro(..), Program(..), Properties, Property(..), PropertyName(..), PropertyType(..), Required, RequiredProperty(..), Table)
 import Control.Lazy (fix)
 import Data.Array (union)
 import Data.Int (toNumber)
@@ -153,7 +154,11 @@ codegenProperties properties getters = JSObjectLiteral (properties' `L.union` ge
 
   getters' = codegenGetters getters
 
-  codegenAttributes = map (\(Attribute (AttributeName name) value) -> name /\ codegenLiteral value)
+  codegenAttributes = map (\(Attribute (AttributeName name) value) ->
+    case value of
+      ALiteral value' -> name /\ codegenLiteral  value'
+      AExpr expr -> name /\ codegenExpr expr
+      )
 
   go :: Property -> L.List (Tuple String JsTree)
   go (Property { name, type_, attributes }) =
@@ -166,7 +171,7 @@ codegenProperties properties getters = JSObjectLiteral (properties' `L.union` ge
             options = L.find (\(Attribute (AttributeName x) _) -> x == "options") attributes
           in
             case options of
-              Just (Attribute (AttributeName _) (LArray value)) -> L.fromFoldable [ "enum" /\ JSArrayLiteral (map codegenLiteral value) ]
+              Just (Attribute (AttributeName _) (ALiteral (LArray value))) -> L.fromFoldable [ "enum" /\ JSArrayLiteral (map codegenLiteral value) ]
               _ -> L.fromFoldable [ "enum" /\ JSArrayLiteral L.Nil ]
         PFloat -> L.fromFoldable [ "type" /\ JSStringLiteral "number" ] `L.union` attributes'
         PInteger -> L.fromFoldable [ "type" /\ JSStringLiteral "integer" ] `L.union` attributes'
