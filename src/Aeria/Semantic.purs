@@ -113,8 +113,8 @@ propertyExists context collectionName propertyName = do
         Just _ -> Just unit
         Nothing -> Nothing
 
-checkExpr :: CollectionName -> Expr -> SemanticM Unit
-checkExpr collectionName = go
+checkExpr :: Context -> CollectionName -> Expr -> Either SemanticError Unit
+checkExpr context collectionName = go
   where
   go expr@(EIn e1 e2) = checkBinaryExpr expr e1 e2
   go expr@(EEq e1 e2) = checkBinaryExpr expr e1 e2
@@ -123,35 +123,34 @@ checkExpr collectionName = go
   go expr@(ELte e1 e2) = checkBinaryExpr expr e1 e2
   go expr@(EGte e1 e2) = checkBinaryExpr expr e1 e2
   go (EOr e1 e2) = do
-    checkExpr collectionName e1
-    checkExpr collectionName e2
+    checkExpr context collectionName e1
+    checkExpr context collectionName e2
   go (EAnd e1 e2) = do
-    checkExpr collectionName e1
-    checkExpr collectionName e2
+    checkExpr context collectionName e1
+    checkExpr context collectionName e2
   go (EExists expr) = checkExists expr
-  go (ENot expr) = checkExpr collectionName expr
+  go (ENot expr) = checkExpr context collectionName expr
   go (ELiteral _) = pure unit
 
-  checkPropertyExists :: PropertyName -> SemanticM Unit
+  checkPropertyExists :: PropertyName -> Either SemanticError Unit
   checkPropertyExists propertyName = do
-    context <- ask
     case lookupProperty context collectionName propertyName of
       Nothing -> throwError (RequiredError propertyName RUndefinedProperty)
       Just _ -> pure unit
 
-  checkExists :: Expr -> SemanticM Unit
+  checkExists :: Expr -> Either SemanticError Unit
   checkExists expr = case expr of
     (ELiteral (LProperty propertyName)) -> checkPropertyExists propertyName
     _ -> throwError (ExprError expr ExpectedProperty)
 
-  checkBinaryExpr :: Expr -> Expr -> Expr -> SemanticM Unit
+  checkBinaryExpr :: Expr -> Expr -> Expr -> Either SemanticError Unit
   checkBinaryExpr expr e1 e2 = case e1 /\ e2 of
     (ELiteral (LProperty propertyName)) /\ _ -> do
       checkPropertyExists propertyName
-      checkExpr collectionName e2
+      checkExpr context collectionName e2
     _ /\ (ELiteral (LProperty propertyName)) -> do
       checkPropertyExists propertyName
-      checkExpr collectionName e1
+      checkExpr context collectionName e1
     _ /\ _ -> throwError (ExprError expr ExpectedProperty)
 
 inferArray :: L.List Literal -> Maybe Typ
@@ -255,7 +254,10 @@ checkRequired collectionName =
           property = lookupProperty context collectionName propertyName
         when (property == Nothing) (throwError (RequiredError propertyName RUndefinedProperty))
         case condition of
-          Just expr -> checkExpr collectionName expr
+          Just expr ->
+            case checkExpr context collectionName expr of
+              Right _ -> pure unit
+              Left err -> throwError err
           Nothing -> pure unit
 
 checkTable :: CollectionName -> Table -> SemanticM Unit
@@ -300,7 +302,7 @@ mkPropertyValidate ctx collectionName = case _ of
   PInteger -> checkNumberProperty
   PBoolean -> checkBooleanProperty
   PRef (CollectionName "File") -> checkFileProperty
-  PRef ref -> checkCollectionProperty ctx ref
+  PRef ref -> checkRefProperty ctx ref
   PObject _ -> checkObjectProperty ctx collectionName
   PArray _ -> checkArrayProperty ctx collectionName
 
@@ -331,8 +333,8 @@ checkObjectProperty context collectionName property@(Property { type_, attribute
     PObject properties -> traverse_ (checkProperty context collectionName) properties
     _ -> Left Unknown
 
-checkCollectionProperty :: Context -> CollectionName -> Property -> Either SemanticError Unit
-checkCollectionProperty context ref property =
+checkRefProperty :: Context -> CollectionName -> Property -> Either SemanticError Unit
+checkRefProperty context ref property =
   let
     Context { collections } = context
   in
@@ -351,8 +353,10 @@ checkCollectionProperty context ref property =
 
   exprValidations =
     M.fromFoldable
-      ["constraints" /\ (\_ _ -> Right unit)
+      ["constraints" /\ checkConstraints
       ]
+
+  checkConstraints _property' expr = checkExpr context ref expr
 
   checkArrayType' property' literal@(LArray values) = do
     checkArrayType TProperty property' literal
