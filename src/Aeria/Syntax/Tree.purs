@@ -11,7 +11,6 @@ import Data.Show.Generic (genericShow)
 type Ident
   = String
 
--- Nomes de coleção devem começar com a primeira letra maiuscula
 data CollectionName
   = CollectionName Ident
 
@@ -26,7 +25,6 @@ instance eqCollectionName :: Eq CollectionName where
 instance ordCollectionName :: Ord CollectionName where
   compare = genericCompare
 
--- Nomes de coleção devem começar com a primeira letra minuscula
 data PropertyName
   = PropertyName Ident
 

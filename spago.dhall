@@ -24,12 +24,14 @@ to generate this file without the comments in this block.
   , "maybe"
   , "node-buffer"
   , "node-fs"
+  , "node-process"
   , "ordered-collections"
   , "parsing"
   , "prelude"
   , "strings"
   , "transformers"
   , "tuples"
+  , "unicode"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]

@@ -9,6 +9,7 @@ import Control.Lazy (fix)
 import Data.Either (Either)
 import Data.List (List(..), toUnfoldable)
 import Data.Maybe (fromMaybe')
+import Data.String (toLower)
 import Data.String.CodeUnits (fromCharArray)
 import Parsing (ParseError, Parser, runParser)
 import Parsing.Combinators (choice, many, manyTill, optionMaybe, sepBy, try, (<|>))
@@ -61,7 +62,7 @@ pCollectionName :: ParserM CollectionName
 pCollectionName = do
   char' <- upper
   rest <- lang.identifier
-  pure (CollectionName (fromCharArray [ char' ] <> rest))
+  pure (CollectionName ( toLower $ fromCharArray [ char' ] <> rest))
 
 pAttributeName :: ParserM AttributeName
 pAttributeName = do
@@ -216,12 +217,12 @@ pProperty p = do
 pGetter :: ParserM Getter
 pGetter = do
   name <- pPropertyName
-  lang_ <- string "@" *> lang.identifier
+  lang.reserved "@js (doc) =>"
   code <- manyTill anyChar (lang.reserved "@end")
   pure
     $ Getter
         { name
-        , macro: Macro lang_ (fromCharArray <<< toUnfoldable $ code)
+        , macro: Macro "js" (fromCharArray <<< toUnfoldable $ code)
         }
 
 pProperties :: ParserM Properties

@@ -1,65 +1,81 @@
 module Aeria.Codegen.Javascript.Tree where
 
 import Prelude
+
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.List as L
-import Data.Tuple (Tuple)
-import Data.Tuple.Nested ((/\))
 
 data Output
   = CommonJs
   | EsNext
 
+data JsIdentifier
+  = JsIdentifier String
+
+derive instance genericJsIdentifier :: Generic JsIdentifier _
+
+instance eqJsIdentifier :: Eq JsIdentifier where
+  eq = genericEq
+
+data JsLiteral
+  = JSString String
+  | JSNumber Number
+  | JSBoolean Boolean
+  | JSArray (L.List JsTree)
+  | JSObject (L.List JsObjectProperty)
+
+derive instance genericJsLiteral :: Generic JsLiteral _
+
+instance eqJsLiteral :: Eq JsLiteral where
+  eq = genericEq
+
+data JsObjectProperty = JsObjectProperty JsIdentifier JsTree
+
+derive instance genericJSObjectProperty :: Generic JsObjectProperty _
+
+instance eqJsObjectProperty :: Eq JsObjectProperty where
+  eq = genericEq
+
+data JsImportSpecifier = JsImportSpecifier JsIdentifier
+
+derive instance genericJsImportSpecifier :: Generic JsImportSpecifier _
+
+instance eqJsImportSpecifier :: Eq JsImportSpecifier where
+  eq = genericEq
+
+data JsSpecifiers = JsSpecifiers (L.List JsImportSpecifier)
+
+derive instance genericJsSpecifiers :: Generic JsSpecifiers _
+
+instance eqJsSpecifiers :: Eq JsSpecifiers where
+  eq = genericEq
+
+data JsStatement
+  = JSImportDeclaration JsSpecifiers JsIdentifier
+  | JSVariableDeclaration JsIdentifier JsTree
+  | JSExportNamedDeclaration JsStatement
+
+derive instance genericJsStatement :: Generic JsStatement _
+
+instance eqJsStatement :: Eq JsStatement where
+  eq x = genericEq x
+
+data JsStatements = JsStatements (L.List JsStatement)
+
+derive instance genericJsStatements :: Generic JsStatements _
+
+instance eqJsStatements :: Eq JsStatements where
+  eq = genericEq
+
 data JsTree
-  = JSIdentifier String
-  | JSNumberLiteral Number
-  | JSStringLiteral String
-  | JSBooleanLiteral Boolean
-  | JSImport JsTree String
-  | JSArrow (L.List String) JsTree
-  | JSReturn JsTree
-  | JSCall String (L.List JsTree)
-  | JSDestructuringObject (L.List JsTree)
-  | JSObjectLiteral (L.List (Tuple String JsTree))
-  | JSArrayLiteral (L.List JsTree)
-  | JSExport String JsTree
-  | JSStatments (L.List JsTree)
+  = JSLiteral JsLiteral
+  | JSIdentifier JsIdentifier
+  | JSCallExpression JsIdentifier (L.List JsTree)
+  | JSArrowFunctionExpression (L.List JsIdentifier) JsTree
   | JSCode String
 
 derive instance genericJsTree :: Generic JsTree _
 
 instance eqJsTree :: Eq JsTree where
   eq x = genericEq x
-
-ppJsTree :: Output -> JsTree -> String
-ppJsTree _ (JSCode code) = code
-ppJsTree _ (JSIdentifier ident) = ident
-ppJsTree _ (JSNumberLiteral number) = show number
-ppJsTree _ (JSBooleanLiteral boolean) = show boolean
-ppJsTree _ (JSStringLiteral string) = "\"" <> string <> "\""
-ppJsTree out (JSObjectLiteral object) =
-  let props = L.foldr (\(name /\ expr) rest -> name <> ":" <> ppJsTree out expr <> "," <> rest) "" object
-  in "{" <> props <> "}"
-ppJsTree out (JSArrayLiteral arr) =
-  let values = L.foldr (\value rest -> ppJsTree out value <> "," <> rest) "" arr
-  in "[" <> values <> "]"
-ppJsTree out (JSExport name expr) =
-  case out of
-    CommonJs -> "exports." <> name <> " = " <> ppJsTree out expr
-    EsNext -> "export const " <> name <> " = " <> ppJsTree out expr
-ppJsTree out (JSStatments statments) = L.foldr (\statment rest -> ppJsTree out statment <> "\n" <> rest) "" statments
-ppJsTree out (JSCall funct argum) =
-  let argum' = L.foldr (\value rest -> ppJsTree out value <> "," <> rest) "" argum
-  in funct <> "(" <> argum' <> ")"
-ppJsTree out (JSArrow params body) =
-  let params' = L.foldr (\value rest -> value <> "," <> rest) "" params
-  in "(" <> params' <> ")" <> " => " <> ppJsTree out body
-ppJsTree out (JSReturn return_) = "return" <> ppJsTree out return_
-ppJsTree out (JSImport functions module_) =
-  case out of
-    CommonJs -> "const " <> ppJsTree out functions <> " = require(" <> show module_ <> ")"
-    EsNext -> "import " <> ppJsTree out functions <> " from " <> show module_
-ppJsTree out (JSDestructuringObject object) =
-  let params' = L.foldr (\value rest -> ppJsTree out value <> "," <> rest) "" object
-    in "{" <> params' <> "}"

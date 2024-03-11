@@ -1,0 +1,22 @@
+collection Profile {
+  properties {
+    first_name            str
+    last_name             str
+    profile_picture File  @accept(["image/*"])
+  }
+
+  getters {
+    name @js (doc) => {
+      return `${doc.first_name} ${doc.last_name}`;
+    }
+    @end
+  }
+}
+
+collection User {
+  properties {
+    username      str
+    password      str
+    profile       Profile   @constraints(first_name == "gabriel")
+  }
+}

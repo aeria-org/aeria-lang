@@ -301,7 +301,7 @@ mkPropertyValidate ctx collectionName = case _ of
   PFloat -> checkNumberProperty
   PInteger -> checkNumberProperty
   PBoolean -> checkBooleanProperty
-  PRef (CollectionName "File") -> checkFileProperty
+  PRef (CollectionName "file") -> checkFileProperty
   PRef ref -> checkRefProperty ctx ref
   PObject _ -> checkObjectProperty ctx collectionName
   PArray _ -> checkArrayProperty ctx collectionName

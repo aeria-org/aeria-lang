@@ -4,33 +4,26 @@ import Prelude
 
 import Aeria.Codegen.Javascript.Tree (Output(..))
 import Aeria.Driver (compile)
+import Data.Array (reverse, slice)
+import Data.Maybe (Maybe(..))
 import Effect (Effect)
-
-example :: String
-example = """
-  collection Profile {
-    properties {
-      first_name            str
-      last_name             str
-      profile_picture File  @accept(["image/*"])
-    }
-
-    getters {
-      name    @js (values) => {
-        return `${values.first_name} ${values.last_name}`;
-      }
-      @end
-    }
-  }
-
-  collection User {
-    properties {
-      username      str
-      password      str
-      profile       Profile   @indexes([first_name, last_name])
-    }
-  }
-"""
+import Effect.Console (log)
+import Node.Process (argv)
 
 main :: Effect Unit
-main = compile example "./.aeria" EsNext
+main = do
+  args <- argv
+  case slice 0 3 (reverse args) of
+    [output, outputPath, schema] -> do
+      let output' = makeOutput output
+      case output' of
+        Just output'' -> do
+          compile schema outputPath output''
+          log "[info] Files generated successfully"
+        Nothing -> log "Usage: aeria-lang <input-file> <output> <commonjs|esnext>"
+    _ -> log "Usage: aeria-lang <input-file> <output> <commonjs|esnext>"
+
+makeOutput :: String -> Maybe Output
+makeOutput "commonjs" = Just CommonJs
+makeOutput "esnext" = Just EsNext
+makeOutput _ = Nothing
