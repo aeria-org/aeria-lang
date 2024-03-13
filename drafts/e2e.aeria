@@ -1,0 +1,73 @@
+collection Person {
+  properties {
+    name str
+    age num
+    job {
+      title str
+    }
+  }
+}
+
+-- "test ${Uppercase<string>} /${string}"
+test POST /person/insert {
+  token {
+    roles [root]
+  }
+  payload {
+    what {
+      name joao
+      age 50
+      job {
+        title programmer
+      }
+    }
+  }
+  response right {
+    name joao
+    age 50
+    job {
+      title programmer
+    }
+  }
+}
+
+test POST /person/insert {
+  token {
+    roles []
+  }
+  payload {
+    what {
+      name joao
+      age 50
+    }
+  }
+  response left {
+    error AUTHORIZATION_ERROR
+  }
+}
+
+test POST /person/get {
+  token {
+    roles [root]
+  }
+  payload {
+    filters {
+      name joao
+    }
+  }
+  -- the "loose" modifier adds "required: []" to the schema
+  -- recursively on each "type: 'object'" property
+  response loose {
+    job {
+      title programmer
+    }
+  }
+}
+
+test POST /person/getAll {
+  token {
+    roles [root]
+  }
+  response []Person
+}
+
