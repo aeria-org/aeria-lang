@@ -28,6 +28,7 @@ to generate this file without the comments in this block.
   , "ordered-collections"
   , "parsing"
   , "prelude"
+  , "spec"
   , "strings"
   , "transformers"
   , "tuples"

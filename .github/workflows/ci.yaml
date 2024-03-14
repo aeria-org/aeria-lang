@@ -18,7 +18,8 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn
-
       - name: Build packages
         run: yarn spago build
+      - name: Test packages
+        run: yarn spago test
 
