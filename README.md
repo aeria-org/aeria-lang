@@ -2,18 +2,18 @@
 
 ## TODO
 
-- [ ] `collection`
-  - [ ] properties
-    - [ ] `ObjectProperty`
-    - [ ] `StringProperty`
-    - [ ] `NumberProperty`
-    - [ ] `BooleanProperty`
-    - [ ] `RefProperty`
-    - [ ] `FileProperty`
-    - [ ] `EnumProperty`
-    - [ ] `ArrayProperty`
-    - [ ] `LiteralProperty`
-    - [ ] `GetterProperty`
+- [X] `collection`
+  - [X] properties
+    - [X] `ObjectProperty`
+    - [X] `StringProperty`
+    - [X] `NumberProperty`
+    - [X] `BooleanProperty`
+    - [X] `RefProperty`
+    - [X] `FileProperty`
+    - [X] `EnumProperty`
+    - [X] `ArrayProperty`
+    - [X] `LiteralProperty`
+    - [X] `GetterProperty`
   - [ ] description
     - [ ] `filters`
     - [ ] `filtersPresets`
@@ -22,10 +22,10 @@
     - [ ] `immutable`
     - [ ] `indexes`
     - [ ] `owned`
-    - [ ] `table`
+    - [X] `table`
     - [ ] `tableMeta`
     - [ ] `timestamps`
-    - [ ] `required`
+    - [X] `required`
     - [ ] `writable`
     - [ ] `search`
     - [ ] `layout`
@@ -37,13 +37,13 @@
   - [ ] `roles`
 
 - [ ] code generation
-  - [ ] `node_modules/.aeria-lang/index.js`
-  - [ ] `node_modules/.aeria-lang/index.d.ts`
+  - [x] `node_modules/.aeria-lang/index.js`
+  - [x] `node_modules/.aeria-lang/index.d.ts`
   - [ ] `node_modules/.aeria-lang/package.json`
 
 - [ ] cli
   - [ ] get configuration from `package.json`
-  - [ ] read entrypoint file and output code
+  - [x] read entrypoint file and output code
 
 - [ ] test suite
   - [ ] test configuration
