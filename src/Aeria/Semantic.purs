@@ -1,409 +1,475 @@
-module Aeria.Semantic where
+module Aeria.Semantic
+  ( CollectionContext(..)
+  , Context(..)
+  , SemanticM
+  , collectionHasProperty
+  , emptyContext
+  , extendContext
+  , literalPos
+  , lookupCollection
+  , lookupGetter
+  , lookupProperty
+  , makeDiagnostic
+  , runSemantic
+  , sArrayProperty
+  , sArrayType
+  , sAttributes
+  , sBooleanProperty
+  , sCheckIfPropertiesIsValid
+  , sCollection
+  , sEnumProperty
+  , sExpr
+  , sFileProperty
+  , sFilters
+  , sFiltersPresets
+  , sForm
+  , sGetters
+  , sIndexes
+  , sNumberProperty
+  , sObjectProperty
+  , sProgram
+  , sProperties
+  , sProperty
+  , sRefProperty
+  , sRequired
+  , sSearch
+  , sStringProperty
+  , sTable
+  , sTableMeta
+  , sType
+  , throwDiagnostic
+  , typeOf
+  , typeOfArray
+  )
+  where
 
 import Prelude
 
-import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionName(..), Expr(..), Getter(..), Getters, Ident, Literal(..), Macro(..), Program(..), Properties, Property(..), PropertyName, PropertyType(..), Required, RequiredProperty(..), Table, Typ(..))
+import Aeria.Diagnostic.Message (Diagnostic(..), DiagnosticInfo(..))
+import Aeria.Diagnostic.Position (Span)
+import Aeria.Semantic.Error (ExprError(..), PropertyError(..), SemanticError(..))
+import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionGetters, CollectionIndexes, CollectionLayout, CollectionName(..), CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionTable, CollectionTableMeta, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), Getter(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), TableItem(..), TableMetaItem(..), Typ(..))
 import Control.Monad.Except (Except, runExcept, throwError)
 import Control.Monad.Reader (ReaderT, ask, local, runReaderT)
 import Data.Array (elem)
 import Data.Either (Either(..))
 import Data.Foldable (traverse_)
-import Data.Generic.Rep (class Generic)
 import Data.List ((:))
 import Data.List as L
 import Data.Map.Internal (Map, empty, fromFoldable, insert, lookup) as M
-import Data.Maybe (Maybe(..))
-import Data.Show.Generic (genericShow)
+import Data.Maybe (Maybe(..), isJust, isNothing)
 import Data.Tuple.Nested ((/\))
 
 type SemanticM a
-  = ReaderT Context (Except SemanticError) a
+  = ReaderT Context (Except Diagnostic) a
 
 data CollectionContext
   = CollectionContext
-    { properties :: M.Map PropertyName Property
-    , getters :: M.Map PropertyName Getter
+    { properties :: M.Map String Property
+    , getters :: M.Map String Getter
     }
 
 data Context
   = Context
-    { collections :: M.Map CollectionName CollectionContext
+    { filepath :: String
+    , source :: String
+    , collections :: M.Map String CollectionContext
     }
 
-data PropertiesError
-  = PTypeMismatch Typ Typ
-  | PTypesMismatch (L.List Typ) Typ
-  | PArrayTypeMismatch Typ Typ
-  | PUndefinedAttribute AttributeName
-  | PUndefinedReference CollectionName
-  | PUndefinedProperty PropertyName
-  | PPropertyTypeDoesNotExpectAttributes (L.List AttributeName)
-  | PAttributeLiteralMustBe (L.List Ident)
+emptyContext :: String -> String -> Context
+emptyContext filepath source = Context { collections: M.empty, filepath, source }
 
-derive instance genericPropertiesError :: Generic PropertiesError _
+extendContext :: CollectionName -> CollectionProperties -> CollectionGetters -> Context -> Context
+extendContext (CollectionName _ collectionName) properties getters (Context { collections, source, filepath }) =
+  case M.lookup collectionName collections of
+    Just collectionContext ->
+      let collectionContext' = extendGetters collectionContext
+          collectionContext'' = extendProperties collectionContext'
+      in Context { collections: M.insert collectionName collectionContext'' collections, filepath, source }
+    Nothing ->
+      let collectionContext' = extendProperties (CollectionContext { getters: M.empty, properties: M.empty })
+          collectionContext'' = extendGetters collectionContext'
+        in Context { collections: M.insert collectionName collectionContext'' collections, filepath, source }
+  where
+    extendProperties :: CollectionContext -> CollectionContext
+    extendProperties (CollectionContext { getters: gettersContext, properties: propertiesContext }) =
+      let propertiesContext' = L.foldl go propertiesContext properties
+        in CollectionContext { properties: propertiesContext', getters: gettersContext }
+      where
+        go pts property@(Property { name: (PropertyName _ name) }) = M.insert name property pts
 
-instance showPropertiesError :: Show PropertiesError where
-  show = genericShow
-
-data GetterError
-  = InvalidLanguage Ident
-
-derive instance genericGetterError :: Generic GetterError _
-
-instance showGetterError :: Show GetterError where
-  show = genericShow
-
-data ExprError
-  = ExpectedProperty
-
-derive instance genericExprError :: Generic ExprError _
-
-instance showExprError :: Show ExprError where
-  show = genericShow
-
-data TableError
-  = TUndefinedProperty
-
-derive instance genericTableError :: Generic TableError _
-
-instance showTableError :: Show TableError where
-  show = genericShow
-
-data RequiredError
-  = RUndefinedProperty
-
-derive instance genericRequiredError :: Generic RequiredError _
-
-instance showRequiredError :: Show RequiredError where
-  show = genericShow
-
-data SemanticError
-  = PropertiesError Property PropertiesError
-  | GetterError Getter GetterError
-  | TableError PropertyName TableError
-  | RequiredError PropertyName RequiredError
-  | ExprError Expr ExprError
-  | Unknown
-
-derive instance genericSemanticError :: Generic SemanticError _
-
-instance showSemanticError :: Show SemanticError where
-  show = genericShow
-
-emptyContext :: Context
-emptyContext = Context { collections: M.empty }
+    extendGetters :: CollectionContext -> CollectionContext
+    extendGetters (CollectionContext { getters: gettersContext, properties: propertiesContext }) =
+      let gettersContext' = L.foldl go gettersContext getters
+        in CollectionContext { properties: propertiesContext, getters: gettersContext' }
+      where
+        go gts getter@(Getter { name: (PropertyName _ name) }) = M.insert name getter gts
 
 lookupProperty :: Context -> CollectionName -> PropertyName -> Maybe Property
-lookupProperty context collectionName propertyName = do
-  let
-    Context { collections } = context
+lookupProperty (Context { collections }) (CollectionName _ collectionName) (PropertyName _ propertyName) = do
   case M.lookup collectionName collections of
-    Just (CollectionContext { properties }) -> M.lookup propertyName properties
+    Just (CollectionContext { properties }) ->
+      M.lookup propertyName properties
     Nothing -> Nothing
 
-propertyExists :: Context -> CollectionName -> PropertyName -> Maybe Unit
-propertyExists context collectionName propertyName = do
-  let
-    Context { collections } = context
+lookupGetter :: Context -> CollectionName -> PropertyName -> Maybe Getter
+lookupGetter (Context { collections }) (CollectionName _ collectionName) (PropertyName _ propertyName) = do
   case M.lookup collectionName collections of
+    Just (CollectionContext { getters }) ->
+      M.lookup propertyName getters
     Nothing -> Nothing
-    Just (CollectionContext { getters, properties }) -> case M.lookup propertyName properties of
-      Just _ -> Just unit
-      Nothing -> case M.lookup propertyName getters of
-        Just _ -> Just unit
+
+lookupCollection :: Context -> CollectionName -> Maybe CollectionContext
+lookupCollection (Context { collections }) (CollectionName _ collectionName) = M.lookup collectionName collections
+
+collectionHasProperty :: Context -> CollectionName -> PropertyName -> Maybe Unit
+collectionHasProperty context collectionName propertyName =
+  case lookupGetter context collectionName propertyName of
+    Nothing ->
+      case lookupProperty context collectionName propertyName of
         Nothing -> Nothing
+        Just _ -> Just unit
+    Just _ -> Just unit
 
-checkExpr :: Context -> CollectionName -> Expr -> Either SemanticError Unit
-checkExpr context collectionName = go
+makeDiagnostic :: Context -> Span -> SemanticError -> Diagnostic
+makeDiagnostic (Context { filepath, source }) span semanticError =
+  Diagnostic
+    { filepath
+    , span
+    , source
+    , info: DiagnosticSemanticError semanticError
+    }
+
+throwDiagnostic :: Span -> SemanticError -> SemanticM Unit
+throwDiagnostic span semanticError = do
+  context <- ask
+  let diagnostic = makeDiagnostic context span semanticError
+  throwError diagnostic
+
+sExpr :: Context -> CollectionName -> Expr -> Either ExprError Unit
+sExpr context collectionName expr =
+  case expr of
+    EIn lft rgt   -> sBinaryExpr lft rgt
+    EEq lft rgt   -> sBinaryExpr lft rgt
+    ELt lft rgt   -> sBinaryExpr lft rgt
+    EGt lft rgt   -> sBinaryExpr lft rgt
+    ELte lft rgt  -> sBinaryExpr lft rgt
+    EGte lft rgt  -> sBinaryExpr lft rgt
+    EOr lft rgt   -> sBinaryExpr lft rgt
+    EAnd lft rgt  -> sBinaryExpr lft rgt
+    EExists expr' -> sExists expr'
+    ENot expr'    -> sExpr context collectionName expr'
+    ELiteral _    -> pure unit
   where
-  go expr@(EIn e1 e2) = checkBinaryExpr expr e1 e2
-  go expr@(EEq e1 e2) = checkBinaryExpr expr e1 e2
-  go expr@(ELt e1 e2) = checkBinaryExpr expr e1 e2
-  go expr@(EGt e1 e2) = checkBinaryExpr expr e1 e2
-  go expr@(ELte e1 e2) = checkBinaryExpr expr e1 e2
-  go expr@(EGte e1 e2) = checkBinaryExpr expr e1 e2
-  go (EOr e1 e2) = do
-    checkExpr context collectionName e1
-    checkExpr context collectionName e2
-  go (EAnd e1 e2) = do
-    checkExpr context collectionName e1
-    checkExpr context collectionName e2
-  go (EExists expr) = checkExists expr
-  go (ENot expr) = checkExpr context collectionName expr
-  go (ELiteral _) = pure unit
+    sBinaryExpr :: Expr -> Expr -> Either ExprError Unit
+    sBinaryExpr lft rgt =
+      case lft /\ rgt of
+        (ELiteral (LProperty _ propertyName)) /\ _ -> do
+          isStrictProperty propertyName
+          sExpr context collectionName rgt
+        _ /\ (ELiteral (LProperty _ propertyName)) -> do
+          isStrictProperty propertyName
+          sExpr context collectionName lft
+        _ /\ _ -> Left ExpectedProperty
 
-  checkPropertyExists :: PropertyName -> Either SemanticError Unit
-  checkPropertyExists propertyName = do
-    case lookupProperty context collectionName propertyName of
-      Nothing -> throwError (RequiredError propertyName RUndefinedProperty)
-      Just _ -> pure unit
+    sExists :: Expr -> Either ExprError Unit
+    sExists (ELiteral (LProperty _ propertyName)) = isStrictProperty propertyName
+    sExists _ = Left ExpectedProperty
 
-  checkExists :: Expr -> Either SemanticError Unit
-  checkExists expr = case expr of
-    (ELiteral (LProperty propertyName)) -> checkPropertyExists propertyName
-    _ -> throwError (ExprError expr ExpectedProperty)
+    isStrictProperty :: PropertyName -> Either ExprError Unit
+    isStrictProperty propertyName =
+      when (isNothing (lookupProperty context collectionName propertyName)) (Left $ NotProperty propertyName)
 
-  checkBinaryExpr :: Expr -> Expr -> Expr -> Either SemanticError Unit
-  checkBinaryExpr expr e1 e2 = case e1 /\ e2 of
-    (ELiteral (LProperty propertyName)) /\ _ -> do
-      checkPropertyExists propertyName
-      checkExpr context collectionName e2
-    _ /\ (ELiteral (LProperty propertyName)) -> do
-      checkPropertyExists propertyName
-      checkExpr context collectionName e1
-    _ /\ _ -> throwError (ExprError expr ExpectedProperty)
+sCollection :: Collection -> SemanticM Context
+sCollection (Collection
+  { name
+  , properties
+  , getters
+  , table
+  , tableMeta
+  , filters
+  , indexes
+  , form
+  , required
+  , search
+  , filtersPresets
+  , layout
+  }) =
+  local (extendContext name properties getters) $ do
+    sProperties name properties
+    sRequired name required
+    sGetters name getters
+    sTable name table
+    sTableMeta name tableMeta
+    sForm name form
+    sFilters name filters
+    sIndexes name indexes
+    sLayout name layout
+    sFiltersPresets name filtersPresets
+    case search of
+      Just search' -> sSearch name search'
+      Nothing -> pure unit
+    ask
 
-inferArray :: L.List Literal -> Maybe Typ
-inferArray L.Nil = Nothing
-inferArray (a : as) = go as (inferLiteral a)
+sFiltersPresets :: CollectionName -> CollectionFiltersPresets -> SemanticM Unit
+sFiltersPresets _ = traverse_ go
+  where
+  go filterPreset@(FiltersPresetsItem { span, filters }) = do
+    when (isNothing filters) (throwDiagnostic span (FiltersPresetsError filterPreset))
+
+sLayout :: CollectionName -> CollectionLayout -> SemanticM Unit
+sLayout _ = traverse_ go
+  where
+    go (LayoutItem { component: Nothing }) = pure unit
+    go layoutItem@(LayoutItem
+      { component: (Just (LayoutItemComponent { span, name }))
+      }) = when (isNothing name) (throwDiagnostic span (LayoutComponentError layoutItem))
+
+sSearch :: CollectionName -> CollectionSearch -> SemanticM Unit
+sSearch collectionName (CollectionSearch { indexes }) = sCheckIfPropertiesIsValid collectionName indexes
+
+sRequired :: CollectionName -> CollectionRequired -> SemanticM Unit
+sRequired collectionName = traverse_ go
+  where
+    go (Required _ propertyName@(PropertyName span _) cond) = do
+      context <- ask
+      when (isNothing (lookupProperty context collectionName propertyName)) (throwDiagnostic span (UndefinedProperty propertyName))
+      sCond context cond
+
+    sCond context (Just (Cond span expr)) =
+      case sExpr context collectionName expr of
+        Right unit -> pure unit
+        Left exprError -> throwDiagnostic span (ExprError expr exprError)
+    sCond _ Nothing = pure unit
+
+sTable :: CollectionName -> CollectionTable -> SemanticM Unit
+sTable collectionName collectionTable =
+  let properties = map (\(TableItem _ propertyName) -> propertyName) collectionTable
+    in sCheckIfPropertiesIsValid collectionName properties
+
+sTableMeta :: CollectionName -> CollectionTableMeta -> SemanticM Unit
+sTableMeta collectionName collectionTable =
+  let properties = map (\(TableMetaItem _ propertyName) -> propertyName) collectionTable
+    in sCheckIfPropertiesIsValid collectionName properties
+
+sFilters :: CollectionName -> CollectionFilters -> SemanticM Unit
+sFilters collectionName collectionFilters =
+  let properties = map (\(FilterItem _ propertyName) -> propertyName) collectionFilters
+    in sCheckIfPropertiesIsValid collectionName properties
+
+sForm :: CollectionName -> CollectionForm -> SemanticM Unit
+sForm collectionName collectionForm =
+  let properties = map (\(FormItem _ propertyName) -> propertyName) collectionForm
+    in sCheckIfPropertiesIsValid collectionName properties
+
+sIndexes :: CollectionName -> CollectionIndexes -> SemanticM Unit
+sIndexes collectionName collectionForm =
+  let properties = map (\(IndexesItem _ propertyName) -> propertyName) collectionForm
+    in sCheckIfPropertiesIsValid collectionName properties
+
+sCheckIfPropertiesIsValid :: CollectionName -> L.List PropertyName -> SemanticM Unit
+sCheckIfPropertiesIsValid collectionName = traverse_ \propertyName@(PropertyName span _) -> do
+  context <- ask
+  case collectionHasProperty context collectionName propertyName of
+    Just _  -> pure unit
+    Nothing -> throwDiagnostic span (UndefinedProperty propertyName)
+
+sGetters :: CollectionName -> CollectionGetters -> SemanticM Unit
+sGetters collectionName = traverse_ \(Getter { name: name@(PropertyName span _) }) -> do
+  context <- ask
+  when (isJust (lookupProperty context collectionName name)) (throwDiagnostic span (DuplicateProperty name))
+
+sProperties :: CollectionName -> CollectionProperties -> SemanticM Unit
+sProperties collectionName = traverse_ (sProperty collectionName)
+
+sProperty :: CollectionName -> Property -> SemanticM Unit
+sProperty collectionName property@(Property { type_ }) =
+  case type_ of
+    PBoolean _ -> sBooleanProperty property
+    PArray _ _ -> sArrayProperty collectionName property
+    PObject _ _ -> sObjectProperty collectionName property
+    PEnum _ -> sEnumProperty property
+    PString _ -> sStringProperty property
+    PFloat _ -> sNumberProperty property
+    PInteger _ -> sNumberProperty property
+    PRef _ (CollectionName _ "file") -> sFileProperty property
+    PRef _ ref -> sRefProperty ref property
+
+sBooleanProperty :: Property -> SemanticM Unit
+sBooleanProperty = sAttributes'
+  where
+    sAttributes' property@(Property { span, attributes })
+      | L.length attributes > 0 =
+        throwDiagnostic span (PropertyError property PropertyTypeDoesNotExpectAttributes)
+      | otherwise = pure unit
+
+sArrayProperty :: CollectionName -> Property -> SemanticM Unit
+sArrayProperty collectionName = sAttributes'
+  where
+    sAttributes' (Property { name, type_: (PArray span type'), attributes }) =
+      case type' of
+        PObject _ properties  -> traverse_ (sProperty collectionName) properties
+        _                     -> sProperty collectionName (Property { span, type_: type', attributes, name })
+    sAttributes' property@(Property { span }) =
+      throwDiagnostic span (PropertyError property PropertyTypeDoesNotExpectType)
+
+sObjectProperty :: CollectionName -> Property -> SemanticM Unit
+sObjectProperty collectionName = sAttributes'
+  where
+    sAttributes' property@(Property { span, type_, attributes })
+      | L.length attributes > 0 =
+        throwDiagnostic span (PropertyError property PropertyTypeDoesNotExpectAttributes)
+      | otherwise =
+        case type_ of
+          PObject _ properties -> traverse_ (sProperty collectionName) properties
+          _ -> throwDiagnostic span (PropertyError property PropertyTypeDoesNotExpectType)
+
+sRefProperty :: CollectionName -> Property -> SemanticM Unit
+sRefProperty collectionName@(CollectionName span _) property = do
+  context <- ask
+  when (isNothing (lookupCollection context collectionName))
+    (throwDiagnostic span (PropertyError property (UndefinedReference collectionName)))
+  sAttributes' property
+  where
+    sAttributes' property' = sAttributes property' literalAttributes exprAttributes
+
+    literalAttributes =
+      M.fromFoldable
+        [ "indexes" /\ sArrayType'
+        , "populate" /\ sArrayType'
+        , "inline" /\ sType [TBoolean]
+        ]
+
+    exprAttributes =
+      M.fromFoldable
+        ["constraints" /\ sConstraints
+        ]
+
+    sArrayType' property' literal@(LArray _ values) = do
+      sArrayType TProperty property' literal
+      traverse_ collectionHasProperty' values
+    sArrayType' property' literal =
+      throwDiagnostic (literalPos literal) (PropertyError property' (TypeMismatch [TArray] (typeOf literal)))
+
+    collectionHasProperty' (LProperty span' propertyName) = do
+      context <- ask
+      case collectionHasProperty context collectionName propertyName of
+        Nothing ->
+          throwDiagnostic span' (UndefinedProperty propertyName)
+        Just _ -> pure unit
+    collectionHasProperty' literal =
+      throwDiagnostic (literalPos literal) (PropertyError property (TypeMismatch [TArray] (typeOf literal)))
+
+    sConstraints _property' expr = do
+      context <- ask
+      case sExpr context collectionName expr of
+        Right unit -> pure unit
+        Left exprError -> throwDiagnostic span (ExprError expr exprError)
+
+sFileProperty :: Property -> SemanticM Unit
+sFileProperty property = sAttributes property literalAttributes M.empty
+  where
+  literalAttributes =
+    M.fromFoldable
+      [ "accept" /\ sArrayType TString
+      ]
+
+sType :: Array Typ -> Property -> Literal -> SemanticM Unit
+sType accepts property literal = do
+  let type' = typeOf literal
+  let span = literalPos literal
+  when (type' `elem` accepts) (throwDiagnostic span (PropertyError property (TypeMismatch accepts type')))
+
+sArrayType :: Typ -> Property -> Literal -> SemanticM Unit
+sArrayType expected property (LArray _ arr@(l:_)) =
+  case typeOfArray arr of
+    Just arrType ->
+      when (arrType /= expected) $ throwDiagnostic (literalPos l) (PropertyError property (ArrayTypeMismatch expected arrType))
+    Nothing ->
+      throwDiagnostic (literalPos l) (PropertyError property (ArrayTypeMismatch expected (typeOf l)))
+sArrayType expected property literal =
+  throwDiagnostic (literalPos literal) (PropertyError property (ArrayTypeMismatch expected (typeOf literal)))
+
+sEnumProperty :: Property -> SemanticM Unit
+sEnumProperty property = sAttributes property literalAttributes M.empty
+  where
+  literalAttributes =
+    M.fromFoldable
+      [ "options" /\ sArrayType TString
+      ]
+
+sNumberProperty :: Property -> SemanticM Unit
+sNumberProperty property = sAttributes property literalAttributes M.empty
+  where
+  literalAttributes =
+    M.fromFoldable
+      [ "minimum" /\ sType [TFloat, TInteger]
+      , "maximum" /\ sType [TFloat, TInteger]
+      , "exclusiveMinimum" /\ sType [TFloat, TInteger]
+      , "exclusiveMaximum" /\ sType [TFloat, TInteger]
+      ]
+
+typeOfArray :: L.List Literal -> Maybe Typ
+typeOfArray L.Nil = Nothing
+typeOfArray (a : as) = go as (typeOf a)
   where
   go L.Nil t = Just t
   go (x : xs) t
-    | inferLiteral x /= t = Nothing
+    | typeOf x /= t = Nothing
     | otherwise = go xs t
 
-inferLiteral :: Literal -> Typ
-inferLiteral (LInteger _) = TInteger
-inferLiteral (LFloat _) = TFloat
-inferLiteral (LString _) = TString
-inferLiteral (LBoolean _) = TBoolean
-inferLiteral (LArray _) = TArray
-inferLiteral (LProperty _) = TProperty
+typeOf :: Literal -> Typ
+typeOf (LInteger _ _) = TInteger
+typeOf (LFloat _ _) = TFloat
+typeOf (LString _ _) = TString
+typeOf (LBoolean _ _) = TBoolean
+typeOf (LArray _ _) = TArray
+typeOf (LProperty _ _) = TProperty
 
-checkArrayType :: Typ -> Property -> Literal -> Either SemanticError Unit
-checkArrayType expected property (LArray (l : ls)) = case inferArray (l : ls) of
-  Just arrType -> when (arrType /= expected) (Left (PropertiesError property (PArrayTypeMismatch expected arrType)))
-  Nothing -> Left (PropertiesError property (PArrayTypeMismatch expected (inferLiteral l)))
+literalPos :: Literal -> Span
+literalPos (LInteger span _) = span
+literalPos (LFloat span _) = span
+literalPos (LString span _) = span
+literalPos (LBoolean span _) = span
+literalPos (LArray span _) = span
+literalPos (LProperty span _) = span
 
-checkArrayType expected property literal = Left (PropertiesError property (PArrayTypeMismatch expected (inferLiteral literal)))
-
-checkBoolean :: Property -> Literal -> Either SemanticError Unit
-checkBoolean _ (LBoolean _) = Right unit
-checkBoolean property literal = Left (PropertiesError property (PTypeMismatch TBoolean (inferLiteral literal)))
-
-checkNumber :: Property -> Literal -> Either SemanticError Unit
-checkNumber _ (LFloat _) = Right unit
-checkNumber _ (LInteger _) = Right unit
-checkNumber property literal = Left (PropertiesError property (PTypesMismatch (L.fromFoldable [ TFloat, TInteger ]) (inferLiteral literal)))
-
-checkInteger :: Property -> Literal -> Either SemanticError Unit
-checkInteger _ (LInteger _) = Right unit
-checkInteger property literal = Left (PropertiesError property (PTypeMismatch TInteger (inferLiteral literal)))
-
--- collections
---
-checkCollection :: Collection -> SemanticM Context
-checkCollection = go
+sStringProperty :: Property -> SemanticM Unit
+sStringProperty property = sAttributes property literalAttributes M.empty
   where
-  go ( Collection
-      { name
-    , properties
-    , getters
-    , table
-    , required
-    }
-  ) =
-    local (extendContext name properties getters)
-      $ do
-          checkProperties name properties
-          checkGetters name getters
-          checkTable name table
-          checkRequired name required
-          ask
-
-  extendContext :: CollectionName -> Properties -> Getters -> Context -> Context
-  extendContext collectionName properties getters ctx = updateCollectionCtx ctx
-    where
-    updateProperties :: CollectionContext -> CollectionContext
-    updateProperties (CollectionContext { getters: gettersCtx, properties: propertiesCtx }) =
-      let
-        propertiesCtx' = L.foldl (\pts property@(Property { name }) -> M.insert name property pts) propertiesCtx properties
-      in
-        CollectionContext { properties: propertiesCtx', getters: gettersCtx }
-
-    updateGetters :: CollectionContext -> CollectionContext
-    updateGetters (CollectionContext { getters: gettersCtx, properties: propertiesCtx }) =
-      let
-        gettersCtx' = L.foldl (\gts getter@(Getter { name }) -> M.insert name getter gts) gettersCtx getters
-      in
-        CollectionContext { properties: propertiesCtx, getters: gettersCtx' }
-
-    updateCollectionCtx :: Context -> Context
-    updateCollectionCtx (Context { collections }) = case M.lookup collectionName collections of
-      Nothing ->
-        let
-          collectionContext = updateProperties (CollectionContext { getters: M.empty, properties: M.empty })
-
-          collectionContext' = updateGetters collectionContext
-        in
-          Context { collections: M.insert collectionName collectionContext' collections }
-      Just collectionContext ->
-        let
-          collectionContext' = updateGetters collectionContext
-
-          collectionContext'' = updateProperties collectionContext'
-        in
-          Context { collections: M.insert collectionName collectionContext'' collections }
-
-checkRequired :: CollectionName -> Required -> SemanticM Unit
-checkRequired collectionName =
-  traverse_
-    $ \(RequiredProperty propertyName condition) -> do
-        context <- ask
-        let
-          property = lookupProperty context collectionName propertyName
-        when (property == Nothing) (throwError (RequiredError propertyName RUndefinedProperty))
-        case condition of
-          Just expr ->
-            case checkExpr context collectionName expr of
-              Right _ -> pure unit
-              Left err -> throwError err
-          Nothing -> pure unit
-
-checkTable :: CollectionName -> Table -> SemanticM Unit
-checkTable collectionName = traverse_ go
-  where
-  go propertyName = do
-    context <- ask
-    case propertyExists context collectionName propertyName of
-      Nothing -> throwError (TableError propertyName TUndefinedProperty)
-      Just _ -> pure unit
-
-checkGetters :: CollectionName -> Getters -> SemanticM Unit
-checkGetters _ = traverse_ go
-  where
-  go getter@(Getter { macro: (Macro lang _) })
-    | lang `elem` [ "js" ] = pure unit
-    | otherwise = throwError (GetterError getter (InvalidLanguage lang))
-
-checkProperties :: CollectionName -> Properties -> SemanticM Unit
-checkProperties collectionName properties = do
-  ctx <- ask
-  traverse_
-    ( \property -> do
-        case checkProperty ctx collectionName property of
-          Right _ -> pure unit
-          Left err -> throwError err
-    )
-    properties
-
-checkProperty :: Context -> CollectionName -> Property -> Either SemanticError Unit
-checkProperty ctx collectionName property@(Property { type_ }) =
-  let
-    validate = mkPropertyValidate ctx collectionName type_
-  in
-    validate property
-
-mkPropertyValidate :: Context -> CollectionName -> PropertyType -> Property -> Either SemanticError Unit
-mkPropertyValidate ctx collectionName = case _ of
-  PEnum -> checkEnumProperty
-  PString -> checkStringProperty
-  PFloat -> checkNumberProperty
-  PInteger -> checkNumberProperty
-  PBoolean -> checkBooleanProperty
-  PRef (CollectionName "file") -> checkFileProperty
-  PRef ref -> checkRefProperty ctx ref
-  PObject _ -> checkObjectProperty ctx collectionName
-  PArray _ -> checkArrayProperty ctx collectionName
-
-checkBooleanProperty :: Property -> Either SemanticError Unit
-checkBooleanProperty property@(Property { attributes })
-  | L.length attributes > 0 =
-    let
-      attributeNames = map (\(Attribute attributeName _) -> attributeName) attributes
-    in
-      Left (PropertiesError property (PPropertyTypeDoesNotExpectAttributes attributeNames))
-  | otherwise = pure unit
-
-checkArrayProperty :: Context -> CollectionName -> Property -> Either SemanticError Unit
-checkArrayProperty context collectionName (Property { name, type_, attributes }) = case type_ of
-  PArray type_' -> case type_' of
-    PObject properties -> traverse_ (checkProperty context collectionName) properties
-    _ -> checkProperty context collectionName (Property { type_: type_', attributes, name })
-  _ -> Left Unknown
-
-checkObjectProperty :: Context -> CollectionName -> Property -> Either SemanticError Unit
-checkObjectProperty context collectionName property@(Property { type_, attributes })
-  | L.length attributes > 0 =
-    let
-      attributeNames = map (\(Attribute attributeName _) -> attributeName) attributes
-    in
-      Left (PropertiesError property (PPropertyTypeDoesNotExpectAttributes attributeNames))
-  | otherwise = case type_ of
-    PObject properties -> traverse_ (checkProperty context collectionName) properties
-    _ -> Left Unknown
-
-checkRefProperty :: Context -> CollectionName -> Property -> Either SemanticError Unit
-checkRefProperty context ref property =
-  let
-    Context { collections } = context
-  in
-    case M.lookup ref collections of
-      Nothing -> Left (PropertiesError property (PUndefinedReference ref))
-      Just _ -> do
-        mapAttributesLiteral property literalValidations exprValidations
-
-  where
-  literalValidations =
+  literalAttributes :: M.Map String (Property -> Literal -> SemanticM Unit)
+  literalAttributes =
     M.fromFoldable
-      [ "indexes" /\ checkArrayType'
-      , "populate" /\ checkArrayType'
-      , "inline" /\ checkBoolean
-      ]
-
-  exprValidations =
-    M.fromFoldable
-      ["constraints" /\ checkConstraints
-      ]
-
-  checkConstraints _property' expr = checkExpr context ref expr
-
-  checkArrayType' property' literal@(LArray values) = do
-    checkArrayType TProperty property' literal
-    traverse_ propertyExists' values
-  checkArrayType' property' literal = Left (PropertiesError property' (PTypeMismatch TArray (inferLiteral literal)))
-
-  propertyExists' (LProperty propertyName) = case propertyExists context ref propertyName of
-    Nothing -> Left (PropertiesError property (PUndefinedProperty propertyName))
-    Just _ -> pure unit
-  propertyExists' literal = Left (PropertiesError property (PTypeMismatch TArray (inferLiteral literal)))
-
-checkStringProperty :: Property -> Either SemanticError Unit
-checkStringProperty property = mapAttributesLiteral property validations M.empty
-  where
-  validations :: M.Map String (Property -> Literal -> Either SemanticError Unit)
-  validations =
-    M.fromFoldable
-      [ "minLength" /\ checkInteger
-      , "maxLength" /\ checkInteger
+      [ "minLength" /\ sType [TInteger]
+      , "maxLength" /\ sType [TInteger]
       , "format" /\ checkFormat
       , "type" /\ checkType
       , "mask" /\ checkMask
       ]
 
-  checkFormat :: Property -> Literal -> Either SemanticError Unit
-  checkFormat property' (LString value)
-    | elem value formatOptions = Right unit
-    | otherwise = Left (PropertiesError property' (PAttributeLiteralMustBe (L.fromFoldable formatOptions)))
-  checkFormat property' literal = Left (PropertiesError property' (PTypeMismatch TString received))
+  checkFormat :: Property -> Literal -> SemanticM Unit
+  checkFormat property' (LString span value)
+    | elem value formatOptions = pure unit
+    | otherwise = throwDiagnostic span (PropertyError property' (AttributeLiteralMustBe (L.fromFoldable formatOptions)))
+  checkFormat property' literal = throwDiagnostic (literalPos literal) (PropertyError property' (TypeMismatch [TString] received))
     where
-    received = inferLiteral literal
+    received = typeOf literal
 
-  checkType :: Property -> Literal -> Either SemanticError Unit
-  checkType property' (LString value)
-    | elem value typeOptions = Right unit
-    | otherwise = Left (PropertiesError property' (PAttributeLiteralMustBe (L.fromFoldable typeOptions)))
-  checkType property' literal = Left (PropertiesError property' (PTypeMismatch TString received))
+  checkType :: Property -> Literal -> SemanticM Unit
+  checkType property' (LString span value)
+    | elem value typeOptions = pure unit
+    | otherwise = throwDiagnostic span (PropertyError property' (AttributeLiteralMustBe (L.fromFoldable typeOptions)))
+  checkType property' literal = throwDiagnostic (literalPos literal) (PropertyError property' (TypeMismatch [TString] received))
     where
-    received = inferLiteral literal
+    received = typeOf literal
 
-  checkMask :: Property -> Literal -> Either SemanticError Unit
-  checkMask property' array@(LArray _) = checkArrayType TString property' array
-  checkMask _ (LString _) = Right unit
-  checkMask property' literal = Left (PropertiesError property' (PTypesMismatch expected received))
+  checkMask :: Property -> Literal -> SemanticM Unit
+  checkMask property' array@(LArray _ _) = sArrayType TString property' array
+  checkMask _ (LString _ _) = pure unit
+  checkMask property' literal = throwDiagnostic (literalPos literal) (PropertyError property' (TypeMismatch expected  received))
     where
-    received = inferLiteral literal
-    expected = L.fromFoldable [ TString, TArray ]
+    received = typeOf literal
+    expected = [TString, TArray]
 
   typeOptions :: Array String
   typeOptions = [ "text", "email", "password", "search", "time", "month" ]
@@ -411,61 +477,31 @@ checkStringProperty property = mapAttributesLiteral property validations M.empty
   formatOptions :: Array String
   formatOptions = [ "date", "date-time" ]
 
-checkNumberProperty :: Property -> Either SemanticError Unit
-checkNumberProperty property = mapAttributesLiteral property validations M.empty
-  where
-  validations =
-    M.fromFoldable
-      [ "minimum" /\ checkNumber
-      , "maximum" /\ checkNumber
-      , "exclusiveMinimum" /\ checkNumber
-      , "exclusiveMaximum" /\ checkNumber
-      ]
-
-checkFileProperty :: Property -> Either SemanticError Unit
-checkFileProperty property = mapAttributesLiteral property validations M.empty
-  where
-  validations =
-    M.fromFoldable
-      [ "accept" /\ checkArrayType TString
-      ]
-
-checkEnumProperty :: Property -> Either SemanticError Unit
-checkEnumProperty property = mapAttributesLiteral property validations M.empty
-  where
-  validations =
-    M.fromFoldable
-      [ "options" /\ checkArrayType TString
-      ]
-
-mapAttributesLiteral ::
+sAttributes ::
   Property ->
-  M.Map String (Property -> Literal -> Either SemanticError Unit) ->
-  M.Map String (Property -> Expr -> Either SemanticError Unit) ->
-  Either SemanticError Unit
-mapAttributesLiteral property@(Property { attributes }) fl fe = traverse_ go attributes
+  M.Map String (Property -> Literal -> SemanticM Unit) ->
+  M.Map String (Property -> Expr -> SemanticM Unit) ->
+  SemanticM Unit
+sAttributes property@(Property { attributes }) fl fe = traverse_ go attributes
   where
-  go :: Attribute -> Either SemanticError Unit
-  go (Attribute attribute@(AttributeName attributeName) (ALiteral value)) =
+  go (Attribute _ attribute@(AttributeName span attributeName) (ALiteral _ value)) =
     case M.lookup attributeName fl of
       Just f -> f property value
-      Nothing -> Left (PropertiesError property (PUndefinedAttribute attribute))
-  go (Attribute attribute@(AttributeName attributeName) (AExpr value)) =
+      Nothing -> throwDiagnostic span (PropertyError property (UndefinedAttribute attribute))
+  go (Attribute _ attribute@(AttributeName span attributeName) (AExpr _ value)) =
     case M.lookup attributeName fe of
       Just f -> f property value
-      Nothing -> Left (PropertiesError property (PUndefinedAttribute attribute))
+      Nothing -> throwDiagnostic span (PropertyError property (UndefinedAttribute attribute))
 
-checkProgram :: Program -> SemanticM Unit
-checkProgram (Program { collections }) = do
+sProgram :: Program -> SemanticM Unit
+sProgram (Program { collections }) = do
   context <- ask
   _ <- L.foldM go context collections
   pure unit
   where
-  go context collection = local (\_ -> context) (checkCollection collection)
+    go context collection = local (const context) (sCollection collection)
 
-runSemantic :: Program -> Either SemanticError Unit
-runSemantic program =
-  let
-    semantic = runReaderT (checkProgram program) emptyContext
-  in
-    runExcept semantic
+runSemantic :: String -> String -> Program -> Either Diagnostic Unit
+runSemantic filepath source program = do
+  let semantic = runReaderT (sProgram program) (emptyContext filepath source)
+  runExcept semantic

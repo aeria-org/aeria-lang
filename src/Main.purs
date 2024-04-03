@@ -19,9 +19,8 @@ main = do
       case output' of
         Just output'' -> do
           compile schema outputPath output''
-          log "[info] Files generated successfully"
-        Nothing -> log "Usage: aeria-lang <input-file> <output> <commonjs|esnext>"
-    _ -> log "Usage: aeria-lang <input-file> <output> <commonjs|esnext>"
+        Nothing -> log "Usage: aeria-lang <filepath> <output> <commonjs|esnext>"
+    _ -> log "Usage: aeria-lang <filepath> <output> <commonjs|esnext>"
 
 makeOutput :: String -> Maybe Output
 makeOutput "commonjs" = Just CommonJs

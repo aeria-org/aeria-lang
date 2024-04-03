@@ -4,47 +4,39 @@ import Prelude
 
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
-import Data.List as L
+import Data.Int (toNumber)
 
 data Output
   = CommonJs
   | EsNext
 
-data JsIdentifier
-  = JsIdentifier String
-
-derive instance genericJsIdentifier :: Generic JsIdentifier _
-
-instance eqJsIdentifier :: Eq JsIdentifier where
-  eq = genericEq
-
 data JsLiteral
   = JSString String
   | JSNumber Number
   | JSBoolean Boolean
-  | JSArray (L.List JsTree)
-  | JSObject (L.List JsObjectProperty)
+  | JSArray (Array JsTree)
+  | JSObject (Array JsObjectProperty)
 
 derive instance genericJsLiteral :: Generic JsLiteral _
 
 instance eqJsLiteral :: Eq JsLiteral where
   eq = genericEq
 
-data JsObjectProperty = JsObjectProperty JsIdentifier JsTree
+data JsObjectProperty = JsObjectProperty JsTree JsTree
 
 derive instance genericJSObjectProperty :: Generic JsObjectProperty _
 
 instance eqJsObjectProperty :: Eq JsObjectProperty where
   eq = genericEq
 
-data JsImportSpecifier = JsImportSpecifier JsIdentifier
+data JsImportSpecifier = JsImportSpecifier JsTree
 
 derive instance genericJsImportSpecifier :: Generic JsImportSpecifier _
 
 instance eqJsImportSpecifier :: Eq JsImportSpecifier where
   eq = genericEq
 
-data JsSpecifiers = JsSpecifiers (L.List JsImportSpecifier)
+data JsSpecifiers = JsSpecifiers (Array JsImportSpecifier)
 
 derive instance genericJsSpecifiers :: Generic JsSpecifiers _
 
@@ -52,8 +44,8 @@ instance eqJsSpecifiers :: Eq JsSpecifiers where
   eq = genericEq
 
 data JsStatement
-  = JSImportDeclaration JsSpecifiers JsIdentifier
-  | JSVariableDeclaration JsIdentifier JsTree
+  = JSImportDeclaration JsSpecifiers JsTree
+  | JSVariableDeclaration JsTree JsTree
   | JSExportNamedDeclaration JsStatement
 
 derive instance genericJsStatement :: Generic JsStatement _
@@ -61,7 +53,7 @@ derive instance genericJsStatement :: Generic JsStatement _
 instance eqJsStatement :: Eq JsStatement where
   eq x = genericEq x
 
-data JsStatements = JsStatements (L.List JsStatement)
+data JsStatements = JsStatements (Array JsStatement)
 
 derive instance genericJsStatements :: Generic JsStatements _
 
@@ -70,12 +62,63 @@ instance eqJsStatements :: Eq JsStatements where
 
 data JsTree
   = JSLiteral JsLiteral
-  | JSIdentifier JsIdentifier
-  | JSCallExpression JsIdentifier (L.List JsTree)
-  | JSArrowFunctionExpression (L.List JsIdentifier) JsTree
+  | JSIdentifier String
+  | JSCallExpression JsTree (Array JsTree)
+  | JSArrowFunctionExpression (Array JsTree) JsTree
   | JSCode String
 
 derive instance genericJsTree :: Generic JsTree _
 
 instance eqJsTree :: Eq JsTree where
   eq x = genericEq x
+
+objectProperty :: String -> JsTree -> JsObjectProperty
+objectProperty ident tree = JsObjectProperty (identifier ident) tree
+
+object :: Array JsObjectProperty -> JsTree
+object o = JSLiteral (JSObject o)
+
+array :: Array JsTree -> JsTree
+array a = JSLiteral (JSArray a)
+
+string :: String -> JsTree
+string s = JSLiteral (JSString s)
+
+boolean :: Boolean -> JsTree
+boolean b = JSLiteral (JSBoolean b)
+
+float :: Number -> JsTree
+float f = JSLiteral (JSNumber f)
+
+int :: Int -> JsTree
+int i = JSLiteral (JSNumber (toNumber i))
+
+identifier :: String -> JsTree
+identifier s = JSIdentifier s
+
+code :: String -> JsTree
+code = JSCode
+
+arrowFunction :: Array JsTree -> JsTree -> JsTree
+arrowFunction = JSArrowFunctionExpression
+
+call :: JsTree -> Array JsTree -> JsTree
+call = JSCallExpression
+
+import_ ∷ JsSpecifiers → JsTree → JsStatement
+import_ = JSImportDeclaration
+
+variable ∷ JsTree → JsTree → JsStatement
+variable = JSVariableDeclaration
+
+exportNamed ∷ JsStatement → JsStatement
+exportNamed = JSExportNamedDeclaration
+
+specifiers :: Array JsImportSpecifier -> JsSpecifiers
+specifiers = JsSpecifiers
+
+importSpecifier :: JsTree -> JsImportSpecifier
+importSpecifier = JsImportSpecifier
+
+statements ∷ Array JsStatement → JsStatements
+statements = JsStatements

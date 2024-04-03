@@ -6,7 +6,8 @@
   "author": "Gabriel Augusto <gabrielolivrp@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "compile": "yarn spago run -b \"schema.aeria ./.aeria commonjs\""
+    "test": "npx spago test",
+    "compile": "node scripts/compile.js"
   },
   "dependencies": {
     "purescript": "^0.15.13",

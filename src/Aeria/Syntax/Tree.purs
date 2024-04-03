@@ -1,6 +1,8 @@
 module Aeria.Syntax.Tree where
 
 import Prelude
+
+import Aeria.Diagnostic.Position (Span)
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.List (List)
@@ -12,7 +14,7 @@ type Ident
   = String
 
 data CollectionName
-  = CollectionName Ident
+  = CollectionName Span Ident
 
 derive instance genericCollectionName :: Generic CollectionName _
 
@@ -26,7 +28,7 @@ instance ordCollectionName :: Ord CollectionName where
   compare = genericCompare
 
 data PropertyName
-  = PropertyName Ident
+  = PropertyName Span Ident
 
 derive instance genericPropertyName :: Generic PropertyName _
 
@@ -40,7 +42,7 @@ instance ordPropertyName :: Ord PropertyName where
   compare = genericCompare
 
 data AttributeName
-  = AttributeName Ident
+  = AttributeName Span Ident
 
 derive instance genericAttributeName :: Generic AttributeName _
 
@@ -67,12 +69,12 @@ instance eqTyp :: Eq Typ where
   eq = genericEq
 
 data Literal
-  = LInteger Int
-  | LFloat Number
-  | LString String
-  | LBoolean Boolean
-  | LProperty PropertyName
-  | LArray (List Literal)
+  = LInteger Span Int
+  | LFloat Span Number
+  | LString Span String
+  | LBoolean Span Boolean
+  | LProperty Span PropertyName
+  | LArray Span (List Literal)
 
 derive instance genericLiteral :: Generic Literal _
 
@@ -103,15 +105,25 @@ instance showExpr :: Show Expr where
 instance eqExpr :: Eq Expr where
   eq x = genericEq x
 
+data Cond = Cond Span Expr
+
+derive instance genericCond :: Generic Cond _
+
+instance showCond :: Show Cond where
+  show x = genericShow x
+
+instance eqCond :: Eq Cond where
+  eq x = genericEq x
+
 data PropertyType
-  = PEnum
-  | PFloat
-  | PString
-  | PInteger
-  | PBoolean
-  | PRef CollectionName
-  | PArray PropertyType
-  | PObject Properties
+  = PEnum Span
+  | PFloat Span
+  | PString Span
+  | PInteger Span
+  | PBoolean Span
+  | PRef Span CollectionName
+  | PArray Span PropertyType
+  | PObject Span CollectionProperties
 
 derive instance genericPropertyType :: Generic PropertyType _
 
@@ -121,25 +133,25 @@ instance showPropertyType :: Show PropertyType where
 instance eqPropertyType :: Eq PropertyType where
   eq x = genericEq x
 
-type Required
-  = List RequiredProperty
+type CollectionRequired
+  = List Required
 
-data RequiredProperty
-  = RequiredProperty PropertyName (Maybe Expr)
+data Required
+  = Required Span PropertyName (Maybe Cond)
 
-derive instance genericRequiredProperty :: Generic RequiredProperty _
+derive instance genericRequired :: Generic Required _
 
-instance showRequiredProperty :: Show RequiredProperty where
+instance showRequired :: Show Required where
   show = genericShow
 
-instance eqRequiredProperty :: Eq RequiredProperty where
+instance eqRequired :: Eq Required where
   eq = genericEq
 
 type Attributes
   = List Attribute
 
 data Attribute
-  = Attribute AttributeName AttributeValue
+  = Attribute Span AttributeName AttributeValue
 
 derive instance genericAttribute :: Generic Attribute _
 
@@ -150,8 +162,8 @@ instance eqAttribute :: Eq Attribute where
   eq = genericEq
 
 data AttributeValue
-  = ALiteral Literal
-  | AExpr Expr
+  = ALiteral Span Literal
+  | AExpr Span Expr
 
 derive instance genericAttributeValue :: Generic AttributeValue _
 
@@ -161,12 +173,13 @@ instance showAttributeValue :: Show AttributeValue where
 instance eqAttributeValue :: Eq AttributeValue where
   eq = genericEq
 
-type Properties
+type CollectionProperties
   = List Property
 
 data Property
   = Property
-    { name :: PropertyName
+    { span :: Span
+    , name :: PropertyName
     , type_ :: PropertyType
     , attributes :: Attributes
     }
@@ -180,7 +193,7 @@ instance eqProperty :: Eq Property where
   eq = genericEq
 
 data Macro
-  = Macro Ident String
+  = Macro Span String
 
 derive instance genericMacro :: Generic Macro _
 
@@ -190,33 +203,192 @@ instance showMacro :: Show Macro where
 instance eqMacro :: Eq Macro where
   eq = genericEq
 
-type Getters
+type CollectionGetters
   = List Getter
 
 data Getter
   = Getter
-    { name :: PropertyName
+    { span :: Span
+    , name :: PropertyName
     , macro :: Macro
     }
 
-derive instance genericGetters :: Generic Getter _
+derive instance genericGetter :: Generic Getter _
 
-instance showGetters :: Show Getter where
+instance showGetter :: Show Getter where
   show = genericShow
 
-instance eqGetters :: Eq Getter where
+instance eqGetter :: Eq Getter where
   eq = genericEq
 
-type Table
-  = List PropertyName
+type CollectionTable
+  = List TableItem
+
+data TableItem = TableItem Span PropertyName
+
+derive instance genericTableItem :: Generic TableItem _
+
+instance showTableItem :: Show TableItem where
+  show = genericShow
+
+instance eqTableItem :: Eq TableItem where
+  eq = genericEq
+
+type CollectionTableMeta
+  = List TableMetaItem
+
+data TableMetaItem = TableMetaItem Span PropertyName
+
+derive instance genericTableMetaItem :: Generic TableMetaItem _
+
+instance showTableMetaItem :: Show TableMetaItem where
+  show = genericShow
+
+instance eqTableMetaItem :: Eq TableMetaItem where
+  eq = genericEq
+
+
+type CollectionForm
+  = List FormItem
+
+data FormItem = FormItem Span PropertyName
+
+derive instance genericFormItem :: Generic FormItem _
+
+instance showFormItem :: Show FormItem where
+  show = genericShow
+
+instance eqFormItem :: Eq FormItem where
+  eq = genericEq
+
+type CollectionFilters
+  = List FilterItem
+
+data FilterItem = FilterItem Span PropertyName
+
+derive instance genericFilterItem :: Generic FilterItem _
+
+instance showFilterItem :: Show FilterItem where
+  show = genericShow
+
+instance eqFilterItem :: Eq FilterItem where
+  eq = genericEq
+
+type CollectionIndexes
+  = List IndexesItem
+
+data IndexesItem = IndexesItem Span PropertyName
+
+derive instance genericIndexesItem :: Generic IndexesItem _
+
+instance showIndexesItem :: Show IndexesItem where
+  show = genericShow
+
+instance eqIndexesItem :: Eq IndexesItem where
+  eq = genericEq
+
+
+data CollectionSearch = CollectionSearch
+  { placeholder :: Maybe String,
+    indexes :: List PropertyName
+  }
+
+derive instance genericCollectionSearch :: Generic CollectionSearch _
+
+instance showCollectionSearch :: Show CollectionSearch where
+  show = genericShow
+
+instance eqCollectionSearch :: Eq CollectionSearch where
+  eq = genericEq
+
+data CollectionIcon = CollectionIcon String
+
+derive instance genericCollectionIcon :: Generic CollectionIcon _
+
+instance showCollectionIcon :: Show CollectionIcon where
+  show = genericShow
+
+instance eqCollectionIcon :: Eq CollectionIcon where
+  eq = genericEq
+
+type CollectionFiltersPresets = List FiltersPresetsItem
+
+data FiltersPresetsItem = FiltersPresetsItem
+  { span :: Span
+  , name :: PropertyName
+  , label :: Maybe String
+  , badgeFunction :: Maybe String
+  , filters :: Maybe Macro
+  }
+
+derive instance genericFiltersPresetsItem :: Generic FiltersPresetsItem _
+
+instance showFiltersPresetsItem :: Show FiltersPresetsItem where
+  show = genericShow
+
+instance eqFiltersPresetsItem :: Eq FiltersPresetsItem where
+  eq = genericEq
+
+type CollectionLayout = List LayoutItem
+
+data LayoutItem = LayoutItem
+  { span :: Span
+  , name :: PropertyName
+  , verticalSpacing :: Maybe Number
+  , separator :: Maybe String
+  , span_ :: Maybe Number
+  , component :: Maybe LayoutItemComponent
+  , if_ :: Maybe Cond
+  }
+
+derive instance genericLayoutItem :: Generic LayoutItem _
+
+instance showLayoutItem :: Show LayoutItem where
+  show = genericShow
+
+instance eqLayoutItem :: Eq LayoutItem where
+  eq = genericEq
+
+data LayoutItemCondition = LayoutItemCondition PropertyName Cond
+
+derive instance genericLayoutItemCondition :: Generic LayoutItemCondition _
+
+instance showLayoutItemCondition :: Show LayoutItemCondition where
+  show = genericShow
+
+instance eqLayoutItemCondition :: Eq LayoutItemCondition where
+  eq = genericEq
+
+data LayoutItemComponent = LayoutItemComponent
+  { span :: Span
+  , name :: Maybe String
+  , props :: Maybe Macro
+  }
+
+derive instance genericLayoutItemComponent :: Generic LayoutItemComponent _
+
+instance showLayoutItemComponent :: Show LayoutItemComponent where
+  show = genericShow
+
+instance eqLayoutItemComponent :: Eq LayoutItemComponent where
+  eq = genericEq
 
 data Collection
   = Collection
-    { name :: CollectionName
-    , properties :: Properties
-    , required :: Required
-    , getters :: Getters
-    , table :: Table
+    { span :: Span
+    , icon :: Maybe CollectionIcon
+    , name :: CollectionName
+    , properties :: CollectionProperties
+    , required :: CollectionRequired
+    , getters :: CollectionGetters
+    , table :: CollectionTable
+    , tableMeta :: CollectionTableMeta
+    , form :: CollectionForm
+    , filters :: CollectionFilters
+    , filtersPresets :: CollectionFiltersPresets
+    , indexes :: CollectionIndexes
+    , layout :: CollectionLayout
+    , search :: Maybe CollectionSearch
     }
 
 derive instance genericCollection :: Generic Collection _

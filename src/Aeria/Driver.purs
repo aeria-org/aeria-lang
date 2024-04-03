@@ -2,17 +2,18 @@ module Aeria.Driver where
 
 import Prelude
 
-import Aeria.Codegen.Javascript (Codegen(..), codegen)
 import Aeria.Codegen.Javascript.Pretty (ppJavascript)
 import Aeria.Codegen.Javascript.Tree (Output(..))
 import Aeria.Codegen.Typescript.Pretty (ppTypescript)
+import Aeria.Codegen (Codegen(..), codegen)
+import Aeria.Diagnostic.Message (ppDiagnostic)
 import Aeria.Semantic (runSemantic)
 import Aeria.Syntax.Parser (runProgram)
 import Data.Either (Either(..))
 import Data.Foldable (for_)
 import Effect (Effect)
 import Effect.Aff as Aff
-import Effect.Class.Console (logShow)
+import Effect.Console (log)
 import Node.Buffer (fromString, toString)
 import Node.Encoding (Encoding(..))
 import Node.FS.Aff (mkdir, writeFile)
@@ -35,16 +36,18 @@ makeExtenssion = case _ of
   EsNext -> ".mjs"
 
 compile :: String -> String -> Output -> Effect Unit
-compile sourcePath outputPath output = do
-  source <- readSource sourcePath
-  let program = runProgram source
+compile filepath outputPath output = do
+  source <- readSource filepath
+  let program = runProgram filepath source
   case program of
-    Right program' -> case runSemantic program' of
-      Right _ -> do
-        for_ (codegen program')
-          ( \(Codegen name jsFile tsFile) -> do
-              writeOutput outputPath (name <> makeExtenssion output) (ppJavascript output jsFile)
-              writeOutput outputPath (name <> ".d.ts") (ppTypescript tsFile)
-          )
-      Left err -> logShow err
-    Left err -> logShow err
+    Right program' ->
+      case runSemantic filepath source program' of
+        Right _ -> do
+          for_ (codegen program')
+            ( \(Codegen name jsFile tsFile) -> do
+                writeOutput outputPath (name <> makeExtenssion output) (ppJavascript output jsFile)
+                writeOutput outputPath (name <> ".d.ts") (ppTypescript tsFile)
+            )
+        Left err -> log (ppDiagnostic err)
+    Left err -> do
+      log $ ppDiagnostic err

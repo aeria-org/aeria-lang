@@ -2,6 +2,7 @@ module Test.Main where
 
 import Prelude
 
+import Aeria.Diagnostic.Message (ppDiagnostic)
 import Aeria.Syntax.Parser (runProgram)
 import Data.Array (filterA, head, nub)
 import Data.Either (Either(..))
@@ -51,18 +52,18 @@ readPrograms path = do
     pure (Program { name: program, schema, golden })) programs
 
 sanitize ∷ String -> String
-sanitize str =  
+sanitize str =
   str
-  # split (Pattern " ") 
+  # split (Pattern " ")
   # joinWith ""
-  # split (Pattern "\n") 
+  # split (Pattern "\n")
   # joinWith ""
 
-test name schema golden = do 
+test name schema golden = do
   it name do
-    let program = runProgram schema
+    let program = runProgram "<stdin>" schema
     case program of
-      Left err -> fail (show err)
+      Left err -> fail (ppDiagnostic err)
       Right program' -> sanitize (show program') `shouldEqual` sanitize golden
 
 main :: Effect Unit
@@ -70,5 +71,5 @@ main = do
   programs <- readPrograms "./test/Suite/Syntax"
   launchAff_ $ runSpec [consoleReporter] do
     describe "Syntax/Parser" do
-      for_ programs (\(Program {name, schema, golden}) ->  
+      for_ programs (\(Program {name, schema, golden}) ->
         test name schema golden)

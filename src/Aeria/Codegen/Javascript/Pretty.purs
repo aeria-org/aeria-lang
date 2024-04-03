@@ -2,7 +2,8 @@ module Aeria.Codegen.Javascript.Pretty where
 
 import Prelude
 
-import Aeria.Codegen.Javascript.Tree (JsIdentifier(..), JsImportSpecifier(..), JsLiteral(..), JsObjectProperty(..), JsSpecifiers(..), JsStatement(..), JsStatements(..), JsTree(..), Output(..))
+import Aeria.Codegen.Javascript.Tree (JsImportSpecifier(..), JsLiteral(..), JsObjectProperty(..), JsSpecifiers(..), JsStatement(..), JsStatements(..), JsTree(..), Output(..))
+import Data.String.Utils (concatWith)
 import Data.List as L
 
 ppJavascript :: Output -> JsStatements -> String
@@ -14,12 +15,12 @@ ppStatement output =
   case _ of
     JSImportDeclaration specifiers ident ->
       case output of
-        EsNext -> "import { " <> ppSpecifiers specifiers <> " } from \"" <> ppIdentifier ident <> "\""
-        CommonJs -> "const {" <> ppSpecifiers specifiers <> " } = require(\"" <> ppIdentifier ident <> "\")"
+        EsNext -> "import { " <> ppSpecifiers specifiers <> " } from \"" <> ppTree ident <> "\""
+        CommonJs -> "const {" <> ppSpecifiers specifiers <> " } = require(\"" <> ppTree ident <> "\")"
     JSVariableDeclaration ident body ->
       case output of
-        EsNext -> "const " <> ppIdentifier ident <> " = " <> ppTree body
-        CommonJs -> ppIdentifier ident <> " = " <> ppTree body
+        EsNext -> "const " <> ppTree ident <> " = " <> ppTree body
+        CommonJs -> ppTree ident <> " = " <> ppTree body
     JSExportNamedDeclaration statement ->
       case output of
         EsNext -> "export " <> ppStatement output statement
@@ -29,9 +30,9 @@ ppTree :: JsTree -> String
 ppTree =
   case _ of
     JSLiteral literal -> ppLiteral literal
-    JSIdentifier ident -> ppIdentifier ident
-    JSCallExpression called params -> ppIdentifier called <> "("<> ppList params ppTree  <>")"
-    JSArrowFunctionExpression argum body -> "("<> ppList argum ppIdentifier <>") => " <> ppTree body
+    JSIdentifier ident -> ident
+    JSCallExpression called params -> ppTree called <> "("<> concatWith params ppTree  <>")"
+    JSArrowFunctionExpression argum body -> "("<> concatWith argum ppTree <>") => " <> ppTree body
     JSCode code -> code
 
 ppLiteral :: JsLiteral -> String
@@ -40,22 +41,13 @@ ppLiteral =
     JSString value -> "\"" <> value <> "\""
     JSNumber value -> show value
     JSBoolean value -> show value
-    JSArray value -> "[" <> ppList value ppTree <> "]"
-    JSObject value -> "{" <> ppList value
-      (\(JsObjectProperty k v) -> ppIdentifier k <> ": " <> ppTree v  ) <> "}"
+    JSArray value -> "[" <> concatWith value ppTree <> "]"
+    JSObject value -> "{" <> concatWith value
+      (\(JsObjectProperty k v) -> ppTree k <> ": " <> ppTree v  ) <> "}"
 
 ppSpecifiers :: JsSpecifiers -> String
-ppSpecifiers (JsSpecifiers specifiers) = ppList specifiers ppImportSpecifier
+ppSpecifiers (JsSpecifiers specifiers) = concatWith specifiers ppImportSpecifier
 
 ppImportSpecifier :: JsImportSpecifier -> String
 ppImportSpecifier (JsImportSpecifier importSpecifier) =
-  ppIdentifier importSpecifier
-
-ppIdentifier :: JsIdentifier -> String
-ppIdentifier (JsIdentifier ident) = ident
-
-ppList :: forall a. L.List a  ->  (a -> String)-> String
-ppList xs f  =
-  xs
-    # map f
-    # L.intercalate ","
+  ppTree importSpecifier
