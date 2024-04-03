@@ -15,20 +15,20 @@
     - [X] `LiteralProperty`
     - [X] `GetterProperty`
   - [ ] description
-    - [ ] `filters`
-    - [ ] `filtersPresets`
-    - [ ] `form`
-    - [ ] `icon`
+    - [x] `filters`
+    - [x `filtersPresets`
+    - [x] `form`
+    - [x] `icon`
     - [ ] `immutable`
-    - [ ] `indexes`
+    - [x] `indexes`
     - [ ] `owned`
     - [X] `table`
-    - [ ] `tableMeta`
+    - [x] `tableMeta`
     - [ ] `timestamps`
     - [X] `required`
     - [ ] `writable`
-    - [ ] `search`
-    - [ ] `layout`
+    - [x] `search`
+    - [x] `layout`
 
 - [ ] `contract`
   - [ ] `payload`
@@ -39,7 +39,7 @@
 - [ ] code generation
   - [x] `node_modules/.aeria-lang/index.js`
   - [x] `node_modules/.aeria-lang/index.d.ts`
-  - [ ] `node_modules/.aeria-lang/package.json`
+  - [x] `node_modules/.aeria-lang/package.json`
 
 - [ ] cli
   - [ ] get configuration from `package.json`
