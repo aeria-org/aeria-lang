@@ -1,47 +1,4 @@
-module Aeria.Semantic
-  ( CollectionContext(..)
-  , Context(..)
-  , SemanticM
-  , collectionHasProperty
-  , emptyContext
-  , extendContext
-  , literalPos
-  , lookupCollection
-  , lookupGetter
-  , lookupProperty
-  , makeDiagnostic
-  , runSemantic
-  , sArrayProperty
-  , sArrayType
-  , sAttributes
-  , sBooleanProperty
-  , sCheckIfPropertiesIsValid
-  , sCollection
-  , sEnumProperty
-  , sExpr
-  , sFileProperty
-  , sFilters
-  , sFiltersPresets
-  , sForm
-  , sGetters
-  , sIndexes
-  , sNumberProperty
-  , sObjectProperty
-  , sProgram
-  , sProperties
-  , sProperty
-  , sRefProperty
-  , sRequired
-  , sSearch
-  , sStringProperty
-  , sTable
-  , sTableMeta
-  , sType
-  , throwDiagnostic
-  , typeOf
-  , typeOfArray
-  )
-  where
+module Aeria.Semantic where
 
 import Prelude
 
