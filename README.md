@@ -16,7 +16,7 @@
     - [X] `GetterProperty`
   - [ ] description
     - [x] `filters`
-    - [x `filtersPresets`
+    - [x] `filtersPresets`
     - [x] `form`
     - [x] `icon`
     - [ ] `immutable`
