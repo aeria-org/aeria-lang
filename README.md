@@ -19,16 +19,17 @@
     - [x] `filtersPresets`
     - [x] `form`
     - [x] `icon`
-    - [ ] `immutable`
+    - [x] `immutable`
     - [x] `indexes`
-    - [ ] `owned`
+    - [x] `owned`
     - [X] `table`
     - [x] `tableMeta`
-    - [ ] `timestamps`
+    - [x] `timestamps`
     - [X] `required`
-    - [ ] `writable`
+    - [x] `writable`
     - [x] `search`
     - [x] `layout`
+    - [ ] `security`
 
 - [ ] `contract`
   - [ ] `payload`
