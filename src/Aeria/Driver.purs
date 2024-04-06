@@ -2,10 +2,10 @@ module Aeria.Driver where
 
 import Prelude
 
+import Aeria.Codegen (Codegen(..), codegen)
 import Aeria.Codegen.Javascript.Pretty (ppJavascript)
 import Aeria.Codegen.Javascript.Tree (Output(..))
 import Aeria.Codegen.Typescript.Pretty (ppTypescript)
-import Aeria.Codegen (Codegen(..), codegen)
 import Aeria.Diagnostic.Message (ppDiagnostic)
 import Aeria.Semantic (runSemantic)
 import Aeria.Syntax.Parser (runProgram)
@@ -18,6 +18,7 @@ import Node.Buffer (fromString, toString)
 import Node.Encoding (Encoding(..))
 import Node.FS.Aff (mkdir, writeFile)
 import Node.FS.Sync (readFile)
+import Node.Process (exit')
 
 writeOutput :: String -> String -> String -> Effect Unit
 writeOutput filePath fileName content = do
@@ -48,6 +49,9 @@ compile filepath outputPath output = do
                 writeOutput outputPath (name <> makeExtenssion output) (ppJavascript output jsFile)
                 writeOutput outputPath (name <> ".d.ts") (ppTypescript tsFile)
             )
-        Left err -> log (ppDiagnostic err)
+        Left err -> do
+          log (ppDiagnostic err)
+          exit' 1
     Left err -> do
-      log $ ppDiagnostic err
+      log (ppDiagnostic err)
+      exit' 1

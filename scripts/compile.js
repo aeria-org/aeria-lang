@@ -1,7 +1,7 @@
 const util = require("node:util");
 const { exec } = require("node:child_process");
 
-const execute = util.promisify(exec);
+const execp = util.promisify(exec);
 
 async function main() {
   try {
@@ -14,13 +14,13 @@ async function main() {
     }
     const [filepath, outputpath, module_] = args;
 
-    console.log("[info] Running spago...");
-    await execute(`npx spago run -b "${filepath} ${outputpath} ${module_}"`);
+    console.log("[info] Compiling schema...");
+    await execp(`npx spago run -b "${filepath} ${outputpath} ${module_}"`);
 
-    console.log("[info] Running package.js...");
-    await execute(`node ./scripts/package.js ${outputpath}`);
+    console.log("[info] Generating package.json...");
+    await execp(`node ./scripts/package.js ${outputpath}`);
   } catch (error) {
-    console.error("[error] ", error);
+    console.log(error);
     process.exit(1);
   }
 }
