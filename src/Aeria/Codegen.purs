@@ -168,9 +168,9 @@ cConditional f key value = case value of
 
 cImmutable :: Maybe CollectionImmutable -> Array Js.JsObjectProperty
 cImmutable Nothing = []
-cImmutable (Just (CollectionImmutableBool bool)) = [Js.objectProperty "imuttable" (Js.boolean bool)]
+cImmutable (Just (CollectionImmutableBool bool)) = [Js.objectProperty "immutable" (Js.boolean bool)]
 cImmutable (Just (CollectionImmutableList immutable)) =
-  cConditional cImmutable' "imuttable" immutable
+  cConditional cImmutable' "immutable" immutable
   where
     cImmutable' immutable' = cPropertiesList (map (\(ImmutableItem _ propertyName) -> propertyName) immutable')
 
