@@ -311,6 +311,26 @@ instance showCollectionIcon :: Show CollectionIcon where
 instance eqCollectionIcon :: Eq CollectionIcon where
   eq = genericEq
 
+data CollectionOwned = CollectionOwned Boolean
+
+derive instance genericCollectionOwned :: Generic CollectionOwned _
+
+instance showCollectionOwned :: Show CollectionOwned where
+  show = genericShow
+
+instance eqCollectionOwned :: Eq CollectionOwned where
+  eq = genericEq
+
+data CollectionTimestamps = CollectionTimestamps Boolean
+
+derive instance genericCollectionTimestamps :: Generic CollectionTimestamps _
+
+instance showCollectionTimestamps :: Show CollectionTimestamps where
+  show = genericShow
+
+instance eqCollectionTimestamps :: Eq CollectionTimestamps where
+  eq = genericEq
+
 type CollectionFiltersPresets = List FiltersPresetsItem
 
 data FiltersPresetsItem = FiltersPresetsItem
@@ -373,9 +393,60 @@ instance showLayoutItemComponent :: Show LayoutItemComponent where
 instance eqLayoutItemComponent :: Eq LayoutItemComponent where
   eq = genericEq
 
+data CollectionImmutable
+  = CollectionImmutableBool Boolean
+  | CollectionImmutableList (List ImmutableItem)
+
+derive instance genericCollectionImmutable :: Generic CollectionImmutable _
+
+instance showCollectionImmutable :: Show CollectionImmutable where
+  show = genericShow
+
+instance eqCollectionImmutable :: Eq CollectionImmutable where
+  eq = genericEq
+
+data ImmutableItem = ImmutableItem Span PropertyName
+
+derive instance genericImmutableItem :: Generic ImmutableItem _
+
+instance showImmutableItem :: Show ImmutableItem where
+  show = genericShow
+
+instance eqImmutableItem :: Eq ImmutableItem where
+  eq = genericEq
+
+type CollectionWritable = List WritableItem
+
+data WritableItem = WritableItem Span PropertyName
+
+derive instance genericWritableItem :: Generic WritableItem _
+
+instance showWritableItem :: Show WritableItem where
+  show = genericShow
+
+instance eqWritableItem :: Eq WritableItem where
+  eq = genericEq
+
+type CollectionFunctions = List FunctionItem
+
+data FunctionItem = FunctionItem Span PropertyName
+
+derive instance genericFunctionItem :: Generic FunctionItem _
+
+instance showFunctionItem :: Show FunctionItem where
+  show = genericShow
+
+instance eqFunctionItem :: Eq FunctionItem where
+  eq = genericEq
+
 data Collection
   = Collection
     { span :: Span
+    , owned :: Maybe CollectionOwned
+    , timestamps :: Maybe CollectionTimestamps
+    , immutable :: Maybe CollectionImmutable
+    , writable :: CollectionWritable
+    , functions :: CollectionFunctions
     , icon :: Maybe CollectionIcon
     , name :: CollectionName
     , properties :: CollectionProperties

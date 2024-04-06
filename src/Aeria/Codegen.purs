@@ -2,10 +2,10 @@ module Aeria.Codegen where
 
 import Prelude
 
-import Aeria.Codegen.Type (codegenType)
 import Aeria.Codegen.Javascript.Tree as Js
+import Aeria.Codegen.Type (codegenType)
 import Aeria.Codegen.Typescript.Tree as Ts
-import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionGetters, CollectionIcon(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionTable, CollectionTableMeta, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), Getter(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), TableItem(..), TableMetaItem(..))
+import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Attributes, Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionTable, CollectionTableMeta, CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), TableItem(..), TableMetaItem(..), WritableItem(..))
 import Control.Lazy (fix)
 import Data.Array (concat, union)
 import Data.List as L
@@ -92,9 +92,14 @@ cCollection ( Collection
   , filters
   , indexes
   , icon
+  , owned
+  , timestamps
   , search
   , filtersPresets
   , layout
+  , writable
+  , functions
+  , immutable
   }
 ) = go
   where
@@ -105,27 +110,42 @@ cCollection ( Collection
     description = concat
       [ baseDescription
       , iconDescription
+      , ownedDescription
+      , timestampsDescription
       , tableDescription
+      , functionsDescription
+      , writableDescription
       , tableMetaDescription
       , requiredDescription
       , filtersDescription
       , formDescription
       , indexesDescription
       , searchDescription
+      , immutableDescription
       , cFiltersPresetsDescription
       , cLayoutDescription
       ]
 
     baseDescription =
       [ Js.objectProperty "$id" (cCollectionName name)
-      , Js.objectProperty "properties" (cProperties properties getters)
+      , Js.objectProperty "properties" (cCollectionProperties properties getters)
       ]
 
     iconDescription = cIcon icon
 
+    ownedDescription = cOwned owned
+
+    timestampsDescription = cTimestamps timestamps
+
     searchDescription = cSearch search
 
+    immutableDescription = cImmutable immutable
+
     tableDescription = cConditional cTable "table" table
+
+    writableDescription = cConditional cWritable "writable" writable
+
+    functionsDescription = cConditional cFunctions "functions" functions
 
     requiredDescription = cConditional cRequired "required" required
 
@@ -141,11 +161,18 @@ cCollection ( Collection
 
     cLayoutDescription = cConditional cLayout "layout" layout
 
+cConditional :: forall a. (L.List a -> Js.JsTree) -> String -> L.List a -> Array Js.JsObjectProperty
+cConditional f key value = case value of
+  L.Nil -> []
+  _ -> [Js.objectProperty key (f value)]
 
-    cConditional :: forall a. (L.List a -> Js.JsTree) -> String -> L.List a -> Array Js.JsObjectProperty
-    cConditional f key value = case value of
-      L.Nil -> []
-      _ -> [Js.objectProperty key (f value)]
+cImmutable :: Maybe CollectionImmutable -> Array Js.JsObjectProperty
+cImmutable Nothing = []
+cImmutable (Just (CollectionImmutableBool bool)) = [Js.objectProperty "imuttable" (Js.boolean bool)]
+cImmutable (Just (CollectionImmutableList immutable)) =
+  cConditional cImmutable' "imuttable" immutable
+  where
+    cImmutable' immutable' = cPropertiesList (map (\(ImmutableItem _ propertyName) -> propertyName) immutable')
 
 cLayout :: CollectionLayout -> Js.JsTree
 cLayout layout = Js.object $ L.toUnfoldable $ map go layout
@@ -169,6 +196,14 @@ cLayout layout = Js.object $ L.toUnfoldable $ map go layout
 cIcon :: Maybe CollectionIcon -> Array Js.JsObjectProperty
 cIcon Nothing = []
 cIcon (Just (CollectionIcon icon)) = [Js.objectProperty "icon" (Js.string icon)]
+
+cOwned :: Maybe CollectionOwned -> Array Js.JsObjectProperty
+cOwned Nothing = []
+cOwned (Just (CollectionOwned bool)) = [Js.objectProperty "owned" (Js.boolean bool)]
+
+cTimestamps :: Maybe CollectionTimestamps -> Array Js.JsObjectProperty
+cTimestamps Nothing = []
+cTimestamps (Just (CollectionTimestamps timestamps)) = [Js.objectProperty "timestamps" (Js.boolean timestamps)]
 
 cSearch :: Maybe CollectionSearch -> Array Js.JsObjectProperty
 cSearch Nothing = []
@@ -196,6 +231,13 @@ cFiltersPresets filtersPresets = Js.object $ L.toUnfoldable $ map go filtersPres
           , cMaybe (\(Macro _ code') -> [Js.objectProperty "filters" (Js.code code')]) filters []
           ]
       )
+
+cWritable :: CollectionWritable -> Js.JsTree
+cWritable writable = cPropertiesList (map (\(WritableItem _ propertyName) -> propertyName) writable)
+
+cFunctions :: CollectionFunctions -> Js.JsTree
+cFunctions writable = cPropertiesList (map (\(FunctionItem _ propertyName) -> propertyName) writable)
+
 cTable :: CollectionTable -> Js.JsTree
 cTable table = cPropertiesList (map (\(TableItem _ propertyName) -> propertyName) table)
 
@@ -210,14 +252,6 @@ cFilters filters = cPropertiesList (map (\(FilterItem _ propertyName) -> propert
 
 cIndexes :: CollectionIndexes -> Js.JsTree
 cIndexes indexes = cPropertiesList (map (\(IndexesItem _ propertyName) -> propertyName) indexes)
-
-cGetters :: CollectionGetters -> Array Js.JsObjectProperty
-cGetters getters = L.toUnfoldable $ map go getters
-  where
-  go (Getter { name: (PropertyName _ propertyName), macro: (Macro _ code) }) = Js.objectProperty propertyName value
-    where
-    value = Js.object
-      [Js.objectProperty "getter" (Js.arrowFunction [Js.identifier "doc"] (Js.code code))]
 
 cRequired :: CollectionRequired -> Js.JsTree
 cRequired required =
@@ -271,61 +305,75 @@ cExpr (ELte e1 e2) = cBinaryExpr "lte" (cExpr e1) (cExpr e2)
 cExpr (EGte e1 e2) = cBinaryExpr "gte" (cExpr e1) (cExpr e2)
 cExpr (EEq e1 e2) = cBinaryExpr "eq" (cExpr e1) (cExpr e2)
 
-cProperties :: CollectionProperties -> CollectionGetters -> Js.JsTree
-cProperties properties getters = Js.object (union properties' getters')
+cCollectionProperties :: CollectionProperties -> CollectionGetters -> Js.JsTree
+cCollectionProperties properties getters = Js.object $ union (cProperties properties) (cGetters getters)
   where
-  cProperty :: Property -> Js.JsObjectProperty
-  cProperty property@( Property
-    { name: (PropertyName _ propertyName)
-    }
-  ) = Js.objectProperty propertyName (Js.object $ go property)
+    cGetters :: CollectionGetters -> Array Js.JsObjectProperty
+    cGetters getters' = L.toUnfoldable $ map go getters'
+      where
+        go :: Getter -> Js.JsObjectProperty
+        go (Getter { name: (PropertyName _ propertyName), macro}) =
+          Js.objectProperty propertyName (cGetter macro)
 
-  properties' = L.toUnfoldable $ map cProperty properties
+        cGetter :: Macro -> Js.JsTree
+        cGetter (Macro _ code) = Js.object
+          [ Js.objectProperty "getter" (Js.arrowFunction [Js.identifier "doc"] (Js.code code))
+          ]
 
-  getters' = cGetters getters
+    cProperties :: CollectionProperties -> Array Js.JsObjectProperty
+    cProperties properties' = L.toUnfoldable $ map go properties'
+      where
+        go :: Property -> Js.JsObjectProperty
+        go property@(Property { name: (PropertyName _ propertyName)})
+          = Js.objectProperty propertyName (cProperty property)
 
-  cAttributes attributes =
-    L.toUnfoldable $ map
-      ( \(Attribute _ (AttributeName _ attributeName) value) ->
-        case value of
-          ALiteral _ value' -> Js.objectProperty attributeName (cLiteral value')
-          AExpr _ expr -> Js.objectProperty attributeName (cExpr expr)
-      ) attributes
+        cProperty :: Property -> Js.JsTree
+        cProperty property@(Property { type_, attributes }) =
+          Js.object $ concat [props, attrs]
+          where
+            attrs = cAttributes attributes
+            props =
+              case type_ of
+                PFloat _ ->  [cType "number"]
+                PInteger _ ->  [cType "integer"]
+                PString _ ->  [cType "string"]
+                PBoolean _ ->  [cType "boolean"]
+                PEnum _ ->
+                  [ Js.objectProperty "enum" (cEnumType property)
+                  ]
+                PArray _ type_' ->
+                  [ cType "array"
+                  , cArrayType property type_'
+                  ]
+                PObject _  properties'' ->
+                  [ cType "object"
+                  , Js.objectProperty "properties" (Js.object $ cProperties properties'')
+                  ]
+                PRef _ collectionName ->
+                  [ Js.objectProperty "$ref" (cCollectionName collectionName)
+                  ]
 
-  go :: Property -> Array Js.JsObjectProperty
-  go property@(Property { span, name, type_, attributes }) =
-    let
-      attributes' = cAttributes attributes
-    in
-      case type_ of
-        PEnum _ -> cEnum property
-        PFloat _ -> union attributes' [Js.objectProperty "type" (Js.string "number") ]
-        PInteger _ -> union attributes' [Js.objectProperty "type" (Js.string "integer") ]
-        PString _ -> union attributes' [Js.objectProperty "type" (Js.string "string") ]
-        PBoolean _ -> union attributes' [Js.objectProperty "type" (Js.string "boolean") ]
-        PArray _ type_' -> union attributes' $ cArray property type_'
-        PObject _ properties'' ->
-          union attributes'
-            [ Js.objectProperty "type" (Js.string "object")
-            , Js.objectProperty "properties" (cProperties properties'' L.Nil)
-            ]
-        PRef _ collectionName ->
-          union attributes'
-            [ Js.objectProperty "$ref" (cCollectionName collectionName)
-            ]
+            cType type_' = Js.objectProperty "type" (Js.string type_')
 
-  cArray (Property { span, name, attributes }) type_' =
-      [ Js.objectProperty "items" (Js.object (go (Property { span, name, type_: type_', attributes })))
-      , Js.objectProperty "type" (Js.string "array")
-      ]
+        cAttributes :: Attributes -> Array Js.JsObjectProperty
+        cAttributes attributes = L.toUnfoldable $ map go' attributes
+          where
+            go' (Attribute _ (AttributeName _ attributeName) attributeValue) =
+              case attributeValue of
+                ALiteral _ literal -> Js.objectProperty attributeName (cLiteral literal)
+                AExpr _ expr -> Js.objectProperty attributeName (cExpr expr)
 
-  cEnum (Property {attributes}) =
-    case options of
-      Just (Attribute _ (AttributeName _ _) (ALiteral _ (LArray _ value))) ->
-        [Js.objectProperty "enum" (Js.array (L.toUnfoldable $ map cLiteral value))]
-      _ -> [Js.objectProperty "enum" (Js.array []) ]
-    where
-    options = L.find (\(Attribute _ (AttributeName _ x) _) -> x == "options") attributes
+        cEnumType (Property { attributes }) = Js.array cOptions
+          where
+          cOptions =
+            case L.find (\(Attribute _ (AttributeName _ x) _) -> x == "options") attributes of
+              Just (Attribute _ _ (ALiteral _ (LArray _ value))) ->
+                L.toUnfoldable $ map cLiteral value
+              _ -> []
+
+        cArrayType (Property { span, name, attributes }) type_' =
+          Js.objectProperty "items" $ Js.object
+            [go (Property { span, name, type_: type_', attributes })]
 
 cLiteral :: Literal -> Js.JsTree
 cLiteral =

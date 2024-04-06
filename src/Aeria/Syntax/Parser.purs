@@ -7,7 +7,7 @@ import Prelude hiding (between)
 import Aeria.Diagnostic.Message (Diagnostic(..), DiagnosticInfo(..))
 import Aeria.Diagnostic.Position (SourcePos(..), Span(..))
 import Aeria.Syntax.Error (SyntaxError(..))
-import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionGetters, CollectionIcon(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionTable, CollectionTableMeta, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), Getter(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), TableItem(..), TableMetaItem(..))
+import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionTable, CollectionTableMeta, CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), TableItem(..), TableMetaItem(..), WritableItem(..))
 import Control.Lazy (fix)
 import Data.Array as A
 import Data.Either (Either(..))
@@ -170,6 +170,15 @@ pPropertyType p =
     end <- sourcePos
     pure (PObject (Span begin end) properties)
 
+pBoolean :: ParserM Boolean
+pBoolean = pTrue <|> pFalse
+  where
+    pTrue :: ParserM Boolean
+    pTrue = lang.reserved "true" $> true
+
+    pFalse :: ParserM Boolean
+    pFalse = lang.reserved "false" $> false
+
 pLiteral :: ParserM Literal
 pLiteral =
   fix \self ->
@@ -177,7 +186,7 @@ pLiteral =
       [ try pFloat
       , try pInteger
       , try pString
-      , try pBoolean
+      , try pBoolean'
       , try pProp
       , pArray self
       ]
@@ -203,18 +212,12 @@ pLiteral =
     end <- sourcePos
     pure $ LString (Span begin end) stringLiteral
 
-  pBoolean :: ParserM Literal
-  pBoolean = do
+  pBoolean' :: ParserM Literal
+  pBoolean' = do
     begin <- sourcePos
-    booleanLiteral <- pTrue <|> pFalse
+    booleanLiteral <- pBoolean
     end <- sourcePos
     pure $ LBoolean (Span begin end) booleanLiteral
-    where
-    pTrue :: ParserM Boolean
-    pTrue = lang.reserved "true" $> true
-
-    pFalse :: ParserM Boolean
-    pFalse = lang.reserved "false" $> false
 
   pProp :: ParserM Literal
   pProp = do
@@ -269,8 +272,7 @@ pExpr = fix \self -> buildExprParser table (expr self)
 pAttribute :: ParserM Attribute
 pAttribute = do
   begin <- sourcePos
-  _ <- string "@"
-  attributeName <- pAttributeName
+  attributeName <- string "@" *> pAttributeName
   attributeValue <- case attributeName of
     AttributeName _ "constraints" -> do
       beginAttributeValue <- sourcePos
@@ -298,8 +300,7 @@ pRequired = go
 
 pCond :: ParserM Cond
 pCond = do
-  _ <- string "@"
-  lang.reserved "cond"
+  lang.reserved "@cond"
   begin <- sourcePos
   expr <- lang.parens pExpr
   end <- sourcePos
@@ -357,6 +358,12 @@ pCollectionTable = pListProperty TableItem
 pCollectionTableMeta :: ParserM CollectionTableMeta
 pCollectionTableMeta = pListProperty TableMetaItem
 
+pCollectionFunctions :: ParserM CollectionFunctions
+pCollectionFunctions = pListProperty FunctionItem
+
+pCollectionWritable :: ParserM CollectionWritable
+pCollectionWritable = pListProperty WritableItem
+
 pCollectionForm :: ParserM CollectionForm
 pCollectionForm = pListProperty FormItem
 
@@ -372,6 +379,16 @@ pCollectionGetters = lang.braces $ many (try pGetter)
 pCollectionIcon :: ParserM CollectionIcon
 pCollectionIcon = CollectionIcon <$> lang.stringLiteral
 
+pCollectionOwned :: ParserM CollectionOwned
+pCollectionOwned = CollectionOwned <$> pBoolean
+
+pCollectionTimestamps :: ParserM CollectionTimestamps
+pCollectionTimestamps = CollectionTimestamps <$> pBoolean
+
+pCollectionImmutable :: ParserM CollectionImmutable
+pCollectionImmutable =
+  try (CollectionImmutableBool <$> pBoolean)
+  <|> try (CollectionImmutableList <$> pListProperty ImmutableItem)
 
 pCollectionSearch :: ParserM CollectionSearch
 pCollectionSearch = lang.braces $ do
@@ -520,13 +537,23 @@ pCollection = go
     let search = unsafeCoerce $ getParserValue "search" results
     let filtersPresets = unsafeCoerce $ getParserValue "filtersPresets" results
     let layout = unsafeCoerce $ getParserValue "layout" results
+    let owned = unsafeCoerce $ getParserValue "owned" results
+    let timestamps = unsafeCoerce $ getParserValue "timestamps" results
+    let functions = unsafeCoerce $ getParserValue "functions" results
+    let writable = unsafeCoerce $ getParserValue "writable" results
+    let immutable = unsafeCoerce $ getParserValue "immutable" results
     end <- sourcePos
     pure
       $ Collection
           { span: (Span begin end)
           , name
-          , icon: icon
-          , search: search
+          , icon
+          , owned
+          , timestamps
+          , search
+          , immutable
+          , functions: fromMaybe L.Nil functions
+          , writable: fromMaybe L.Nil writable
           , properties: fromMaybe L.Nil properties
           , required: fromMaybe L.Nil required
           , table: fromMaybe L.Nil table
@@ -540,18 +567,23 @@ pCollection = go
           }
 
   allParsers =
-    [ "tableMeta" /\ (unsafeCoerce pCollectionTableMeta')
-    , "properties" /\ (unsafeCoerce pCollectionProperties')
-    , "required" /\ (unsafeCoerce pCollectionRequired')
-    , "filters" /\ (unsafeCoerce pCollectionFilters')
-    , "getters" /\ (unsafeCoerce pCollectionGetters')
-    , "indexes" /\ (unsafeCoerce pCollectionIndexes')
-    , "table" /\ (unsafeCoerce pCollectionTable')
-    , "form" /\ (unsafeCoerce pCollectionForm')
-    , "icon" /\ (unsafeCoerce pCollectionIcon')
-    , "search" /\ (unsafeCoerce pCollectionSearch')
-    , "filtersPresets" /\ (unsafeCoerce pCollectionFiltersPresets')
-    , "layout" /\ (unsafeCoerce pCollectionLayout')
+    [ "tableMeta"       /\ (unsafeCoerce pCollectionTableMeta')
+    , "properties"      /\ (unsafeCoerce pCollectionProperties')
+    , "required"        /\ (unsafeCoerce pCollectionRequired')
+    , "filters"         /\ (unsafeCoerce pCollectionFilters')
+    , "getters"         /\ (unsafeCoerce pCollectionGetters')
+    , "indexes"         /\ (unsafeCoerce pCollectionIndexes')
+    , "table"           /\ (unsafeCoerce pCollectionTable')
+    , "form"            /\ (unsafeCoerce pCollectionForm')
+    , "icon"            /\ (unsafeCoerce pCollectionIcon')
+    , "search"          /\ (unsafeCoerce pCollectionSearch')
+    , "filtersPresets"  /\ (unsafeCoerce pCollectionFiltersPresets')
+    , "layout"          /\ (unsafeCoerce pCollectionLayout')
+    , "owned"           /\ (unsafeCoerce pCollectionOwned')
+    , "timestamps"      /\ (unsafeCoerce pCollectionTimestamps')
+    , "functions"       /\ (unsafeCoerce pCollectionFunctions')
+    , "writable"        /\ (unsafeCoerce pCollectionWritable')
+    , "immutable"       /\ (unsafeCoerce pCollectionImmutable')
     ]
 
   pCollectionTableMeta'       = pPropertyParser "tableMeta" pCollectionTableMeta
@@ -566,6 +598,11 @@ pCollection = go
   pCollectionSearch'          = pPropertyParser "search" pCollectionSearch
   pCollectionFiltersPresets'  = pPropertyParser "filtersPresets" pCollectionFiltersPresets
   pCollectionLayout'          = pPropertyParser "layout" pCollectionLayout
+  pCollectionOwned'           = pPropertyParser "owned" pCollectionOwned
+  pCollectionTimestamps'      = pPropertyParser "timestamps" pCollectionTimestamps
+  pCollectionFunctions'       = pPropertyParser "functions" pCollectionFunctions
+  pCollectionWritable'        = pPropertyParser "writable" pCollectionWritable
+  pCollectionImmutable'       = pPropertyParser "immutable" pCollectionImmutable
 
 getParserValue :: forall a. String -> Array (String /\ a) -> Maybe a
 getParserValue key results =
