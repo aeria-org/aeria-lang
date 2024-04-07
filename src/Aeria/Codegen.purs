@@ -103,9 +103,14 @@ cCollection ( Collection
   }
 ) = go
   where
-  go = Js.object [Js.objectProperty "description" cDescription]
+  go = Js.object $ concat
+    [ cDescription
+    , cFunctions'
+    ]
 
-  cDescription = Js.object (description)
+  cFunctions' = cConditional cFunctions "functions" functions
+
+  cDescription = [Js.objectProperty "description" (Js.object description)]
     where
     description = concat
       [ baseDescription
@@ -113,7 +118,6 @@ cCollection ( Collection
       , ownedDescription
       , timestampsDescription
       , tableDescription
-      , functionsDescription
       , writableDescription
       , tableMetaDescription
       , requiredDescription
@@ -145,7 +149,6 @@ cCollection ( Collection
 
     writableDescription = cConditional cWritable "writable" writable
 
-    functionsDescription = cConditional cFunctions "functions" functions
 
     requiredDescription = cConditional cRequired "required" required
 

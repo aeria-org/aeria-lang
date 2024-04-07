@@ -1,56 +1,11 @@
-module Aeria.Semantic
-  ( CollectionContext(..)
-  , Context(..)
-  , SemanticM
-  , collectionHasProperty
-  , emptyContext
-  , extendContext
-  , literalPos
-  , lookupCollection
-  , lookupGetter
-  , lookupProperty
-  , makeDiagnostic
-  , runSemantic
-  , sArrayProperty
-  , sArrayType
-  , sAttributes
-  , sBooleanProperty
-  , sCollection
-  , sEnumProperty
-  , sExpr
-  , sFileProperty
-  , sFilters
-  , sFiltersPresets
-  , sForm
-  , sFunctions
-  , sGetters
-  , sIndexes
-  , sLayout
-  , sNumberProperty
-  , sObjectProperty
-  , sProgram
-  , sProperties
-  , sProperty
-  , sRefProperty
-  , sRequired
-  , sSearch
-  , sStringProperty
-  , sTable
-  , sTableMeta
-  , sType
-  , sWritable
-  , throwDiagnostic
-  , typeOf
-  , typeOfArray
-  )
-  where
+module Aeria.Semantic where
 
 import Prelude
 
 import Aeria.Diagnostic.Message (Diagnostic(..), DiagnosticInfo(..))
 import Aeria.Diagnostic.Position (Span)
 import Aeria.Semantic.Error (ExprError(..), PropertyError(..), SemanticError(..))
-import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionTable, CollectionTableMeta, CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), TableItem(..), TableMetaItem(..), Typ(..), WritableItem(..))
+import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionGetters, CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionTable, CollectionTableMeta, CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), TableItem(..), TableMetaItem(..), Typ(..), WritableItem(..))
 import Control.Monad.Except (Except, runExcept, throwError)
 import Control.Monad.Reader (ReaderT, ask, local, runReaderT)
 import Data.Array (elem)
@@ -196,7 +151,7 @@ sCollection (Collection
   , search
   , filtersPresets
   , layout
-  , functions
+  -- , functions
   , writable
   , immutable
   }) =
@@ -212,7 +167,7 @@ sCollection (Collection
     sLayout name layout
     sFiltersPresets name filtersPresets
     sWritable name writable
-    sFunctions name functions
+    -- sFunctions name functions
     sImmutable name immutable
     case search of
       Just search' -> sSearch name search'
@@ -280,10 +235,10 @@ sWritable collectionName collectionWritable =
   let properties = map (\(WritableItem _ propertyName) -> propertyName) collectionWritable
     in sCheckIfPropertiesIsValid collectionName properties
 
-sFunctions :: CollectionName -> CollectionFunctions -> SemanticM Unit
-sFunctions collectionName collectionFunctions =
-  let properties = map (\(FunctionItem _ propertyName) -> propertyName) collectionFunctions
-    in sCheckIfPropertiesIsValid collectionName properties
+-- sFunctions :: CollectionName -> CollectionFunctions -> SemanticM Unit
+-- sFunctions collectionName collectionFunctions =
+--   let properties = map (\(FunctionItem _ propertyName) -> propertyName) collectionFunctions
+--     in sCheckIfPropertiesIsValid collectionName properties
 
 sImmutable :: CollectionName -> Maybe CollectionImmutable -> SemanticM Unit
 sImmutable _ Nothing = pure unit
