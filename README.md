@@ -29,7 +29,8 @@
     - [x] `writable`
     - [x] `search`
     - [x] `layout`
-    - [ ] `security`
+  - [x] functions
+  - [ ] security
 
 - [ ] `contract`
   - [ ] `payload`
