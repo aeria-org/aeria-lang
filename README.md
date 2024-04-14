@@ -30,7 +30,7 @@
     - [x] `search`
     - [x] `layout`
   - [x] functions
-  - [ ] security
+  - [x] security
 
 - [ ] `contract`
   - [ ] `payload`
