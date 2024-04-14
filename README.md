@@ -15,20 +15,28 @@
     - [X] `LiteralProperty`
     - [X] `GetterProperty`
   - [ ] description
+    - [ ] `actions`
+    - [ ] `defaults`
     - [x] `filters`
     - [x] `filtersPresets`
     - [x] `form`
+    - [ ] `formLayout`
     - [x] `icon`
     - [x] `immutable`
     - [x] `indexes`
+    - [ ] `individualActions`
     - [x] `owned`
     - [X] `table`
     - [x] `tableMeta`
+    - [ ] `tableLayout`
     - [x] `timestamps`
     - [X] `required`
     - [x] `writable`
     - [x] `search`
     - [x] `layout`
+    - [ ] `preferred`
+    - [ ] `presets`
+    - [ ] `temporary`
   - [x] functions
   - [x] security
 
