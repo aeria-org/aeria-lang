@@ -5,7 +5,7 @@ import Prelude
 import Aeria.Diagnostic.Message (Diagnostic(..), DiagnosticInfo(..))
 import Aeria.Diagnostic.Position (Span)
 import Aeria.Semantic.Error (ExprError(..), PropertyError(..), SemanticError(..))
-import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionGetters, CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionTable, CollectionTableMeta, CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), TableItem(..), TableMetaItem(..), Typ(..), WritableItem(..))
+import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableMeta, CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableMetaItem(..), Typ(..), WritableItem(..))
 import Control.Monad.Except (Except, runExcept, throwError)
 import Control.Monad.Reader (ReaderT, ask, local, runReaderT)
 import Data.Array (elem)
@@ -151,7 +151,8 @@ sCollection (Collection
   , search
   , filtersPresets
   , layout
-  -- , functions
+  , security
+  , functions
   , writable
   , immutable
   }) =
@@ -167,6 +168,7 @@ sCollection (Collection
     sLayout name layout
     sFiltersPresets name filtersPresets
     sWritable name writable
+    sSecurity functions security
     -- sFunctions name functions
     sImmutable name immutable
     case search of
@@ -190,6 +192,35 @@ sLayout _ = traverse_ go
 
 sSearch :: CollectionName -> CollectionSearch -> SemanticM Unit
 sSearch collectionName (CollectionSearch { indexes }) = sCheckIfPropertiesIsValid collectionName indexes
+
+sSecurity :: CollectionFunctions -> CollectionSecurity -> SemanticM Unit
+sSecurity functions = traverse_ go
+  where
+  go (SecurityItem {span, functionName, rateLimiting, logging}) = do
+    sFunctionName span functionName
+    sRateLimiting rateLimiting
+    sLogging logging
+    pure unit
+
+  sFunctionName span functionName@(PropertyName _ name) =
+    case L.find (\(FunctionItem _ (PropertyName _ function)) -> function == name) functions of
+      Just _ -> pure unit
+      Nothing -> throwDiagnostic span (UndefinedFunction functionName)
+
+  sRateLimiting (Just (SecurityRateLimiting {span, strategy})) =
+    case strategy of
+      Just strategy' ->
+        if strategy' `elem` ["tenant", "ip"]
+        then pure unit
+        else throwDiagnostic span (UndefinedStrategy strategy')
+      Nothing -> pure unit
+  sRateLimiting _ = pure unit
+
+  sLogging (Just (SecurityLogging { span, strategy: (Just strategy) })) =
+    if strategy `elem` ["tenant", "ip"]
+      then pure unit
+      else throwDiagnostic span (UndefinedStrategy strategy)
+  sLogging _ = pure unit
 
 sRequired :: CollectionName -> CollectionRequired -> SemanticM Unit
 sRequired collectionName = traverse_ go

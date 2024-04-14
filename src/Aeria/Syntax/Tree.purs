@@ -439,16 +439,61 @@ instance showFunctionItem :: Show FunctionItem where
 instance eqFunctionItem :: Eq FunctionItem where
   eq = genericEq
 
+type CollectionSecurity = List SecurityItem
+
+data SecurityItem = SecurityItem
+  { span :: Span
+  , functionName :: PropertyName
+  , rateLimiting :: Maybe SecurityRateLimiting
+  , logging :: Maybe SecurityLogging
+  }
+
+derive instance genericSecurityItem :: Generic SecurityItem _
+
+instance showSecurityItem :: Show SecurityItem where
+  show = genericShow
+
+instance eqSecurityItem :: Eq SecurityItem where
+  eq = genericEq
+
+data SecurityRateLimiting = SecurityRateLimiting
+  { span :: Span
+  , strategy :: Maybe String
+  , scale :: Maybe Int
+  }
+
+derive instance genericSecurityRateLimiting :: Generic SecurityRateLimiting _
+
+instance showSecurityRateLimiting :: Show SecurityRateLimiting where
+  show = genericShow
+
+instance eqSecurityRateLimiting :: Eq SecurityRateLimiting where
+  eq = genericEq
+
+data SecurityLogging = SecurityLogging
+  { span :: Span
+  , strategy :: Maybe String
+  }
+
+derive instance genericSecurityLogging :: Generic SecurityLogging _
+
+instance showSecurityLogging :: Show SecurityLogging where
+  show = genericShow
+
+instance eqSecurityLogging :: Eq SecurityLogging where
+  eq = genericEq
+
 data Collection
   = Collection
     { span :: Span
+    , name :: CollectionName
+    , icon :: Maybe CollectionIcon
     , owned :: Maybe CollectionOwned
     , timestamps :: Maybe CollectionTimestamps
     , immutable :: Maybe CollectionImmutable
     , writable :: CollectionWritable
     , functions :: CollectionFunctions
-    , icon :: Maybe CollectionIcon
-    , name :: CollectionName
+    , security :: CollectionSecurity
     , properties :: CollectionProperties
     , required :: CollectionRequired
     , getters :: CollectionGetters

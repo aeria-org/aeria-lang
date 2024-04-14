@@ -44,6 +44,8 @@ data SemanticError
   | PropertyError Property PropertyError
   | FiltersPresetsError FiltersPresetsItem
   | LayoutComponentError LayoutItem
+  | UndefinedFunction PropertyName
+  | UndefinedStrategy String
 
 derive instance genericSemanticError :: Generic SemanticError _
 
@@ -54,6 +56,8 @@ instance showSemanticError :: Show SemanticError where
   show (PropertyError (Property { name }) propErr) = "Error in property \"" <> ppPropertyName name <> "\": " <> show propErr
   show (FiltersPresetsError _) = "\"Filters\" is required"
   show (LayoutComponentError _) = "\"Component name\" is required"
+  show (UndefinedFunction (PropertyName _ name)) = "Undefined function: \"" <> name <> "\""
+  show (UndefinedStrategy strategy) = "Undefined strategy: \"" <> strategy <> "\""
 
 ppPropertyName :: PropertyName -> String
 ppPropertyName (PropertyName _  propertyName) = propertyName

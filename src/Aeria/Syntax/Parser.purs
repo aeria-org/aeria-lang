@@ -7,7 +7,7 @@ import Prelude hiding (between)
 import Aeria.Diagnostic.Message (Diagnostic(..), DiagnosticInfo(..))
 import Aeria.Diagnostic.Position (SourcePos(..), Span(..))
 import Aeria.Syntax.Error (SyntaxError(..))
-import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionTable, CollectionTableMeta, CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), TableItem(..), TableMetaItem(..), WritableItem(..))
+import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableMeta, CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableMetaItem(..), WritableItem(..))
 import Control.Lazy (fix)
 import Data.Array as A
 import Data.Either (Either(..))
@@ -390,6 +390,54 @@ pCollectionImmutable =
   try (CollectionImmutableBool <$> pBoolean)
   <|> try (CollectionImmutableList <$> pListProperty ImmutableItem)
 
+pCollectionSecurity :: ParserM CollectionSecurity
+pCollectionSecurity = lang.braces $ many (try go)
+  where
+  go = do
+    name <- pPropertyName
+    lang.braces (pSecutiryItem name)
+
+  pSecutiryItem name = do
+    begin <- sourcePos
+    results <- runParsers
+      [ "rateLimiting" /\ (unsafeCoerce pRateLimiting')
+      , "logging" /\ (unsafeCoerce pLogging')
+      ]
+
+    let rateLimiting = unsafeCoerce $ getParserValue "rateLimiting" results
+    let logging = unsafeCoerce $ getParserValue "logging" results
+
+    end <- sourcePos
+
+    pure $ SecurityItem
+      { span: Span begin end
+      , functionName: name
+      , rateLimiting
+      , logging
+      }
+
+  pRateLimiting = lang.braces $ do
+    begin <- sourcePos
+    results <- runParsers
+      [ "strategy" /\ (unsafeCoerce pStrategy)
+      , "scale" /\ (unsafeCoerce pScale)
+      ]
+    end <- sourcePos
+    let strategy = unsafeCoerce $ getParserValue "strategy" results
+    let scale = unsafeCoerce $ getParserValue "scale" results
+    pure $ SecurityRateLimiting { span: (Span begin end), strategy, scale  }
+
+  pLogging = lang.braces do
+    begin <- sourcePos
+    strategy <- optionMaybe pStrategy
+    end <- sourcePos
+    pure $ SecurityLogging { span: (Span begin end), strategy }
+
+  pRateLimiting' = pPropertyParser "rateLimiting" pRateLimiting
+  pLogging' = pPropertyParser "logging" pLogging
+  pStrategy = pPropertyParser "strategy" lang.stringLiteral
+  pScale = pPropertyParser "scale" lang.integer
+
 pCollectionSearch :: ParserM CollectionSearch
 pCollectionSearch = lang.braces $ do
   results <- runParsers allParsers
@@ -542,6 +590,7 @@ pCollection = go
     let functions = unsafeCoerce $ getParserValue "functions" results
     let writable = unsafeCoerce $ getParserValue "writable" results
     let immutable = unsafeCoerce $ getParserValue "immutable" results
+    let security = unsafeCoerce $ getParserValue "security" results
     end <- sourcePos
     pure
       $ Collection
@@ -552,6 +601,7 @@ pCollection = go
           , timestamps
           , search
           , immutable
+          , security: fromMaybe L.Nil security
           , functions: fromMaybe L.Nil functions
           , writable: fromMaybe L.Nil writable
           , properties: fromMaybe L.Nil properties
@@ -584,6 +634,7 @@ pCollection = go
     , "functions"       /\ (unsafeCoerce pCollectionFunctions')
     , "writable"        /\ (unsafeCoerce pCollectionWritable')
     , "immutable"       /\ (unsafeCoerce pCollectionImmutable')
+    , "security"        /\ (unsafeCoerce pCollectionSecurity')
     ]
 
   pCollectionTableMeta'       = pPropertyParser "tableMeta" pCollectionTableMeta
@@ -603,6 +654,7 @@ pCollection = go
   pCollectionFunctions'       = pPropertyParser "functions" pCollectionFunctions
   pCollectionWritable'        = pPropertyParser "writable" pCollectionWritable
   pCollectionImmutable'       = pPropertyParser "immutable" pCollectionImmutable
+  pCollectionSecurity'        = pPropertyParser "security" pCollectionSecurity
 
 getParserValue :: forall a. String -> Array (String /\ a) -> Maybe a
 getParserValue key results =
@@ -610,7 +662,7 @@ getParserValue key results =
     Just (_ /\ v) -> Just v
     Nothing -> Nothing
 
-runParsers ∷ ∀  a. Array (String /\ (ParserM a)) → ParserM (Array (String /\ a))
+runParsers ∷ forall a. Array (String /\ (ParserM a)) → ParserM (Array (String /\ a))
 runParsers ps = go' [] ps (A.length ps)
   where
   go' results _ 0  = pure results

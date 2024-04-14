@@ -73,7 +73,7 @@ ppMessage span message =
 
 ppPosition :: Span -> String -> String
 ppPosition span filepath =
-  let Span (SourcePos startIndex startLine startColumn) (SourcePos endIndex endLine endColumn) = span
+  let Span (SourcePos _ startLine startColumn) (SourcePos _ endLine endColumn) = span
     in
       A.intercalate ""
         [ "--> "

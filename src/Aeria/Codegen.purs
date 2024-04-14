@@ -5,7 +5,7 @@ import Prelude
 import Aeria.Codegen.Javascript.Tree as Js
 import Aeria.Codegen.Type (codegenType)
 import Aeria.Codegen.Typescript.Tree as Ts
-import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Attributes, Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionTable, CollectionTableMeta, CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), TableItem(..), TableMetaItem(..), WritableItem(..))
+import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Attributes, Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableMeta, CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableMetaItem(..), WritableItem(..))
 import Control.Lazy (fix)
 import Data.Array (concat, union)
 import Data.List as L
@@ -98,6 +98,7 @@ cCollection ( Collection
   , filtersPresets
   , layout
   , writable
+  , security
   , functions
   , immutable
   }
@@ -106,9 +107,11 @@ cCollection ( Collection
   go = Js.object $ concat
     [ cDescription
     , cFunctions'
+    , cSecurity'
     ]
 
   cFunctions' = cConditional cFunctions "functions" functions
+  cSecurity' = cConditional cSecurity "security" security
 
   cDescription = [Js.objectProperty "description" (Js.object description)]
     where
@@ -148,7 +151,6 @@ cCollection ( Collection
     tableDescription = cConditional cTable "table" table
 
     writableDescription = cConditional cWritable "writable" writable
-
 
     requiredDescription = cConditional cRequired "required" required
 
@@ -239,7 +241,37 @@ cWritable :: CollectionWritable -> Js.JsTree
 cWritable writable = cPropertiesList (map (\(WritableItem _ propertyName) -> propertyName) writable)
 
 cFunctions :: CollectionFunctions -> Js.JsTree
-cFunctions writable = cPropertiesList (map (\(FunctionItem _ propertyName) -> propertyName) writable)
+cFunctions functions = cPropertiesList (map (\(FunctionItem _ propertyName) -> propertyName) functions)
+
+cSecurity :: CollectionSecurity -> Js.JsTree
+cSecurity secutiry = Js.object $ L.toUnfoldable $ map go secutiry
+  where
+    go (SecurityItem
+      { functionName: (PropertyName _ name)
+      , rateLimiting
+      , logging
+      }) =
+      Js.objectProperty name (
+        Js.object $ concat
+          [ cSecurityRateLimiting rateLimiting
+          , cSecurityLogging logging
+          ]
+      )
+
+    cSecurityRateLimiting Nothing = []
+    cSecurityRateLimiting (Just (SecurityRateLimiting {strategy, scale})) =
+        [Js.objectProperty "rateLimiting"
+            $ Js.object $ concat
+              [ cMaybe (\strategy' -> [Js.objectProperty "strategy" (Js.string strategy')]) strategy []
+              , cMaybe (\scale' -> [Js.objectProperty "scale" (Js.int scale')]) scale []
+              ]]
+
+    cSecurityLogging Nothing = []
+    cSecurityLogging (Just (SecurityLogging { strategy })) =
+      [Js.objectProperty "logging"
+        $ Js.object $ concat
+          [ cMaybe (\strategy' -> [Js.objectProperty "strategy" (Js.string strategy')]) strategy []
+          ]]
 
 cTable :: CollectionTable -> Js.JsTree
 cTable table = cPropertiesList (map (\(TableItem _ propertyName) -> propertyName) table)
