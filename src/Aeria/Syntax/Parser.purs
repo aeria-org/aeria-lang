@@ -7,7 +7,7 @@ import Prelude hiding (between)
 import Aeria.Diagnostic.Message (Diagnostic(..), DiagnosticInfo(..))
 import Aeria.Diagnostic.Position (SourcePos(..), Span(..))
 import Aeria.Syntax.Error (SyntaxError(..))
-import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableMeta, CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableMetaItem(..), WritableItem(..))
+import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableMetaItem(..), WritableItem(..))
 import Control.Lazy (fix)
 import Data.Array as A
 import Data.Either (Either(..))
@@ -373,6 +373,9 @@ pCollectionFilters = pListProperty FilterItem
 pCollectionIndexes :: ParserM CollectionIndexes
 pCollectionIndexes = pListProperty IndexesItem
 
+pCollectionPresets :: ParserM CollectionPresets
+pCollectionPresets = pListProperty PresetItem
+
 pCollectionGetters :: ParserM CollectionGetters
 pCollectionGetters = lang.braces $ many (try pGetter)
 
@@ -560,6 +563,15 @@ pCollectionLayout = lang.braces $ many (try go)
         end <- sourcePos
         pure $ Macro (Span begin end) (fromCharArray <<< toUnfoldable $ code)
 
+pCollectionTemporary :: ParserM CollectionTemporary
+pCollectionTemporary = lang.braces $ do
+  index <- pPropertyParser "index" pPropertyName
+  expireAfterSeconds <- pPropertyParser "expireAfterSeconds" lang.integer
+  pure $ CollectionTemporary
+    { index
+    , expireAfterSeconds
+    }
+
 pCollection :: ParserM Collection
 pCollection = go
   where
@@ -591,6 +603,8 @@ pCollection = go
     let writable = unsafeCoerce $ getParserValue "writable" results
     let immutable = unsafeCoerce $ getParserValue "immutable" results
     let security = unsafeCoerce $ getParserValue "security" results
+    let presets = unsafeCoerce $ getParserValue "presets" results
+    let temporary = unsafeCoerce $ getParserValue "temporary" results
     end <- sourcePos
     pure
       $ Collection
@@ -601,6 +615,8 @@ pCollection = go
           , timestamps
           , search
           , immutable
+          , temporary
+          , presets: fromMaybe L.Nil presets
           , security: fromMaybe L.Nil security
           , functions: fromMaybe L.Nil functions
           , writable: fromMaybe L.Nil writable
@@ -635,6 +651,8 @@ pCollection = go
     , "writable"        /\ (unsafeCoerce pCollectionWritable')
     , "immutable"       /\ (unsafeCoerce pCollectionImmutable')
     , "security"        /\ (unsafeCoerce pCollectionSecurity')
+    , "presets"         /\ (unsafeCoerce pCollectionPresets')
+    , "temporary"       /\ (unsafeCoerce pCollectionTemporary')
     ]
 
   pCollectionTableMeta'       = pPropertyParser "tableMeta" pCollectionTableMeta
@@ -655,6 +673,8 @@ pCollection = go
   pCollectionWritable'        = pPropertyParser "writable" pCollectionWritable
   pCollectionImmutable'       = pPropertyParser "immutable" pCollectionImmutable
   pCollectionSecurity'        = pPropertyParser "security" pCollectionSecurity
+  pCollectionPresets'         = pPropertyParser "presets" pCollectionPresets
+  pCollectionTemporary'       = pPropertyParser "temporary" pCollectionTemporary
 
 getParserValue :: forall a. String -> Array (String /\ a) -> Maybe a
 getParserValue key results =

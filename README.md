@@ -35,8 +35,8 @@
     - [x] `search`
     - [x] `layout`
     - [ ] `preferred`
-    - [ ] `presets`
-    - [ ] `temporary`
+    - [x] `presets`
+    - [x] `temporary`
   - [x] functions
   - [x] security
 

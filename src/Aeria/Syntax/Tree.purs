@@ -483,6 +483,32 @@ instance showSecurityLogging :: Show SecurityLogging where
 instance eqSecurityLogging :: Eq SecurityLogging where
   eq = genericEq
 
+type CollectionPresets = List PresetItem
+
+data PresetItem = PresetItem Span PropertyName
+
+derive instance genericPresetItem :: Generic PresetItem _
+
+instance showPresetItem :: Show PresetItem where
+  show = genericShow
+
+instance eqPresetItem :: Eq PresetItem where
+  eq = genericEq
+
+data CollectionTemporary =
+  CollectionTemporary
+    { index :: PropertyName
+    , expireAfterSeconds :: Int
+    }
+
+derive instance genericCollectionTemporary :: Generic CollectionTemporary _
+
+instance showCollectionTemporary :: Show CollectionTemporary where
+  show = genericShow
+
+instance eqCollectionTemporary :: Eq CollectionTemporary where
+  eq = genericEq
+
 data Collection
   = Collection
     { span :: Span
@@ -491,6 +517,8 @@ data Collection
     , owned :: Maybe CollectionOwned
     , timestamps :: Maybe CollectionTimestamps
     , immutable :: Maybe CollectionImmutable
+    , temporary :: CollectionTemporary
+    , presets :: CollectionPresets
     , writable :: CollectionWritable
     , functions :: CollectionFunctions
     , security :: CollectionSecurity

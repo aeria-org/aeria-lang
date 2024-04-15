@@ -5,7 +5,7 @@ import Prelude
 import Aeria.Codegen.Javascript.Tree as Js
 import Aeria.Codegen.Type (codegenType)
 import Aeria.Codegen.Typescript.Tree as Ts
-import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Attributes, Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableMeta, CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableMetaItem(..), WritableItem(..))
+import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Attributes, Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableMetaItem(..), WritableItem(..))
 import Control.Lazy (fix)
 import Data.Array (concat, union)
 import Data.List as L
@@ -99,6 +99,8 @@ cCollection ( Collection
   , layout
   , writable
   , security
+  , presets
+  , temporary
   , functions
   , immutable
   }
@@ -113,9 +115,8 @@ cCollection ( Collection
   cFunctions' = cConditional cFunctions "functions" functions
   cSecurity' = cConditional cSecurity "security" security
 
-  cDescription = [Js.objectProperty "description" (Js.object description)]
-    where
-    description = concat
+  cDescription =
+    [ Js.objectProperty "description" $ Js.object $ concat
       [ baseDescription
       , iconDescription
       , ownedDescription
@@ -126,45 +127,37 @@ cCollection ( Collection
       , requiredDescription
       , filtersDescription
       , formDescription
+      , presetsDescription
       , indexesDescription
+      , temporaryDescription
       , searchDescription
       , immutableDescription
-      , cFiltersPresetsDescription
-      , cLayoutDescription
+      , filtersPresetsDescription
+      , layoutDescription
       ]
+    ]
 
-    baseDescription =
-      [ Js.objectProperty "$id" (cCollectionName name)
-      , Js.objectProperty "properties" (cCollectionProperties properties getters)
-      ]
+  baseDescription =
+    [ Js.objectProperty "$id" (cCollectionName name)
+    , Js.objectProperty "properties" (cCollectionProperties properties getters)
+    ]
 
-    iconDescription = cIcon icon
-
-    ownedDescription = cOwned owned
-
-    timestampsDescription = cTimestamps timestamps
-
-    searchDescription = cSearch search
-
-    immutableDescription = cImmutable immutable
-
-    tableDescription = cConditional cTable "table" table
-
-    writableDescription = cConditional cWritable "writable" writable
-
-    requiredDescription = cConditional cRequired "required" required
-
-    tableMetaDescription = cConditional cTableMeta "tableMeta" tableMeta
-
-    formDescription = cConditional cForm "form" form
-
-    filtersDescription = cConditional cFilters "filters" filters
-
-    indexesDescription = cConditional cIndexes "indexes" indexes
-
-    cFiltersPresetsDescription = cConditional cFiltersPresets "filtersPresets" filtersPresets
-
-    cLayoutDescription = cConditional cLayout "layout" layout
+  iconDescription = cIcon icon
+  ownedDescription = cOwned owned
+  timestampsDescription = cTimestamps timestamps
+  searchDescription = cSearch search
+  immutableDescription = cImmutable immutable
+  temporaryDescription = cTemporary temporary
+  formDescription = cConditional cForm "form" form
+  tableDescription = cConditional cTable "table" table
+  layoutDescription = cConditional cLayout "layout" layout
+  filtersDescription = cConditional cFilters "filters" filters
+  indexesDescription = cConditional cIndexes "indexes" indexes
+  presetsDescription = cConditional cPresets "presets" presets
+  writableDescription = cConditional cWritable "writable" writable
+  requiredDescription = cConditional cRequired "required" required
+  tableMetaDescription = cConditional cTableMeta "tableMeta" tableMeta
+  filtersPresetsDescription = cConditional cFiltersPresets "filtersPresets" filtersPresets
 
 cConditional :: forall a. (L.List a -> Js.JsTree) -> String -> L.List a -> Array Js.JsObjectProperty
 cConditional f key value = case value of
@@ -273,8 +266,21 @@ cSecurity secutiry = Js.object $ L.toUnfoldable $ map go secutiry
           [ cMaybe (\strategy' -> [Js.objectProperty "strategy" (Js.string strategy')]) strategy []
           ]]
 
+cTemporary :: CollectionTemporary -> Array Js.JsObjectProperty
+cTemporary (CollectionTemporary {index: (PropertyName _ index), expireAfterSeconds}) =
+  [ Js.objectProperty "temporary"
+    (Js.object
+      [ Js.objectProperty "index" (Js.string index)
+      , Js.objectProperty "expireAfterSeconds" (Js.int expireAfterSeconds)
+      ]
+    )
+  ]
+
 cTable :: CollectionTable -> Js.JsTree
 cTable table = cPropertiesList (map (\(TableItem _ propertyName) -> propertyName) table)
+
+cPresets :: CollectionPresets -> Js.JsTree
+cPresets presets = cPropertiesList (map (\(PresetItem _ propertyName) -> propertyName) presets)
 
 cTableMeta :: CollectionTableMeta -> Js.JsTree
 cTableMeta tableMeta = cPropertiesList (map (\(TableMetaItem _ propertyName) -> propertyName) tableMeta)
