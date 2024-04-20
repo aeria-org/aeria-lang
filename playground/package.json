@@ -1,10 +1,11 @@
 {
   "name": "playground",
+  "type": "module",
   "private": true,
   "main": "dist/index.js",
   "types": "src/index.ts",
   "scripts": {
-    "compile": "cd .. && node scripts/compile.js playground/src/aeria/schema.aeria playground/.aeria commonjs",
+    "compile": "cd .. && node scripts/compile.js playground/src/aeria/schema.aeria node_modules/aeria-runtime esnext",
     "dev": "aeria -w",
     "build": "aeria -ci"
   },

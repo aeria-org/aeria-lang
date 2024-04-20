@@ -1,6 +1,24 @@
+-- falta:
+-- colocar um enum
+-- colocar uma ref
+
 collection Person {
   properties {
     name str
     age int
+    -- atributos não tão funcionando
+    -- age int @minimum(10)
+    -- name str @minimumLength(10) @maximumLength(30)
+    options {
+      disabled bool
+    }
   }
 }
+
+-- essa collection não tá sendo emitida
+-- collection Pet {
+--   properties {
+--     name str
+--     age int
+--   }
+-- }
