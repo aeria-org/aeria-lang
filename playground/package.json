@@ -4,6 +4,7 @@
   "main": "dist/index.js",
   "types": "src/index.ts",
   "scripts": {
+    "compile": "cd .. && node scripts/compile.js playground/src/aeria/schema.aeria playground/.aeria commonjs",
     "dev": "aeria -w",
     "build": "aeria -ci"
   },
