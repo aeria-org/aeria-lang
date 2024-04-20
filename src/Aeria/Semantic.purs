@@ -416,8 +416,8 @@ sNumberProperty property = sAttributes property literalAttributes M.empty
     M.fromFoldable
       [ "minimum" /\ sType [TFloat, TInteger]
       , "maximum" /\ sType [TFloat, TInteger]
-      , "exclusiveMinimum" /\ sType [TFloat, TInteger]
-      , "exclusiveMaximum" /\ sType [TFloat, TInteger]
+      , "exclusiveminimum" /\ sType [TFloat, TInteger]
+      , "exclusivemaximum" /\ sType [TFloat, TInteger]
       ]
 
 typeOfArray :: L.List Literal -> Maybe Typ
@@ -451,8 +451,8 @@ sStringProperty property = sAttributes property literalAttributes M.empty
   literalAttributes :: M.Map String (Property -> Literal -> SemanticM Unit)
   literalAttributes =
     M.fromFoldable
-      [ "minLength" /\ sType [TInteger]
-      , "maxLength" /\ sType [TInteger]
+      [ "minlength" /\ sType [TInteger]
+      , "maxlength" /\ sType [TInteger]
       , "format" /\ checkFormat
       , "type" /\ checkType
       , "mask" /\ checkMask
