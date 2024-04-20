@@ -517,7 +517,7 @@ data Collection
     , owned :: Maybe CollectionOwned
     , timestamps :: Maybe CollectionTimestamps
     , immutable :: Maybe CollectionImmutable
-    , temporary :: CollectionTemporary
+    , temporary :: Maybe CollectionTemporary
     , presets :: CollectionPresets
     , writable :: CollectionWritable
     , functions :: CollectionFunctions

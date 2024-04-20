@@ -2,7 +2,7 @@ module Aeria.Semantic.Error where
 
 import Prelude
 
-import Aeria.Syntax.Tree (AttributeName(..), CollectionName(..), Expr, FilterItem(..), FiltersPresetsItem(..), Ident, LayoutItem(..), Property(..), PropertyName(..), Typ)
+import Aeria.Syntax.Tree (AttributeName(..), CollectionName(..), Expr, FiltersPresetsItem, Ident, LayoutItem, Property(..), PropertyName(..), Typ)
 import Data.Generic.Rep (class Generic)
 import Data.List as L
 import Data.String.Utils (ucfirst)

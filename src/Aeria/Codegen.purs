@@ -266,8 +266,9 @@ cSecurity secutiry = Js.object $ L.toUnfoldable $ map go secutiry
           [ cMaybe (\strategy' -> [Js.objectProperty "strategy" (Js.string strategy')]) strategy []
           ]]
 
-cTemporary :: CollectionTemporary -> Array Js.JsObjectProperty
-cTemporary (CollectionTemporary {index: (PropertyName _ index), expireAfterSeconds}) =
+cTemporary :: Maybe CollectionTemporary -> Array Js.JsObjectProperty
+cTemporary Nothing = []
+cTemporary (Just (CollectionTemporary {index: (PropertyName _ index), expireAfterSeconds})) =
   [ Js.objectProperty "temporary"
     (Js.object
       [ Js.objectProperty "index" (Js.string index)
