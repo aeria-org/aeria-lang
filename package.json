@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "test": "npx spago test",
-    "compile": "node scripts/compile.js"
+    "compile": "node scripts/compile.js",
+    "postinstall": "mv .aeria playground"
   },
   "dependencies": {
     "purescript": "^0.15.13",
