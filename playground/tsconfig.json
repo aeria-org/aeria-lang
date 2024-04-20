@@ -2,12 +2,7 @@
     "extends": "@aeriajs/cli/config/tsconfig.json",
     "compilerOptions": {
         "outDir": "dist",
-        "preserveSymlinks": true,
-        "paths": {
-            "aeria-runtime/person": [
-                "../node_modules/aeria-runtime/person.d.ts"
-            ]
-        }
+        "preserveSymlinks": true
     },
     "include": [
         "@types/*.d.ts",
