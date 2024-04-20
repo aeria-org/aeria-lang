@@ -389,7 +389,7 @@ sType :: Array Typ -> Property -> Literal -> SemanticM Unit
 sType accepts property literal = do
   let type' = typeOf literal
   let span = literalPos literal
-  when (type' `elem` accepts) (throwDiagnostic span (PropertyError property (TypeMismatch accepts type')))
+  when (not (type' `elem` accepts)) (throwDiagnostic span (PropertyError property (TypeMismatch accepts type')))
 
 sArrayType :: Typ -> Property -> Literal -> SemanticM Unit
 sArrayType expected property (LArray _ arr@(l:_)) =
@@ -416,8 +416,8 @@ sNumberProperty property = sAttributes property literalAttributes M.empty
     M.fromFoldable
       [ "minimum" /\ sType [TFloat, TInteger]
       , "maximum" /\ sType [TFloat, TInteger]
-      , "exclusiveminimum" /\ sType [TFloat, TInteger]
-      , "exclusivemaximum" /\ sType [TFloat, TInteger]
+      , "exclusiveMinimum" /\ sType [TFloat, TInteger]
+      , "exclusiveMaximum" /\ sType [TFloat, TInteger]
       ]
 
 typeOfArray :: L.List Literal -> Maybe Typ
@@ -451,8 +451,8 @@ sStringProperty property = sAttributes property literalAttributes M.empty
   literalAttributes :: M.Map String (Property -> Literal -> SemanticM Unit)
   literalAttributes =
     M.fromFoldable
-      [ "minlength" /\ sType [TInteger]
-      , "maxlength" /\ sType [TInteger]
+      [ "minLength" /\ sType [TInteger]
+      , "maxLength" /\ sType [TInteger]
       , "format" /\ checkFormat
       , "type" /\ checkType
       , "mask" /\ checkMask

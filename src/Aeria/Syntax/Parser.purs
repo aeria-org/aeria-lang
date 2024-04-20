@@ -93,7 +93,7 @@ pAttributeName = do
   char <- lower
   rest <- lang.identifier
   end <- sourcePos
-  pure (AttributeName (Span begin end) (toLower $ concatChar char rest))
+  pure (AttributeName (Span begin end) (concatChar char rest))
 
 pPropertyType :: ParserM CollectionProperties -> ParserM PropertyType
 pPropertyType p =
