@@ -1,0 +1,6 @@
+collection Person {
+  properties {
+    name str
+    age int
+  }
+}

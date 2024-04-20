@@ -11,15 +11,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
       - name: Setup node
         uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: yarn
+          cache: pnpm
       - name: Install dependencies
-        run: yarn
+        run: pnpm install
       - name: Build packages
-        run: yarn spago build
+        run: pnpm spago build
       - name: Test packages
-        run: yarn spago test
+        run: pnpm spago test
 

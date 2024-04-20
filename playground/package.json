@@ -1,0 +1,13 @@
+{
+  "name": "playground",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "scripts": {
+    "dev": "aeria -w",
+    "build": "aeria -ci"
+  },
+  "dependencies": {
+    "aeria": "^0.0.72"
+  }
+}
