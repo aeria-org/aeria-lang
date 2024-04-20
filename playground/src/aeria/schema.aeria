@@ -1,24 +1,20 @@
--- falta:
--- colocar um enum
--- colocar uma ref
+collection Pet {
+  properties {
+    name str
+    age int
+    breed enum @options(["dog", "cat", "bird"])
+  }
+}
 
 collection Person {
   properties {
     name str
     age int
-    -- atributos não tão funcionando
-    -- age int @minimum(10)
-    -- name str @minimumLength(10) @maximumLength(30)
+    age int @minimum(10)
+    name str @minLength(10) @maxLength(30)
     options {
       disabled bool
+      pets []Pet
     }
   }
 }
-
--- essa collection não tá sendo emitida
--- collection Pet {
---   properties {
---     name str
---     age int
---   }
--- }
