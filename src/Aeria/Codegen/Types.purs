@@ -28,8 +28,10 @@ codegenLiteral literal = Ts.typeLiteral $
     JSObject value -> Ts.typeLitObject (map codegenObjectProperty value)
 
 codegenObjectProperty :: JsObjectProperty -> Ts.TsTypeObjectProperty
-codegenObjectProperty (JsObjectProperty ident tree) =
-  Ts.typeObjectProperty (codegenIdent ident) (codegenType tree)
+codegenObjectProperty property =
+  case property of
+    (JsObjectProperty1 ident) -> Ts.typeObjectProperty (codegenIdent ident) (Ts.typeQuery (codegenIdent ident))
+    (JsObjectProperty2 ident tree) -> Ts.typeObjectProperty (codegenIdent ident) (codegenType tree)
 
 codegenParameter :: JsTree -> Ts.TsParameter
 codegenParameter ident = Ts.parameter (codegenIdent ident) Ts.typeAny

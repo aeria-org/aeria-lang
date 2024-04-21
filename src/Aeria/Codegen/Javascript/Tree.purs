@@ -22,7 +22,9 @@ derive instance genericJsLiteral :: Generic JsLiteral _
 instance eqJsLiteral :: Eq JsLiteral where
   eq = genericEq
 
-data JsObjectProperty = JsObjectProperty JsTree JsTree
+data JsObjectProperty
+  = JsObjectProperty1 JsTree
+  | JsObjectProperty2 JsTree JsTree
 
 derive instance genericJSObjectProperty :: Generic JsObjectProperty _
 
@@ -72,8 +74,11 @@ derive instance genericJsTree :: Generic JsTree _
 instance eqJsTree :: Eq JsTree where
   eq x = genericEq x
 
-objectProperty :: String -> JsTree -> JsObjectProperty
-objectProperty ident tree = JsObjectProperty (identifier ident) tree
+objectProperty2 :: String -> JsTree -> JsObjectProperty
+objectProperty2 ident tree = JsObjectProperty2 (identifier ident) tree
+
+objectProperty1 :: String -> JsObjectProperty
+objectProperty1 ident = JsObjectProperty1 (identifier ident)
 
 object :: Array JsObjectProperty -> JsTree
 object o = JSLiteral (JSObject o)

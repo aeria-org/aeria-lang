@@ -429,7 +429,10 @@ instance eqWritableItem :: Eq WritableItem where
 
 type CollectionFunctions = List FunctionItem
 
-data FunctionItem = FunctionItem Span PropertyName
+data FunctionItem = FunctionItem
+  Span -- Span
+  PropertyName -- Function name
+  Boolean -- Custom function
 
 derive instance genericFunctionItem :: Generic FunctionItem _
 

@@ -43,7 +43,10 @@ ppLiteral =
     JSBoolean value -> show value
     JSArray value -> "[" <> concatWith value ppTree <> "]"
     JSObject value -> "{" <> concatWith value
-      (\(JsObjectProperty k v) -> ppTree k <> ": " <> ppTree v  ) <> "}"
+      (\property ->
+        case property of
+          (JsObjectProperty2 k v) -> ppTree k <> ": " <> ppTree v
+          (JsObjectProperty1 k) -> ppTree k) <> "}"
 
 ppSpecifiers :: JsSpecifiers -> String
 ppSpecifiers (JsSpecifiers specifiers) = concatWith specifiers ppImportSpecifier

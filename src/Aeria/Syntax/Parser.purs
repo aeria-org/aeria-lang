@@ -13,7 +13,7 @@ import Data.Array as A
 import Data.Either (Either(..))
 import Data.List (List, toUnfoldable)
 import Data.List as L
-import Data.Maybe (Maybe(..), fromMaybe)
+import Data.Maybe (Maybe(..), fromMaybe, isJust)
 import Data.String (toLower)
 import Data.String.CodeUnits (fromCharArray)
 import Data.String.Utils (concatChar)
@@ -359,7 +359,14 @@ pCollectionTableMeta :: ParserM CollectionTableMeta
 pCollectionTableMeta = pListProperty TableMetaItem
 
 pCollectionFunctions :: ParserM CollectionFunctions
-pCollectionFunctions = pListProperty FunctionItem
+pCollectionFunctions = lang.braces (many (try item))
+  where
+    item = do
+      begin <- sourcePos
+      propertyName <- pPropertyName
+      custom <- optionMaybe $ lang.reserved "?"
+      end <- sourcePos
+      pure $ FunctionItem (Span begin end) propertyName (isJust custom)
 
 pCollectionWritable :: ParserM CollectionWritable
 pCollectionWritable = pListProperty WritableItem

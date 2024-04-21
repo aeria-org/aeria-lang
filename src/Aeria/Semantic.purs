@@ -203,7 +203,7 @@ sSecurity functions = traverse_ go
     pure unit
 
   sFunctionName span functionName@(PropertyName _ name) =
-    case L.find (\(FunctionItem _ (PropertyName _ function)) -> function == name) functions of
+    case L.find (\(FunctionItem _ (PropertyName _ function) _) -> function == name) functions of
       Just _ -> pure unit
       Nothing -> throwDiagnostic span (UndefinedFunction functionName)
 
