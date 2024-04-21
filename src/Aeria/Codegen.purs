@@ -392,29 +392,32 @@ cCollectionProperties properties getters = Js.object $ union (cProperties proper
         cProperty property@(Property { type_, attributes }) =
           Js.object $ concat [props, attrs]
           where
+            props = cPropertyType property type_
             attrs = cAttributes $ L.filter (\(Attribute _ (AttributeName _ attributeName) _) -> attributeName /= "options") attributes
-            props =
-              case type_ of
-                PFloat _ ->  [cType "number"]
-                PInteger _ ->  [cType "integer"]
-                PString _ ->  [cType "string"]
-                PBoolean _ ->  [cType "boolean"]
-                PEnum _ ->
-                  [ Js.objectProperty2 "enum" (cEnumType property)
-                  ]
-                PArray _ type_' ->
-                  [ cType "array"
-                  , cArrayType property type_'
-                  ]
-                PObject _  properties'' ->
-                  [ cType "object"
-                  , Js.objectProperty2 "properties" (Js.object $ cProperties properties'')
-                  ]
-                PRef _ collectionName ->
-                  [ Js.objectProperty2 "$ref" (cCollectionName collectionName)
-                  ]
 
-            cType type_' = Js.objectProperty2 "type" (Js.string type_')
+        cPropertyType :: Property -> PropertyType -> Array Js.JsObjectProperty
+        cPropertyType property type_ =
+          case type_ of
+            PFloat _ ->  [cType "number"]
+            PInteger _ ->  [cType "integer"]
+            PString _ ->  [cType "string"]
+            PBoolean _ ->  [cType "boolean"]
+            PEnum _ ->
+              [ Js.objectProperty2 "enum" (cEnumType property)
+              ]
+            PArray _ type_' ->
+              [ cType "array"
+              , cArrayType property type_'
+              ]
+            PObject _  properties'' ->
+              [ cType "object"
+              , Js.objectProperty2 "properties" (Js.object $ cProperties properties'')
+              ]
+            PRef _ collectionName ->
+              [ Js.objectProperty2 "$ref" (cCollectionName collectionName)
+              ]
+
+        cType type_' = Js.objectProperty2 "type" (Js.string type_')
 
         cAttributes :: Attributes -> Array Js.JsObjectProperty
         cAttributes attributes = L.toUnfoldable $ map go' attributes
@@ -432,9 +435,8 @@ cCollectionProperties properties getters = Js.object $ union (cProperties proper
                 L.toUnfoldable $ map cLiteral value
               _ -> []
 
-        cArrayType (Property { span, name, attributes }) type_' =
-          Js.objectProperty2 "items" $ Js.object
-            [go (Property { span, name, type_: type_', attributes })]
+        cArrayType property type_' =
+          Js.objectProperty2 "items" $ Js.object $ cPropertyType property type_'
 
 cLiteral :: Literal -> Js.JsTree
 cLiteral =
