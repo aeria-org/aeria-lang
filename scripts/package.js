@@ -22,11 +22,11 @@ async function generate_package(filepath) {
       package.exports[key] = package.exports[key] || {};
       package.exports[key] = {
         ...package.exports[key],
-        require: `./${path.join(filepath, `${baseName}.js`)}`,
-        import: `./${path.join(filepath, `${baseName}.mjs`)}`,
+        require: `./${baseName}.js`,
+        import: `./${baseName}.mjs`,
       };
       if (declarationType) {
-        package.exports[key][declarationType] = `./${fullPath}`;
+        package.exports[key][declarationType] = `./${baseName}.ts`;
       }
     }
   }
