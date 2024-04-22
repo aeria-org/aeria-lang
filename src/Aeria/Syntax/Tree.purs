@@ -123,7 +123,7 @@ data PropertyType
   | PBoolean Span
   | PRef Span CollectionName
   | PArray Span PropertyType
-  | PObject Span CollectionProperties
+  | PObject Span CollectionRequired CollectionProperties
 
 derive instance genericPropertyType :: Generic PropertyType _
 

@@ -409,8 +409,9 @@ cCollectionProperties properties getters = Js.object $ union (cProperties proper
               [ cType "array"
               , cArrayType property type_'
               ]
-            PObject _  properties'' ->
+            PObject _ required properties'' ->
               [ cType "object"
+              , Js.objectProperty2 "required" (cRequired required)
               , Js.objectProperty2 "properties" (Js.object $ cProperties properties'')
               ]
             PRef _ collectionName ->

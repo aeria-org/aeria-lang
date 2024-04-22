@@ -298,7 +298,7 @@ sProperty collectionName property@(Property { type_ }) =
   case type_ of
     PBoolean _ -> sBooleanProperty property
     PArray _ _ -> sArrayProperty collectionName property
-    PObject _ _ -> sObjectProperty collectionName property
+    PObject _ _ _ -> sObjectProperty collectionName property
     PEnum _ -> sEnumProperty property
     PString _ -> sStringProperty property
     PFloat _ -> sNumberProperty property
@@ -317,10 +317,10 @@ sBooleanProperty = sAttributes'
 sArrayProperty :: CollectionName -> Property -> SemanticM Unit
 sArrayProperty collectionName = sAttributes'
   where
-    sAttributes' (Property { name, type_: (PArray span type'), attributes }) =
+    sAttributes' p@(Property { name, type_: (PArray span type'), attributes }) =
       case type' of
-        PObject _ properties  -> traverse_ (sProperty collectionName) properties
-        _                     -> sProperty collectionName (Property { span, type_: type', attributes, name })
+        (PObject _ _ _) -> sObjectProperty collectionName p
+        _               -> sProperty collectionName (Property { span, type_: type', attributes, name })
     sAttributes' property@(Property { span }) =
       throwDiagnostic span (PropertyError property PropertyTypeDoesNotExpectType)
 
@@ -332,7 +332,10 @@ sObjectProperty collectionName = sAttributes'
         throwDiagnostic span (PropertyError property PropertyTypeDoesNotExpectAttributes)
       | otherwise =
         case type_ of
-          PObject _ properties -> traverse_ (sProperty collectionName) properties
+          PObject _ required properties ->
+            local (extendContext collectionName properties L.Nil) $ do
+              sRequired collectionName required
+              traverse_ (sProperty collectionName) properties
           _ -> throwDiagnostic span (PropertyError property PropertyTypeDoesNotExpectType)
 
 sRefProperty :: CollectionName -> Property -> SemanticM Unit

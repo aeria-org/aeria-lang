@@ -164,11 +164,16 @@ pPropertyType p =
     pure (PArray (Span begin end) arrType)
 
   tObject :: ParserM PropertyType
-  tObject = do
+  tObject = lang.braces $ do
     begin <- sourcePos
-    properties <- p
+    results <- runParsers
+      [ "required" /\ (unsafeCoerce $ pPropertyParser "required" pCollectionRequired)
+      , "properties" /\ (unsafeCoerce $ pPropertyParser "properties" p)
+      ]
+    let required = unsafeCoerce $ getParserValue "required" results
+    let properties = unsafeCoerce $ getParserValue "properties" results
     end <- sourcePos
-    pure (PObject (Span begin end) properties)
+    pure (PObject (Span begin end) (fromMaybe L.Nil required) (fromMaybe L.Nil properties))
 
 pBoolean :: ParserM Boolean
 pBoolean = pTrue <|> pFalse
