@@ -35,16 +35,34 @@ codegen (Program { collections }) = map go collections
               $ concat
                 [ [ Ts.importSpecifier (Ts.identifier "Collection")
                   , Ts.importSpecifier (Ts.identifier "SchemaWithId")
+                  , Ts.importSpecifier (Ts.identifier "ExtendCollection")
                   ]
                 , map (Ts.importSpecifier <<< Ts.identifier) functionNames
                 ]
               )
             (Ts.identifier "aeria")
+
+        , Ts.exportNamed
+            (Ts.typeAlias
+              -- [Ts.declareKeyword, Ts.constKeyword]
+              (Ts.identifier (collectionName <> "Collection"))
+              (codegenType collection'))
+
         , Ts.exportNamed
             (Ts.variable
               [Ts.declareKeyword, Ts.constKeyword]
               (Ts.identifier collectionName)
-              (codegenType collection'))
+              (Ts.intersectionType
+                (Ts.typeReference [] (Ts.identifier (collectionName <> "Collection")))
+                (Ts.typeLiteral
+                  (Ts.typeLitObject
+                    [Ts.typeObjectProperty
+                      (Ts.identifier "item")
+                      (Ts.typeReference
+                        [ Ts.typeParameter (Ts.typeReference [] (Ts.identifier (collectionName <> "Collection['description']")))
+                        ]
+                        (Ts.identifier "SchemaWithId"))]))))
+
         , Ts.exportNamed
           (Ts.typeAlias
             (Ts.identifier (ucfirst collectionName))
@@ -53,43 +71,51 @@ codegen (Program { collections }) = map go collections
               (Ts.identifier "SchemaWithId")
             )
           )
+
         , Ts.exportNamed
             (Ts.typeAlias
               (Ts.identifier "extendCollection")
               (Ts.functionType
                 [ Ts.typeParameter
                     (Ts.typeExtends
-                      (Ts.typeReference [] (Ts.identifier "T"))
-                      (Ts.typeReference [] (Ts.identifier "Collection")))]
+                      (Ts.typeReference [] (Ts.identifier "const TCollection"))
+                      (Ts.typeReference [] (Ts.identifier "{ [P in keyof Collection]?: Partial<Collection[P]> }"))
+
+                      )] --
 
                 [Ts.parameter
                   (Ts.identifier "collection")
-                  (Ts.typeReference [] (Ts.identifier "T")) ]
-                  (Ts.intersectionType
-                    (Ts.typeReference [] (Ts.identifier "T"))
-                    (Ts.typeQuery (Ts.identifier collectionName)))))]
+                  (Ts.typeReference [] (Ts.identifier "TCollection")) ]
+                  (Ts.typeReference
+                    [ Ts.typeParameter $ Ts.typeQuery (Ts.identifier collectionName)
+                    , Ts.typeParameter $ Ts.typeReference [] (Ts.identifier "TCollection")
+                    ]
+                    (Ts.identifier "ExtendCollection"))))]
 
     jsFile =
       Js.statements
         [ Js.import_
             (Js.specifiers
               $ concat
-                [ [ Js.importSpecifier (Js.identifier "defineCollection")
-                  , Js.importSpecifier (Js.identifier "deepMerge")
+                [ [ Js.importSpecifier2 (Js.identifier "extendCollection") (Js.identifier "originalExtendCollection")
+                  , Js.importSpecifier1 (Js.identifier "defineCollection")
                   ]
-                , map (Js.importSpecifier <<< Js.identifier) functionNames
+                , map (Js.importSpecifier1 <<< Js.identifier) functionNames
                 ])
             (Js.identifier "aeria")
-        , Js.exportNamed (Js.variable (Js.identifier collectionName) collection')
+        , Js.exportNamed
+          (Js.variable
+            (Js.identifier collectionName)
+            (Js.call
+              (Js.identifier "defineCollection")
+              [collection']))
         , Js.exportNamed
             (Js.variable
               (Js.identifier "extendCollection")
               (Js.arrowFunction
                 [Js.identifier "collection"]
-                (Js.call (Js.identifier "defineCollection")
-                  [ Js.call (Js.identifier "deepMerge")
-                    [Js.identifier collectionName, Js.identifier "collection"]
-                  ]
+                (Js.call (Js.identifier "originalExtendCollection")
+                  [Js.identifier collectionName, Js.identifier "collection"]
                 )))]
 
 cCollection :: Collection -> Js.JsTree

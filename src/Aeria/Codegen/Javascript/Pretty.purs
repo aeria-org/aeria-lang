@@ -3,8 +3,9 @@ module Aeria.Codegen.Javascript.Pretty where
 import Prelude
 
 import Aeria.Codegen.Javascript.Tree (JsImportSpecifier(..), JsLiteral(..), JsObjectProperty(..), JsSpecifiers(..), JsStatement(..), JsStatements(..), JsTree(..), Output(..))
-import Data.String.Utils (concatWith)
 import Data.List as L
+import Data.Maybe (Maybe(..))
+import Data.String.Utils (concatWith)
 
 ppJavascript :: Output -> JsStatements -> String
 ppJavascript output (JsStatements stmts) =
@@ -52,5 +53,7 @@ ppSpecifiers :: JsSpecifiers -> String
 ppSpecifiers (JsSpecifiers specifiers) = concatWith specifiers ppImportSpecifier
 
 ppImportSpecifier :: JsImportSpecifier -> String
-ppImportSpecifier (JsImportSpecifier importSpecifier) =
-  ppTree importSpecifier
+ppImportSpecifier (JsImportSpecifier importSpecifier alias) =
+  case alias of
+    Just alias' -> ppTree importSpecifier <> " as " <> ppTree alias'
+    Nothing -> ppTree importSpecifier

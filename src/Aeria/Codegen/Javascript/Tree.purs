@@ -5,6 +5,7 @@ import Prelude
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.Int (toNumber)
+import Data.Maybe (Maybe(..))
 
 data Output
   = CommonJs
@@ -31,7 +32,7 @@ derive instance genericJSObjectProperty :: Generic JsObjectProperty _
 instance eqJsObjectProperty :: Eq JsObjectProperty where
   eq = genericEq
 
-data JsImportSpecifier = JsImportSpecifier JsTree
+data JsImportSpecifier = JsImportSpecifier JsTree (Maybe JsTree)
 
 derive instance genericJsImportSpecifier :: Generic JsImportSpecifier _
 
@@ -122,8 +123,11 @@ exportNamed = JSExportNamedDeclaration
 specifiers :: Array JsImportSpecifier -> JsSpecifiers
 specifiers = JsSpecifiers
 
-importSpecifier :: JsTree -> JsImportSpecifier
-importSpecifier = JsImportSpecifier
+importSpecifier1 :: JsTree -> JsImportSpecifier
+importSpecifier1 x = JsImportSpecifier x Nothing
+
+importSpecifier2 :: JsTree -> JsTree -> JsImportSpecifier
+importSpecifier2 x y = JsImportSpecifier x (Just y)
 
 statements ∷ Array JsStatement → JsStatements
 statements = JsStatements
