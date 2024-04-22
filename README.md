@@ -1,4 +1,4 @@
-# Aeria Lang ![https://github.com/nextlevelorg/aeria-lang/actions/workflows/ci.yaml](https://github.com/nextlevelorg/aeria-lang/actions/workflows/ci.yaml/badge.svg)
+# Aeria Lang ![https://github.com/aeria-org/aeria-lang/actions/workflows/ci.yaml](https://github.com/aeria-org/aeria-lang/actions/workflows/ci.yaml/badge.svg)
 
 ## TODO
 
@@ -46,10 +46,10 @@
   - [ ] `response`
   - [ ] `roles`
 
-- [ ] code generation
-  - [x] `node_modules/.aeria-lang/index.js`
-  - [x] `node_modules/.aeria-lang/index.d.ts`
-  - [x] `node_modules/.aeria-lang/package.json`
+- [ ] code generation (native)
+  - [ ] `node_modules/.aeria-lang/index.js`
+  - [ ] `node_modules/.aeria-lang/index.d.ts`
+  - [ ] `node_modules/.aeria-lang/package.json`
 
 - [ ] cli
   - [ ] get configuration from `package.json`
@@ -58,6 +58,5 @@
 - [ ] test suite
   - [ ] test configuration
   - [ ] test proper code generation
-
 
 
