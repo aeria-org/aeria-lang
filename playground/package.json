@@ -10,6 +10,7 @@
     "build": "aeria -ci"
   },
   "dependencies": {
-    "aeria": "latest"
+    "aeria": "latest",
+    "playground": "link:"
   }
 }

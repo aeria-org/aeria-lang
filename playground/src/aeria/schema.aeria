@@ -14,28 +14,26 @@ collection Pet {
 
 collection Person {
   properties {
-    name str
-    age int
     age int @minimum(10)
     name str @minLength(10) @maxLength(30)
-    options {
-      required {
-        friends
-      }
-      properties {
-        disabled bool
-        friends []{
-          required {
-            type
-            pet
-          }
-          properties {
-            type str
-            pet Pet
-          }
-        }
-      }
-    }
+--     options {
+--       required {
+--         friends
+--       }
+--       properties {
+--         disabled bool
+--         friends []{
+--           required {
+--             type
+--             pet
+--           }
+--           properties {
+--             type str
+--             pet Pet
+--           }
+--         }
+--       }
+--     }
   }
 }
 
