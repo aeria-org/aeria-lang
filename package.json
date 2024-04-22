@@ -8,7 +8,7 @@
   "scripts": {
     "test": "npx spago test",
     "compile": "node scripts/compile.js",
-    "postinstall": "mv .aeria playground"
+    "postinstall": "if test -d playground/.aeria; then rm -rf .aeria; else mv .aeria playground; fi"
   },
   "dependencies": {
     "purescript": "^0.15.13",
