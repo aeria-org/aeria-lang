@@ -5,6 +5,7 @@
   "repository": "git@github.com:gabrielolivrp/aeria-lang.git",
   "author": "Gabriel Augusto <gabrielolivrp@gmail.com>",
   "license": "MIT",
+  "packageManager": "pnpm@8.7.6",
   "scripts": {
     "test": "npx spago test",
     "compile": "node scripts/compile.js",
