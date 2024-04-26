@@ -16,12 +16,14 @@ collection Person {
   properties {
     age int @minimum(10)
     name str @minLength(10) @maxLength(30)
---     options {
---       required {
---         friends
---       }
---       properties {
---         disabled bool
+    options {
+      required {
+        friends
+      }
+      properties {
+        pet []Pet
+        friends []Person
+        disabled bool
 --         friends []{
 --           required {
 --             type
@@ -32,8 +34,12 @@ collection Person {
 --             pet Pet
 --           }
 --         }
---       }
---     }
+      }
+    }
+  }
+  functions {
+    get
+    getAll
   }
 }
 

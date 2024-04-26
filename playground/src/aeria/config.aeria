@@ -1,0 +1,11 @@
+config {
+  baseUrl "/api"
+  publicUrl "https://localhost:3000/api"
+  database {
+    mongodbUrl env(MONGODB_URL)
+  }
+  security {
+    logSuccessfulAuthentications true
+  }
+}
+

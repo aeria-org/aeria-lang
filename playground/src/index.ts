@@ -11,12 +11,15 @@ export const collections = {
 }
 
 router.GET('/test', async (context) => {
-  const person = await context.collections.person.model.findOne()
+  const person = await context.collections.person.functions.get({
+    filters: {}
+  })
+
   const pet = await context.collections.pet.model.findOne()
 
-  // if( person ) {
-  //   person.options.friends[0].type
-  // }
+  if( person ) {
+    person.options.friends[0].name
+  }
 
 
   if( pet ) {

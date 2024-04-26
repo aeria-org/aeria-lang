@@ -38,6 +38,7 @@
     - [x] `presets`
     - [x] `temporary`
   - [x] functions
+  - [ ] exposedFunctions
   - [x] security
 
 - [ ] `contract`
