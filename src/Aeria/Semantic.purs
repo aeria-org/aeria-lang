@@ -36,31 +36,45 @@ data Context
 emptyContext :: String -> String -> Context
 emptyContext filepath source = Context { collections: M.empty, filepath, source }
 
-extendContext :: CollectionName -> CollectionProperties -> CollectionGetters -> Context -> Context
+extendContext :: CollectionName -> CollectionProperties -> CollectionGetters -> Context -> SemanticM Context
 extendContext (CollectionName _ collectionName) properties getters (Context { collections, source, filepath }) =
   case M.lookup collectionName collections of
-    Just collectionContext ->
-      let collectionContext' = extendGetters collectionContext
-          collectionContext'' = extendProperties collectionContext'
-      in Context { collections: M.insert collectionName collectionContext'' collections, filepath, source }
-    Nothing ->
-      let collectionContext' = extendProperties (CollectionContext { getters: M.empty, properties: M.empty })
-          collectionContext'' = extendGetters collectionContext'
-        in Context { collections: M.insert collectionName collectionContext'' collections, filepath, source }
+    Just collectionContext -> do
+      collectionContext' <- extendGetters collectionContext
+      collectionContext'' <- extendProperties collectionContext'
+      pure $ Context { collections: M.insert collectionName collectionContext'' collections, filepath, source }
+    Nothing -> do
+      collectionContext' <- extendProperties (CollectionContext { getters: M.empty, properties: M.empty })
+      collectionContext'' <- extendGetters collectionContext'
+      pure $ Context { collections: M.insert collectionName collectionContext'' collections, filepath, source }
   where
-    extendProperties :: CollectionContext -> CollectionContext
-    extendProperties (CollectionContext { getters: gettersContext, properties: propertiesContext }) =
-      let propertiesContext' = L.foldl go propertiesContext properties
-        in CollectionContext { properties: propertiesContext', getters: gettersContext }
+    extendProperties :: CollectionContext -> SemanticM CollectionContext
+    extendProperties (CollectionContext { getters: gettersContext, properties: propertiesContext }) = do
+      propertiesContext' <- L.foldM go propertiesContext properties
+      pure $ CollectionContext { properties: propertiesContext', getters: gettersContext }
       where
-        go pts property@(Property { name: (PropertyName _ name) }) = M.insert name property pts
+        go pts property@(Property { name: pn@(PropertyName span name) }) = do
+          context <- ask
+          case M.lookup name pts of
+            Nothing -> pure $ M.insert name property pts
+            Just _ -> do
+              let diagnostic = makeDiagnostic context span (PropertyIsAlreadyInUse pn)
+              throwError diagnostic
 
-    extendGetters :: CollectionContext -> CollectionContext
-    extendGetters (CollectionContext { getters: gettersContext, properties: propertiesContext }) =
-      let gettersContext' = L.foldl go gettersContext getters
-        in CollectionContext { properties: propertiesContext, getters: gettersContext' }
+
+    extendGetters :: CollectionContext -> SemanticM CollectionContext
+    extendGetters (CollectionContext { getters: gettersContext, properties: propertiesContext }) = do
+      gettersContext' <- L.foldM go gettersContext getters
+      pure $ CollectionContext { properties: propertiesContext, getters: gettersContext' }
       where
-        go gts getter@(Getter { name: (PropertyName _ name) }) = M.insert name getter gts
+        go gts getter@(Getter { name: pn@(PropertyName span name) }) = do
+          context <- ask
+          case M.lookup name gts of
+            Nothing -> pure $ M.insert name getter gts
+            Just _ -> do
+              let diagnostic = makeDiagnostic context span (PropertyIsAlreadyInUse pn)
+              throwError diagnostic
+
 
 lookupProperty :: Context -> CollectionName -> PropertyName -> Maybe Property
 lookupProperty (Context { collections }) (CollectionName _ collectionName) (PropertyName _ propertyName) = do
@@ -155,8 +169,9 @@ sCollection (Collection
   , functions
   , writable
   , immutable
-  }) =
-  local (extendContext name properties getters) $ do
+  }) = do
+  context <- ask >>= extendContext name properties getters
+  local (const context) $ do
     sProperties name properties
     sRequired name required
     sGetters name getters
@@ -288,7 +303,7 @@ sCheckIfPropertiesIsValid collectionName = traverse_ \propertyName@(PropertyName
 sGetters :: CollectionName -> CollectionGetters -> SemanticM Unit
 sGetters collectionName = traverse_ \(Getter { name: name@(PropertyName span _) }) -> do
   context <- ask
-  when (isJust (lookupProperty context collectionName name)) (throwDiagnostic span (DuplicateProperty name))
+  when (isJust (lookupProperty context collectionName name)) (throwDiagnostic span (PropertyIsAlreadyInUse name))
 
 sProperties :: CollectionName -> CollectionProperties -> SemanticM Unit
 sProperties collectionName = traverse_ (sProperty collectionName)
@@ -317,25 +332,27 @@ sBooleanProperty = sAttributes'
 sArrayProperty :: CollectionName -> Property -> SemanticM Unit
 sArrayProperty collectionName = sAttributes'
   where
-    sAttributes' p@(Property { name, type_: (PArray span type'), attributes }) =
+    sAttributes' (Property { name, type_: (PArray span type'), attributes }) =
       case type' of
-        (PObject _ _ _) -> sObjectProperty collectionName p
+        object@(PObject _ _ _) -> sObjectProperty collectionName (Property { span, type_: object, attributes, name })
         _               -> sProperty collectionName (Property { span, type_: type', attributes, name })
     sAttributes' property@(Property { span }) =
       throwDiagnostic span (PropertyError property PropertyTypeDoesNotExpectType)
 
 sObjectProperty :: CollectionName -> Property -> SemanticM Unit
-sObjectProperty collectionName = sAttributes'
+sObjectProperty (CollectionName _ collectionName) = sAttributes' 0
   where
-    sAttributes' property@(Property { span, type_, attributes })
+    sAttributes' idx property@(Property { span, type_, attributes })
       | L.length attributes > 0 =
         throwDiagnostic span (PropertyError property PropertyTypeDoesNotExpectAttributes)
       | otherwise =
         case type_ of
-          PObject _ required properties ->
-            local (extendContext collectionName properties L.Nil) $ do
-              sRequired collectionName required
-              traverse_ (sProperty collectionName) properties
+          PObject _ required properties -> do
+            let objectName =  (CollectionName span (collectionName <> (show idx)))
+            context <- ask >>= extendContext objectName properties L.Nil
+            local (const context) $ do
+              sRequired objectName required
+              traverse_ (sProperty objectName) properties
           _ -> throwDiagnostic span (PropertyError property PropertyTypeDoesNotExpectType)
 
 sRefProperty :: CollectionName -> Property -> SemanticM Unit

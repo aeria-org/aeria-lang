@@ -40,7 +40,7 @@ instance showExprError :: Show ExprError where
 data SemanticError
   = ExprError Expr ExprError
   | UndefinedProperty PropertyName
-  | DuplicateProperty PropertyName
+  | PropertyIsAlreadyInUse PropertyName
   | PropertyError Property PropertyError
   | FiltersPresetsError FiltersPresetsItem
   | LayoutComponentError LayoutItem
@@ -52,12 +52,12 @@ derive instance genericSemanticError :: Generic SemanticError _
 instance showSemanticError :: Show SemanticError where
   show (ExprError _ exprErr) = show exprErr
   show (UndefinedProperty (PropertyName _ name)) = "Undefined property: \"" <> name <> "\""
-  show (DuplicateProperty (PropertyName _ name)) = "\"" <> name <> "\" property is already in use"
   show (PropertyError (Property { name }) propErr) = "Error in property \"" <> ppPropertyName name <> "\": " <> show propErr
   show (FiltersPresetsError _) = "\"Filters\" is required"
   show (LayoutComponentError _) = "\"Component name\" is required"
   show (UndefinedFunction (PropertyName _ name)) = "Undefined function: \"" <> name <> "\""
   show (UndefinedStrategy strategy) = "Undefined strategy: \"" <> strategy <> "\""
+  show (PropertyIsAlreadyInUse _) = "PropertyIsAlreadyInUse"
 
 ppPropertyName :: PropertyName -> String
 ppPropertyName (PropertyName _  propertyName) = propertyName

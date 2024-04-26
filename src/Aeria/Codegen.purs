@@ -79,10 +79,7 @@ codegen (Program { collections }) = map go collections
                 [ Ts.typeParameter
                     (Ts.typeExtends
                       (Ts.typeReference [] (Ts.identifier "const TCollection"))
-                      (Ts.typeReference [] (Ts.identifier "{ [P in keyof Collection]?: Partial<Collection[P]> }"))
-
-                      )] --
-
+                      (Ts.typeReference [] (Ts.identifier "{ [P in keyof Collection]?: Partial<Collection[P]> }")))]
                 [Ts.parameter
                   (Ts.identifier "collection")
                   (Ts.typeReference [] (Ts.identifier "TCollection")) ]
