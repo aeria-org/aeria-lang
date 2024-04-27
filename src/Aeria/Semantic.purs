@@ -5,7 +5,7 @@ import Prelude
 import Aeria.Diagnostic.Message (Diagnostic(..), DiagnosticInfo(..))
 import Aeria.Diagnostic.Position (Span)
 import Aeria.Semantic.Error (ExprError(..), PropertyError(..), SemanticError(..))
-import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableMeta, CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableMetaItem(..), Typ(..), WritableItem(..))
+import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableMeta, CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableMetaItem(..), Typ(..), WritableItem(..))
 import Control.Monad.Except (Except, runExcept, throwError)
 import Control.Monad.Reader (ReaderT, ask, local, runReaderT)
 import Data.Array (elem)
@@ -167,6 +167,8 @@ sCollection (Collection
   , layout
   , security
   , functions
+  , formLayout
+  , actions
   , writable
   , immutable
   }) = do
@@ -184,7 +186,8 @@ sCollection (Collection
     sFiltersPresets name filtersPresets
     sWritable name writable
     sSecurity functions security
-    -- sFunctions name functions
+    sActions name actions
+    sFormLayout name formLayout
     sImmutable name immutable
     case search of
       Just search' -> sSearch name search'
@@ -197,13 +200,30 @@ sFiltersPresets _ = traverse_ go
   go filterPreset@(FiltersPresetsItem { span, filters }) = do
     when (isNothing filters) (throwDiagnostic span (FiltersPresetsError filterPreset))
 
+sFormLayout :: CollectionName -> CollectionFormLayout -> SemanticM Unit
+sFormLayout _ = traverse_ go
+  where
+  go (LayoutItem { component: Nothing }) = pure unit
+  go layoutItem@(LayoutItem
+    { component: (Just (LayoutItemComponent { span, name }))
+    }) = when (isNothing name) (throwDiagnostic span (LayoutComponentError layoutItem))
+
+sActions :: CollectionName -> CollectionActions -> SemanticM Unit
+sActions _ = traverse_ go
+  where
+  go action@(ActionItem
+    { span
+    , name
+    }) = do
+      when (isNothing name) (throwDiagnostic span (ActionError action))
+
 sLayout :: CollectionName -> CollectionLayout -> SemanticM Unit
 sLayout _ = traverse_ go
   where
-    go (LayoutItem { component: Nothing }) = pure unit
-    go layoutItem@(LayoutItem
-      { component: (Just (LayoutItemComponent { span, name }))
-      }) = when (isNothing name) (throwDiagnostic span (LayoutComponentError layoutItem))
+  go (LayoutItem { component: Nothing }) = pure unit
+  go layoutItem@(LayoutItem
+    { component: (Just (LayoutItemComponent { span, name }))
+    }) = when (isNothing name) (throwDiagnostic span (LayoutComponentError layoutItem))
 
 sSearch :: CollectionName -> CollectionSearch -> SemanticM Unit
 sSearch collectionName (CollectionSearch { indexes }) = sCheckIfPropertiesIsValid collectionName indexes
@@ -217,8 +237,8 @@ sSecurity functions = traverse_ go
     sLogging logging
     pure unit
 
-  sFunctionName span functionName@(PropertyName _ name) =
-    case L.find (\(FunctionItem _ (PropertyName _ function) _) -> function == name) functions of
+  sFunctionName span functionName@(FunctionName _ name) =
+    case L.find (\(FunctionItem _ (FunctionName _ function) _) -> function == name) functions of
       Just _ -> pure unit
       Nothing -> throwDiagnostic span (UndefinedFunction functionName)
 
@@ -324,36 +344,48 @@ sProperty collectionName property@(Property { type_ }) =
 sBooleanProperty :: Property -> SemanticM Unit
 sBooleanProperty = sAttributes'
   where
-    sAttributes' property@(Property { span, attributes })
-      | L.length attributes > 0 =
-        throwDiagnostic span (PropertyError property PropertyTypeDoesNotExpectAttributes)
-      | otherwise = pure unit
+    sAttributes' property' = sAttributes property' literalAttributes M.empty
+
+    literalAttributes =
+      M.fromFoldable
+        [ "default" /\ sType [TBoolean]
+        ]
 
 sArrayProperty :: CollectionName -> Property -> SemanticM Unit
 sArrayProperty collectionName = sAttributes'
   where
-    sAttributes' (Property { name, type_: (PArray span type'), attributes }) =
+    sAttributes' property@(Property { name, type_: (PArray span type'), attributes }) = do
+      sAttributes property literalAttributes M.empty
+      let attributes' = L.filter (\(Attribute _ (AttributeName _ attributeName) _) -> attributeName /= "default") attributes
       case type' of
-        object@(PObject _ _ _) -> sObjectProperty collectionName (Property { span, type_: object, attributes, name })
-        _               -> sProperty collectionName (Property { span, type_: type', attributes, name })
+        object@(PObject _ _ _)  -> sObjectProperty collectionName (Property { span, type_: object, attributes: attributes', name })
+        _                       -> sProperty collectionName (Property { span, type_: type', attributes: attributes' , name })
     sAttributes' property@(Property { span }) =
       throwDiagnostic span (PropertyError property PropertyTypeDoesNotExpectType)
+
+    literalAttributes =
+      M.fromFoldable
+        [ "default" /\ sType [TArray]
+        ]
 
 sObjectProperty :: CollectionName -> Property -> SemanticM Unit
 sObjectProperty (CollectionName _ collectionName) = sAttributes' 0
   where
-    sAttributes' idx property@(Property { span, type_, attributes })
-      | L.length attributes > 0 =
-        throwDiagnostic span (PropertyError property PropertyTypeDoesNotExpectAttributes)
-      | otherwise =
-        case type_ of
-          PObject _ required properties -> do
-            let objectName =  (CollectionName span (collectionName <> (show idx)))
-            context <- ask >>= extendContext objectName properties L.Nil
-            local (const context) $ do
-              sRequired objectName required
-              traverse_ (sProperty objectName) properties
-          _ -> throwDiagnostic span (PropertyError property PropertyTypeDoesNotExpectType)
+    sAttributes' idx property@(Property { span, type_ }) = do
+      sAttributes property literalAttributes M.empty
+      case type_ of
+        PObject _ required properties -> do
+          let objectName =  (CollectionName span (collectionName <> (show idx)))
+          context <- ask >>= extendContext objectName properties L.Nil
+          local (const context) $ do
+            sRequired objectName required
+            traverse_ (sProperty objectName) properties
+        _ -> throwDiagnostic span (PropertyError property PropertyTypeDoesNotExpectType)
+
+    literalAttributes =
+      M.fromFoldable
+        [ --"default" /\ sType []
+        ]
 
 sRefProperty :: CollectionName -> Property -> SemanticM Unit
 sRefProperty collectionName@(CollectionName span _) property = do
@@ -380,7 +412,7 @@ sRefProperty collectionName@(CollectionName span _) property = do
       sArrayType TProperty property' literal
       traverse_ collectionHasProperty' values
     sArrayType' property' literal =
-      throwDiagnostic (literalPos literal) (PropertyError property' (TypeMismatch [TArray] (typeOf literal)))
+      throwDiagnostic (literalPos literal) (PropertyError property' (TypeMismatch [] (typeOf literal)))
 
     collectionHasProperty' (LProperty span' propertyName) = do
       context <- ask
@@ -427,6 +459,7 @@ sEnumProperty property = sAttributes property literalAttributes M.empty
   literalAttributes =
     M.fromFoldable
       [ "options" /\ sArrayType TString
+      , "default" /\ sType [TString]
       ]
 
 sNumberProperty :: Property -> SemanticM Unit
@@ -438,6 +471,7 @@ sNumberProperty property = sAttributes property literalAttributes M.empty
       , "maximum" /\ sType [TFloat, TInteger]
       , "exclusiveMinimum" /\ sType [TFloat, TInteger]
       , "exclusiveMaximum" /\ sType [TFloat, TInteger]
+      , "default" /\ sType [TInteger, TFloat]
       ]
 
 typeOfArray :: L.List Literal -> Maybe Typ
@@ -476,6 +510,7 @@ sStringProperty property = sAttributes property literalAttributes M.empty
       , "format" /\ checkFormat
       , "type" /\ checkType
       , "mask" /\ checkMask
+      , "default" /\ sType [TString]
       ]
 
   checkFormat :: Property -> Literal -> SemanticM Unit

@@ -13,6 +13,19 @@ import Data.Show.Generic (genericShow)
 type Ident
   = String
 
+data FunctionName = FunctionName Span Ident
+
+derive instance genericFunctionName :: Generic FunctionName _
+
+instance showFunctionName :: Show FunctionName where
+  show = genericShow
+
+instance eqFunctionName :: Eq FunctionName where
+  eq = genericEq
+
+instance ordFunctionName :: Ord FunctionName where
+  compare = genericCompare
+
 data CollectionName
   = CollectionName Span Ident
 
@@ -431,7 +444,7 @@ type CollectionFunctions = List FunctionItem
 
 data FunctionItem = FunctionItem
   Span -- Span
-  PropertyName -- Function name
+  FunctionName -- Function name
   Boolean -- Custom function
 
 derive instance genericFunctionItem :: Generic FunctionItem _
@@ -446,7 +459,7 @@ type CollectionSecurity = List SecurityItem
 
 data SecurityItem = SecurityItem
   { span :: Span
-  , functionName :: PropertyName
+  , functionName :: FunctionName
   , rateLimiting :: Maybe SecurityRateLimiting
   , logging :: Maybe SecurityLogging
   }
@@ -498,6 +511,44 @@ instance showPresetItem :: Show PresetItem where
 instance eqPresetItem :: Eq PresetItem where
   eq = genericEq
 
+type CollectionActions = List ActionItem
+
+data ActionItem = ActionItem
+  { span :: Span
+  , actionName :: PropertyName
+  , name :: Maybe String
+  , icon :: Maybe String
+  , ask :: Maybe Boolean
+  , selection :: Maybe Boolean
+  , effect :: Maybe String
+  , button :: Maybe Boolean
+  , translate :: Maybe Boolean
+  , setItem :: Maybe Boolean
+  , fetchItem :: Maybe Boolean
+  , clearItem :: Maybe Boolean
+  , params :: Maybe Macro
+  , query :: Maybe Macro
+  , requires :: List RequireItem
+  }
+
+derive instance genericActionItem :: Generic ActionItem _
+
+instance showActionItem :: Show ActionItem where
+  show = genericShow
+
+instance eqActionItem :: Eq ActionItem where
+  eq = genericEq
+
+data RequireItem = RequireItem Span PropertyName
+
+derive instance genericRequireItem :: Generic RequireItem _
+
+instance showRequireItem :: Show RequireItem where
+  show = genericShow
+
+instance eqRequireItem :: Eq RequireItem where
+  eq = genericEq
+
 data CollectionTemporary =
   CollectionTemporary
     { index :: PropertyName
@@ -512,6 +563,8 @@ instance showCollectionTemporary :: Show CollectionTemporary where
 instance eqCollectionTemporary :: Eq CollectionTemporary where
   eq = genericEq
 
+type CollectionFormLayout = List LayoutItem
+
 data Collection
   = Collection
     { span :: Span
@@ -524,6 +577,7 @@ data Collection
     , presets :: CollectionPresets
     , writable :: CollectionWritable
     , functions :: CollectionFunctions
+    , actions :: CollectionActions
     , security :: CollectionSecurity
     , properties :: CollectionProperties
     , required :: CollectionRequired
@@ -535,6 +589,7 @@ data Collection
     , filtersPresets :: CollectionFiltersPresets
     , indexes :: CollectionIndexes
     , layout :: CollectionLayout
+    , formLayout :: CollectionFormLayout
     , search :: Maybe CollectionSearch
     }
 

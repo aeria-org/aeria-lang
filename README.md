@@ -15,12 +15,12 @@
     - [X] `LiteralProperty`
     - [X] `GetterProperty`
   - [ ] description
-    - [ ] `actions`
-    - [ ] `defaults`
+    - [x] `actions`
+    - [x] `defaults`
     - [x] `filters`
     - [x] `filtersPresets`
     - [x] `form`
-    - [ ] `formLayout`
+    - [x] `formLayout`
     - [x] `icon`
     - [x] `immutable`
     - [x] `indexes`

@@ -2,7 +2,7 @@ module Aeria.Semantic.Error where
 
 import Prelude
 
-import Aeria.Syntax.Tree (AttributeName(..), CollectionName(..), Expr, FiltersPresetsItem, Ident, LayoutItem, Property(..), PropertyName(..), Typ)
+import Aeria.Syntax.Tree (ActionItem(..), AttributeName(..), CollectionName(..), Expr, FiltersPresetsItem, FunctionName(..), Ident, LayoutItem, Property(..), PropertyName(..), Typ)
 import Data.Generic.Rep (class Generic)
 import Data.List as L
 import Data.String.Utils (ucfirst)
@@ -44,7 +44,8 @@ data SemanticError
   | PropertyError Property PropertyError
   | FiltersPresetsError FiltersPresetsItem
   | LayoutComponentError LayoutItem
-  | UndefinedFunction PropertyName
+  | ActionError ActionItem
+  | UndefinedFunction FunctionName
   | UndefinedStrategy String
 
 derive instance genericSemanticError :: Generic SemanticError _
@@ -55,7 +56,8 @@ instance showSemanticError :: Show SemanticError where
   show (PropertyError (Property { name }) propErr) = "Error in property \"" <> ppPropertyName name <> "\": " <> show propErr
   show (FiltersPresetsError _) = "\"Filters\" is required"
   show (LayoutComponentError _) = "\"Component name\" is required"
-  show (UndefinedFunction (PropertyName _ name)) = "Undefined function: \"" <> name <> "\""
+  show (ActionError _) = "\"Action name\" is required"
+  show (UndefinedFunction (FunctionName _ name)) = "Undefined function: \"" <> name <> "\""
   show (UndefinedStrategy strategy) = "Undefined strategy: \"" <> strategy <> "\""
   show (PropertyIsAlreadyInUse _) = "PropertyIsAlreadyInUse"
 

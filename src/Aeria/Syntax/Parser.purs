@@ -7,7 +7,7 @@ import Prelude hiding (between)
 import Aeria.Diagnostic.Message (Diagnostic(..), DiagnosticInfo(..))
 import Aeria.Diagnostic.Position (SourcePos(..), Span(..))
 import Aeria.Syntax.Error (SyntaxError(..))
-import Aeria.Syntax.Tree (Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableMetaItem(..), WritableItem(..))
+import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableMetaItem(..), WritableItem(..))
 import Control.Lazy (fix)
 import Data.Array as A
 import Data.Either (Either(..))
@@ -78,6 +78,14 @@ pPropertyName = do
   rest <- lang.identifier
   end <- sourcePos
   pure (PropertyName (Span begin end) (concatChar char rest))
+
+pFunctionName :: ParserM FunctionName
+pFunctionName = do
+  begin <- sourcePos
+  char <- lower
+  rest <- lang.identifier
+  end <- sourcePos
+  pure (FunctionName (Span begin end) (concatChar char rest))
 
 pCollectionName :: ParserM CollectionName
 pCollectionName = do
@@ -330,15 +338,13 @@ pGetter :: ParserM Getter
 pGetter = do
   begin <- sourcePos
   name <- pPropertyName
-  beginmacro <- sourcePos
-  lang.reserved "@js (doc) =>"
-  code <- manyTill anyChar (lang.reserved "@end")
+  macro <- pMacro "@js (doc) =>"
   end <- sourcePos
   pure
     $ Getter
         { span: (Span begin end)
         , name
-        , macro: Macro (Span beginmacro end) (fromCharArray <<< toUnfoldable $ code)
+        , macro
         }
 
 pCollectionProperties :: ParserM CollectionProperties
@@ -368,10 +374,10 @@ pCollectionFunctions = lang.braces (many (try item))
   where
     item = do
       begin <- sourcePos
-      propertyName <- pPropertyName
+      functionName <- pFunctionName
       custom <- optionMaybe $ lang.reserved "?"
       end <- sourcePos
-      pure $ FunctionItem (Span begin end) propertyName (isJust custom)
+      pure $ FunctionItem (Span begin end) functionName (isJust custom)
 
 pCollectionWritable :: ParserM CollectionWritable
 pCollectionWritable = pListProperty WritableItem
@@ -409,8 +415,8 @@ pCollectionSecurity :: ParserM CollectionSecurity
 pCollectionSecurity = lang.braces $ many (try go)
   where
   go = do
-    name <- pPropertyName
-    lang.braces (pSecutiryItem name)
+    functionName <- pFunctionName
+    lang.braces (pSecutiryItem functionName)
 
   pSecutiryItem name = do
     begin <- sourcePos
@@ -502,21 +508,86 @@ pCollectionFiltersPresets = lang.braces $ many (try go)
 
   pLabel = pPropertyParser "name" lang.stringLiteral
   pBadgeFunction = pPropertyParser "badgeFunction" lang.stringLiteral
-  pFilters = pPropertyParser "filters" $ do
-    begin <- sourcePos
-    lang.reserved "@mongo"
-    code <- manyTill anyChar (lang.reserved "@end")
-    end <- sourcePos
-    pure $ Macro (Span begin end) (fromCharArray <<< toUnfoldable $ code)
+  pFilters = pPropertyParser "filters" (pMacro "@mongo")
 
-pCollectionLayout :: ParserM CollectionLayout
-pCollectionLayout = lang.braces $ many (try go)
+pCollectionActions :: ParserM CollectionActions
+pCollectionActions = lang.braces $ many (try go)
   where
   go = do
     name <- pPropertyName
-    lang.braces (pLayoutItem name)
+    lang.braces (pActionItem name)
 
-  pLayoutItem name = do
+  pActionItem actionName = do
+    begin <- sourcePos
+    results <- runParsers allParsers
+    let name = unsafeCoerce $ getParserValue "name" results
+    let icon = unsafeCoerce $ getParserValue "icon" results
+    let ask = unsafeCoerce $ getParserValue "ask" results
+    let selection = unsafeCoerce $ getParserValue "selection" results
+    let effect = unsafeCoerce $ getParserValue "effect" results
+    let button = unsafeCoerce $ getParserValue "button" results
+    let translate = unsafeCoerce $ getParserValue "translate" results
+    let setItem = unsafeCoerce $ getParserValue "setItem" results
+    let fetchItem = unsafeCoerce $ getParserValue "fetchItem" results
+    let clearItem = unsafeCoerce $ getParserValue "clearItem" results
+    let params = unsafeCoerce $ getParserValue "params" results
+    let query = unsafeCoerce $ getParserValue "query" results
+    let requires = unsafeCoerce $ getParserValue "requires" results
+    end <- sourcePos
+    pure $ ActionItem
+      { span: (Span begin end)
+      , actionName
+      , name
+      , icon
+      , ask
+      , selection
+      , effect
+      , button
+      , translate
+      , setItem
+      , fetchItem
+      , clearItem
+      , params
+      , query
+      , requires: fromMaybe L.Nil requires
+      }
+
+  pName = pPropertyParser "name" lang.stringLiteral
+  pIcon = pPropertyParser "icon" lang.stringLiteral
+  pAsk = pPropertyParser "ask" pBoolean
+  pSelection = pPropertyParser "selection" pBoolean
+  pEffect = pPropertyParser "effect" lang.stringLiteral
+  pButton = pPropertyParser "button" pBoolean
+  pTranslate = pPropertyParser "translate" pBoolean
+  pSetItem = pPropertyParser "setItem" pBoolean
+  pFetchItem = pPropertyParser "fetchItem" pBoolean
+  pClearItem = pPropertyParser "clearItem" pBoolean
+  pParams = pPropertyParser "params" (pMacro "@js () =>")
+  pQuery = pPropertyParser "query" (pMacro "@js () =>")
+  pRequires = pPropertyParser "requires" (pListProperty RequireItem)
+
+  allParsers =
+    [ "name" /\ (unsafeCoerce pName)
+    , "icon" /\ (unsafeCoerce pIcon)
+    , "ask" /\ (unsafeCoerce pAsk)
+    , "selection" /\ (unsafeCoerce pSelection)
+    , "effect" /\ (unsafeCoerce pEffect)
+    , "button" /\ (unsafeCoerce pButton)
+    , "translate" /\ (unsafeCoerce pTranslate)
+    , "setItem" /\ (unsafeCoerce pSetItem)
+    , "fetchItem" /\ (unsafeCoerce pFetchItem)
+    , "clearItem" /\ (unsafeCoerce pClearItem)
+    , "params" /\ (unsafeCoerce pParams)
+    , "query" /\ (unsafeCoerce pQuery)
+    , "requires" /\ (unsafeCoerce pRequires)
+    ]
+
+pLayoutItem :: ParserM LayoutItem
+pLayoutItem = do
+  name <- pPropertyName
+  lang.braces (go name)
+  where
+  go name = do
     begin <- sourcePos
     results <- runParsers allParsers
     let verticalSpacing = unsafeCoerce $ getParserValue "verticalSpacing" results
@@ -568,12 +639,22 @@ pCollectionLayout = lang.braces $ many (try go)
         ]
 
       pName = pPropertyParser "name" lang.stringLiteral
-      pProps = pPropertyParser "props" $ do
-        begin <- sourcePos
-        lang.reserved "@js () =>"
-        code <- manyTill anyChar (lang.reserved "@end")
-        end <- sourcePos
-        pure $ Macro (Span begin end) (fromCharArray <<< toUnfoldable $ code)
+      pProps = pPropertyParser "props" (pMacro "@js () =>")
+
+
+pCollectionLayout :: ParserM CollectionLayout
+pCollectionLayout = lang.braces $ many (try pLayoutItem)
+
+pCollectionFormLayout :: ParserM CollectionFormLayout
+pCollectionFormLayout = lang.braces $ many (try pLayoutItem)
+
+pMacro :: String -> ParserM Macro
+pMacro prefix = do
+  begin <- sourcePos
+  lang.reserved prefix
+  code <- manyTill anyChar (lang.reserved "@end")
+  end <- sourcePos
+  pure $ Macro (Span begin end) (fromCharArray <<< toUnfoldable $ code)
 
 pCollectionTemporary :: ParserM CollectionTemporary
 pCollectionTemporary = lang.braces $ do
@@ -617,6 +698,8 @@ pCollection = go
     let security = unsafeCoerce $ getParserValue "security" results
     let presets = unsafeCoerce $ getParserValue "presets" results
     let temporary = unsafeCoerce $ getParserValue "temporary" results
+    let actions = unsafeCoerce $ getParserValue "actions" results
+    let formLayout = unsafeCoerce $ getParserValue "formLayout" results
     end <- sourcePos
     pure
       $ Collection
@@ -628,6 +711,8 @@ pCollection = go
           , search
           , immutable
           , temporary
+          , actions: fromMaybe L.Nil actions
+          , formLayout: fromMaybe L.Nil formLayout
           , presets: fromMaybe L.Nil presets
           , security: fromMaybe L.Nil security
           , functions: fromMaybe L.Nil functions
@@ -665,6 +750,8 @@ pCollection = go
     , "security"        /\ (unsafeCoerce pCollectionSecurity')
     , "presets"         /\ (unsafeCoerce pCollectionPresets')
     , "temporary"       /\ (unsafeCoerce pCollectionTemporary')
+    , "actions"         /\ (unsafeCoerce pCollectionActions')
+    , "formLayout"      /\ (unsafeCoerce pCollectionFormLayout')
     ]
 
   pCollectionTableMeta'       = pPropertyParser "tableMeta" pCollectionTableMeta
@@ -687,6 +774,8 @@ pCollection = go
   pCollectionSecurity'        = pPropertyParser "security" pCollectionSecurity
   pCollectionPresets'         = pPropertyParser "presets" pCollectionPresets
   pCollectionTemporary'       = pPropertyParser "temporary" pCollectionTemporary
+  pCollectionActions'         = pPropertyParser "actions" pCollectionActions
+  pCollectionFormLayout'      = pPropertyParser "formLayout" pCollectionFormLayout
 
 getParserValue :: forall a. String -> Array (String /\ a) -> Maybe a
 getParserValue key results =
