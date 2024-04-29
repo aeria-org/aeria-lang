@@ -1,11 +1,1 @@
-(Program {
-  collections:
-    ((Collection
-      { getters: Nil
-      , name: (CollectionName "user")
-      , properties:
-        ((Property { attributes: Nil, name: (PropertyName "first_name"), type_: PString }) :
-         (Property { attributes: Nil, name: (PropertyName "last_name"), type_: PString }) : Nil)
-      , required: Nil
-      , table: Nil
-      }) : Nil) })
+(Program{collections:Nil})
