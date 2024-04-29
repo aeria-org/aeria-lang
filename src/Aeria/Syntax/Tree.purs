@@ -539,6 +539,8 @@ instance showActionItem :: Show ActionItem where
 instance eqActionItem :: Eq ActionItem where
   eq = genericEq
 
+type CollectionIndividualActions = List ActionItem
+
 data RequireItem = RequireItem Span PropertyName
 
 derive instance genericRequireItem :: Generic RequireItem _
@@ -578,6 +580,7 @@ data Collection
     , writable :: CollectionWritable
     , functions :: CollectionFunctions
     , actions :: CollectionActions
+    , individualActions :: CollectionIndividualActions
     , security :: CollectionSecurity
     , properties :: CollectionProperties
     , required :: CollectionRequired

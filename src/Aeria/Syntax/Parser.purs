@@ -7,7 +7,7 @@ import Prelude hiding (between)
 import Aeria.Diagnostic.Message (Diagnostic(..), DiagnosticInfo(..))
 import Aeria.Diagnostic.Position (SourcePos(..), Span(..))
 import Aeria.Syntax.Error (SyntaxError(..))
-import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableMetaItem(..), WritableItem(..))
+import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableMetaItem(..), WritableItem(..), CollectionIndividualActions)
 import Control.Lazy (fix)
 import Data.Array as A
 import Data.Either (Either(..))
@@ -511,13 +511,17 @@ pCollectionFiltersPresets = lang.braces $ many (try go)
   pFilters = pPropertyParser "filters" (pMacro "@mongo")
 
 pCollectionActions :: ParserM CollectionActions
-pCollectionActions = lang.braces $ many (try go)
-  where
-  go = do
-    name <- pPropertyName
-    lang.braces (pActionItem name)
+pCollectionActions = lang.braces $ many (try pActionItem)
 
-  pActionItem actionName = do
+pCollectionIndividualActions :: ParserM CollectionIndividualActions
+pCollectionIndividualActions = lang.braces $ many (try pActionItem)
+
+pActionItem :: ParserM ActionItem
+pActionItem = do
+  name <- pPropertyName
+  lang.braces (go name)
+  where
+  go actionName = do
     begin <- sourcePos
     results <- runParsers allParsers
     let name = unsafeCoerce $ getParserValue "name" results
@@ -641,7 +645,6 @@ pLayoutItem = do
       pName = pPropertyParser "name" lang.stringLiteral
       pProps = pPropertyParser "props" (pMacro "@js () =>")
 
-
 pCollectionLayout :: ParserM CollectionLayout
 pCollectionLayout = lang.braces $ many (try pLayoutItem)
 
@@ -700,6 +703,7 @@ pCollection = go
     let temporary = unsafeCoerce $ getParserValue "temporary" results
     let actions = unsafeCoerce $ getParserValue "actions" results
     let formLayout = unsafeCoerce $ getParserValue "formLayout" results
+    let individualActions = unsafeCoerce $ getParserValue "individualActions" results
     end <- sourcePos
     pure
       $ Collection
@@ -726,56 +730,59 @@ pCollection = go
           , form: fromMaybe L.Nil form
           , indexes: fromMaybe L.Nil indexes
           , filtersPresets: fromMaybe L.Nil filtersPresets
+          , individualActions: fromMaybe L.Nil individualActions
           , layout: fromMaybe L.Nil layout
           }
 
   allParsers =
-    [ "tableMeta"       /\ (unsafeCoerce pCollectionTableMeta')
-    , "properties"      /\ (unsafeCoerce pCollectionProperties')
-    , "required"        /\ (unsafeCoerce pCollectionRequired')
-    , "filters"         /\ (unsafeCoerce pCollectionFilters')
-    , "getters"         /\ (unsafeCoerce pCollectionGetters')
-    , "indexes"         /\ (unsafeCoerce pCollectionIndexes')
-    , "table"           /\ (unsafeCoerce pCollectionTable')
-    , "form"            /\ (unsafeCoerce pCollectionForm')
-    , "icon"            /\ (unsafeCoerce pCollectionIcon')
-    , "search"          /\ (unsafeCoerce pCollectionSearch')
-    , "filtersPresets"  /\ (unsafeCoerce pCollectionFiltersPresets')
-    , "layout"          /\ (unsafeCoerce pCollectionLayout')
-    , "owned"           /\ (unsafeCoerce pCollectionOwned')
-    , "timestamps"      /\ (unsafeCoerce pCollectionTimestamps')
-    , "functions"       /\ (unsafeCoerce pCollectionFunctions')
-    , "writable"        /\ (unsafeCoerce pCollectionWritable')
-    , "immutable"       /\ (unsafeCoerce pCollectionImmutable')
-    , "security"        /\ (unsafeCoerce pCollectionSecurity')
-    , "presets"         /\ (unsafeCoerce pCollectionPresets')
-    , "temporary"       /\ (unsafeCoerce pCollectionTemporary')
-    , "actions"         /\ (unsafeCoerce pCollectionActions')
-    , "formLayout"      /\ (unsafeCoerce pCollectionFormLayout')
+    [ "tableMeta"         /\ (unsafeCoerce pCollectionTableMeta')
+    , "properties"        /\ (unsafeCoerce pCollectionProperties')
+    , "required"          /\ (unsafeCoerce pCollectionRequired')
+    , "filters"           /\ (unsafeCoerce pCollectionFilters')
+    , "getters"           /\ (unsafeCoerce pCollectionGetters')
+    , "indexes"           /\ (unsafeCoerce pCollectionIndexes')
+    , "table"             /\ (unsafeCoerce pCollectionTable')
+    , "form"              /\ (unsafeCoerce pCollectionForm')
+    , "icon"              /\ (unsafeCoerce pCollectionIcon')
+    , "search"            /\ (unsafeCoerce pCollectionSearch')
+    , "filtersPresets"    /\ (unsafeCoerce pCollectionFiltersPresets')
+    , "layout"            /\ (unsafeCoerce pCollectionLayout')
+    , "owned"             /\ (unsafeCoerce pCollectionOwned')
+    , "timestamps"        /\ (unsafeCoerce pCollectionTimestamps')
+    , "functions"         /\ (unsafeCoerce pCollectionFunctions')
+    , "writable"          /\ (unsafeCoerce pCollectionWritable')
+    , "immutable"         /\ (unsafeCoerce pCollectionImmutable')
+    , "security"          /\ (unsafeCoerce pCollectionSecurity')
+    , "presets"           /\ (unsafeCoerce pCollectionPresets')
+    , "temporary"         /\ (unsafeCoerce pCollectionTemporary')
+    , "actions"           /\ (unsafeCoerce pCollectionActions')
+    , "formLayout"        /\ (unsafeCoerce pCollectionFormLayout')
+    , "individualActions" /\ (unsafeCoerce pCollectionIndividualActions')
     ]
 
-  pCollectionTableMeta'       = pPropertyParser "tableMeta" pCollectionTableMeta
-  pCollectionProperties'      = pPropertyParser "properties" pCollectionProperties
-  pCollectionRequired'        = pPropertyParser "required" pCollectionRequired
-  pCollectionFilters'         = pPropertyParser "filters" pCollectionFilters
-  pCollectionGetters'         = pPropertyParser "getters" pCollectionGetters
-  pCollectionIndexes'         = pPropertyParser "indeParser" pCollectionIndexes
-  pCollectionTable'           = pPropertyParser "table" pCollectionTable
-  pCollectionForm'            = pPropertyParser "form" pCollectionForm
-  pCollectionIcon'            = pPropertyParser "icon" pCollectionIcon
-  pCollectionSearch'          = pPropertyParser "search" pCollectionSearch
-  pCollectionFiltersPresets'  = pPropertyParser "filtersPresets" pCollectionFiltersPresets
-  pCollectionLayout'          = pPropertyParser "layout" pCollectionLayout
-  pCollectionOwned'           = pPropertyParser "owned" pCollectionOwned
-  pCollectionTimestamps'      = pPropertyParser "timestamps" pCollectionTimestamps
-  pCollectionFunctions'       = pPropertyParser "functions" pCollectionFunctions
-  pCollectionWritable'        = pPropertyParser "writable" pCollectionWritable
-  pCollectionImmutable'       = pPropertyParser "immutable" pCollectionImmutable
-  pCollectionSecurity'        = pPropertyParser "security" pCollectionSecurity
-  pCollectionPresets'         = pPropertyParser "presets" pCollectionPresets
-  pCollectionTemporary'       = pPropertyParser "temporary" pCollectionTemporary
-  pCollectionActions'         = pPropertyParser "actions" pCollectionActions
-  pCollectionFormLayout'      = pPropertyParser "formLayout" pCollectionFormLayout
+  pCollectionTableMeta'         = pPropertyParser "tableMeta" pCollectionTableMeta
+  pCollectionProperties'        = pPropertyParser "properties" pCollectionProperties
+  pCollectionRequired'          = pPropertyParser "required" pCollectionRequired
+  pCollectionFilters'           = pPropertyParser "filters" pCollectionFilters
+  pCollectionGetters'           = pPropertyParser "getters" pCollectionGetters
+  pCollectionIndexes'           = pPropertyParser "indeParser" pCollectionIndexes
+  pCollectionTable'             = pPropertyParser "table" pCollectionTable
+  pCollectionForm'              = pPropertyParser "form" pCollectionForm
+  pCollectionIcon'              = pPropertyParser "icon" pCollectionIcon
+  pCollectionSearch'            = pPropertyParser "search" pCollectionSearch
+  pCollectionFiltersPresets'    = pPropertyParser "filtersPresets" pCollectionFiltersPresets
+  pCollectionLayout'            = pPropertyParser "layout" pCollectionLayout
+  pCollectionOwned'             = pPropertyParser "owned" pCollectionOwned
+  pCollectionTimestamps'        = pPropertyParser "timestamps" pCollectionTimestamps
+  pCollectionFunctions'         = pPropertyParser "functions" pCollectionFunctions
+  pCollectionWritable'          = pPropertyParser "writable" pCollectionWritable
+  pCollectionImmutable'         = pPropertyParser "immutable" pCollectionImmutable
+  pCollectionSecurity'          = pPropertyParser "security" pCollectionSecurity
+  pCollectionPresets'           = pPropertyParser "presets" pCollectionPresets
+  pCollectionTemporary'         = pPropertyParser "temporary" pCollectionTemporary
+  pCollectionActions'           = pPropertyParser "actions" pCollectionActions
+  pCollectionIndividualActions' = pPropertyParser "individualActions" pCollectionIndividualActions
+  pCollectionFormLayout'        = pPropertyParser "formLayout" pCollectionFormLayout
 
 getParserValue :: forall a. String -> Array (String /\ a) -> Maybe a
 getParserValue key results =

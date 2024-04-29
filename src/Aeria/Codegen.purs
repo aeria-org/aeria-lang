@@ -136,6 +136,7 @@ cCollection (Collection
   , writable
   , security
   , actions
+  , individualActions
   , presets
   , temporary
   , functions
@@ -168,6 +169,7 @@ cCollection (Collection
         , temporaryDescription
         , searchDescription
         , immutableDescription
+        , individualActionsDescription
         , filtersPresetsDescription
         , actionsDescription
         , layoutDescription
@@ -179,24 +181,25 @@ cCollection (Collection
     , Js.objectProperty2 "properties" (cCollectionProperties properties getters)
     ]
 
-  iconDescription           = collectionPropertyM "icon" cIcon icon
-  ownedDescription          = collectionPropertyM "owned" cOwned owned
-  timestampsDescription     = collectionPropertyM "timestamps" cTimestamps timestamps
-  searchDescription         = collectionPropertyM "search" cSearch search
-  immutableDescription      = collectionPropertyM "immutable" cImmutable immutable
-  temporaryDescription      = collectionPropertyM "temporary" cTemporary temporary
-  formDescription           = collectionPropertyL "form" cForm form
-  tableDescription          = collectionPropertyL "table" cTable table
-  layoutDescription         = collectionPropertyL "layout" cLayout layout
-  formLayoutDescription     = collectionPropertyL "formLayout" cLayout formLayout
-  actionsDescription        = collectionPropertyL "actions" cActions actions
-  filtersDescription        = collectionPropertyL "filters" cFilters filters
-  indexesDescription        = collectionPropertyL "indexes" cIndexes indexes
-  presetsDescription        = collectionPropertyL "presets" cPresets presets
-  writableDescription       = collectionPropertyL "writable" cWritable writable
-  requiredDescription       = collectionPropertyL "required" cRequired required
-  tableMetaDescription      = collectionPropertyL "tableMeta" cTableMeta tableMeta
-  filtersPresetsDescription = collectionPropertyL "filtersPresets" cFiltersPresets filtersPresets
+  iconDescription               = collectionPropertyM "icon" cIcon icon
+  ownedDescription              = collectionPropertyM "owned" cOwned owned
+  timestampsDescription         = collectionPropertyM "timestamps" cTimestamps timestamps
+  searchDescription             = collectionPropertyM "search" cSearch search
+  immutableDescription          = collectionPropertyM "immutable" cImmutable immutable
+  temporaryDescription          = collectionPropertyM "temporary" cTemporary temporary
+  formDescription               = collectionPropertyL "form" cForm form
+  tableDescription              = collectionPropertyL "table" cTable table
+  layoutDescription             = collectionPropertyL "layout" cLayout layout
+  formLayoutDescription         = collectionPropertyL "formLayout" cLayout formLayout
+  actionsDescription            = collectionPropertyL "actions" cActions actions
+  individualActionsDescription  = collectionPropertyL "individualActions" cActions individualActions
+  filtersDescription            = collectionPropertyL "filters" cFilters filters
+  indexesDescription            = collectionPropertyL "indexes" cIndexes indexes
+  presetsDescription            = collectionPropertyL "presets" cPresets presets
+  writableDescription           = collectionPropertyL "writable" cWritable writable
+  requiredDescription           = collectionPropertyL "required" cRequired required
+  tableMetaDescription          = collectionPropertyL "tableMeta" cTableMeta tableMeta
+  filtersPresetsDescription     = collectionPropertyL "filtersPresets" cFiltersPresets filtersPresets
 
 collectionPropertyM :: forall a. String -> (a -> Js.JsTree) -> Maybe a -> Array Js.JsObjectProperty
 collectionPropertyM k f x =
