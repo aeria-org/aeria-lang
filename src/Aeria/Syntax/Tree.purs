@@ -3,6 +3,7 @@ module Aeria.Syntax.Tree where
 import Prelude
 
 import Aeria.Diagnostic.Position (Span)
+import Data.Either (Either)
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.List (List)
@@ -446,6 +447,7 @@ data FunctionItem = FunctionItem
   Span -- Span
   FunctionName -- Function name
   Boolean -- Custom function
+  Boolean -- Exposed function
 
 derive instance genericFunctionItem :: Generic FunctionItem _
 
@@ -516,7 +518,7 @@ type CollectionActions = List ActionItem
 data ActionItem = ActionItem
   { span :: Span
   , actionName :: PropertyName
-  , name :: Maybe String
+  , label :: Maybe String
   , icon :: Maybe String
   , ask :: Maybe Boolean
   , selection :: Maybe Boolean
@@ -567,6 +569,50 @@ instance eqCollectionTemporary :: Eq CollectionTemporary where
 
 type CollectionFormLayout = List LayoutItem
 
+type CollectionTableLayout = List TableLayoutItem
+
+data TableLayoutItem = TableLayoutItem
+  { span :: Span
+  , actionName :: PropertyName
+  , route :: Maybe String
+  , button :: Maybe (Either Boolean Cond)
+  , if_ :: Maybe Cond
+  , action :: ActionItem
+  }
+
+derive instance genericTableLayoutItem :: Generic TableLayoutItem _
+
+instance showTableLayoutItem :: Show TableLayoutItem where
+  show = genericShow
+
+instance eqTableLayoutItem :: Eq TableLayoutItem where
+  eq = genericEq
+
+type CollectionPreferred = List PreferredItem
+
+data PreferredItem = PreferredItem
+  { span :: Span
+  , role :: String
+  , tableMeta :: CollectionTableMeta
+  , actions :: CollectionActions
+  , individualActions :: CollectionIndividualActions
+  , filters :: CollectionFilters
+  , filtersPresets :: CollectionFiltersPresets
+  , layout :: CollectionLayout
+  , table :: CollectionTable
+  , form :: CollectionForm
+  , tableLayout :: CollectionTableLayout
+  , formLayout :: CollectionFormLayout
+  }
+
+derive instance genericPreferredItem :: Generic PreferredItem _
+
+instance showPreferredItem :: Show PreferredItem where
+  show = genericShow
+
+instance eqPreferredItem :: Eq PreferredItem where
+  eq = genericEq
+
 data Collection
   = Collection
     { span :: Span
@@ -576,8 +622,10 @@ data Collection
     , timestamps :: Maybe CollectionTimestamps
     , immutable :: Maybe CollectionImmutable
     , temporary :: Maybe CollectionTemporary
+    , preferred :: CollectionPreferred
     , presets :: CollectionPresets
     , writable :: CollectionWritable
+    , tableLayout :: CollectionTableLayout
     , functions :: CollectionFunctions
     , actions :: CollectionActions
     , individualActions :: CollectionIndividualActions

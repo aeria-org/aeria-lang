@@ -78,6 +78,9 @@ instance eqJsTree :: Eq JsTree where
 objectProperty2 :: String -> JsTree -> JsObjectProperty
 objectProperty2 ident tree = JsObjectProperty2 (identifier ident) tree
 
+objectProperty2' :: JsTree -> JsTree -> JsObjectProperty
+objectProperty2' key tree = JsObjectProperty2 key tree
+
 objectProperty1 :: String -> JsObjectProperty
 objectProperty1 ident = JsObjectProperty1 (identifier ident)
 

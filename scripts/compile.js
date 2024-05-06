@@ -14,10 +14,10 @@ async function main() {
     }
     const [filepath, outputpath, module_] = args;
 
-    console.log("[info] Compiling schema...");
+    console.log("[info] Compiling schema");
     await execp(`npx spago run -b "${filepath} ${outputpath} ${module_}"`);
 
-    console.log("[info] Generating package.json...");
+    console.log("[info] Generating package.json");
     await execp(`node ./scripts/package.js ${outputpath}`);
   } catch (error) {
     console.log(error);

@@ -5,9 +5,10 @@ import Prelude
 import Aeria.Codegen.Javascript.Tree as Js
 import Aeria.Codegen.Type (codegenType)
 import Aeria.Codegen.Typescript.Tree as Ts
-import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Attributes, Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableMetaItem(..), WritableItem(..))
+import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Attributes, Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPreferred, CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PreferredItem(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), WritableItem(..))
 import Control.Lazy (fix)
-import Data.Array (concat, union)
+import Data.Array (concat, head, union)
+import Data.Either (Either(..))
 import Data.List as L
 import Data.Maybe (Maybe(..), isNothing)
 import Data.String.Utils (ucfirst)
@@ -25,8 +26,8 @@ codegen (Program { collections }) = map go collections
 
     functionNames = L.toUnfoldable $
       functions
-        # L.filter (\(FunctionItem _ _ custom) -> not custom)
-        # map (\(FunctionItem _ functionName _) -> getFunctionName functionName)
+        # L.filter (\(FunctionItem _ _ custom _) -> not custom)
+        # map (\(FunctionItem _ functionName _ _) -> getFunctionName functionName)
 
     tsFile =
       Ts.statements
@@ -133,7 +134,9 @@ cCollection (Collection
   , formLayout
   , filtersPresets
   , layout
+  , tableLayout
   , writable
+  , preferred
   , security
   , actions
   , individualActions
@@ -145,10 +148,12 @@ cCollection (Collection
 ) = collectionProperties
     [ collectionDescription
     , collectionFunctions
+    , collectionExposedFunctions
     , collectionSecurity
     ]
   where
   collectionFunctions = collectionPropertyL "functions" cFunctions functions
+  collectionExposedFunctions = collectionPropertyL "exposedFunctions" cExposedFunctions functions
   collectionSecurity = collectionPropertyL "security" cSecurity security
   collectionDescription =
     [ Js.objectProperty2 "description" $
@@ -166,6 +171,8 @@ cCollection (Collection
         , presetsDescription
         , formLayoutDescription
         , indexesDescription
+        , tableLayoutDescription
+        , preferredDescription
         , temporaryDescription
         , searchDescription
         , immutableDescription
@@ -190,6 +197,7 @@ cCollection (Collection
   formDescription               = collectionPropertyL "form" cForm form
   tableDescription              = collectionPropertyL "table" cTable table
   layoutDescription             = collectionPropertyL "layout" cLayout layout
+  tableLayoutDescription        = collectionPropertyL "tableLayout" cTableLayout tableLayout
   formLayoutDescription         = collectionPropertyL "formLayout" cLayout formLayout
   actionsDescription            = collectionPropertyL "actions" cActions actions
   individualActionsDescription  = collectionPropertyL "individualActions" cActions individualActions
@@ -200,6 +208,7 @@ cCollection (Collection
   requiredDescription           = collectionPropertyL "required" cRequired required
   tableMetaDescription          = collectionPropertyL "tableMeta" cTableMeta tableMeta
   filtersPresetsDescription     = collectionPropertyL "filtersPresets" cFiltersPresets filtersPresets
+  preferredDescription          = collectionPropertyL "preferred" cPreferred preferred
 
 collectionPropertyM :: forall a. String -> (a -> Js.JsTree) -> Maybe a -> Array Js.JsObjectProperty
 collectionPropertyM k f x =
@@ -272,6 +281,40 @@ cIndexes indexes = cPropertyNameL (map (\(IndexesItem _ propertyName) -> propert
 cWritable :: CollectionWritable -> Js.JsTree
 cWritable writable = cPropertyNameL (map (\(WritableItem _ propertyName) -> propertyName) writable)
 
+cPreferred :: CollectionPreferred -> Js.JsTree
+cPreferred preferred =
+  map go preferred
+    # L.toUnfoldable
+    # Js.object
+  where
+  go (PreferredItem
+    { role
+    , tableMeta
+    , actions
+    , individualActions
+    , filters
+    , filtersPresets
+    , layout
+    , table
+    , form
+    , tableLayout
+    , formLayout
+    }) =
+      Js.objectProperty2 role
+        ( collectionProperties
+          [ collectionPropertyL "tableMeta" cTableMeta tableMeta
+          , collectionPropertyL "form" cForm form
+          , collectionPropertyL "table" cTable table
+          , collectionPropertyL "layout" cLayout layout
+          , collectionPropertyL "tableLayout" cTableLayout tableLayout
+          , collectionPropertyL "formLayout" cLayout formLayout
+          , collectionPropertyL "actions" cActions actions
+          , collectionPropertyL "individualActions" cActions individualActions
+          , collectionPropertyL "filters" cFilters filters
+          , collectionPropertyL "filtersPresets" cFiltersPresets filtersPresets
+          ]
+        )
+
 cActions :: CollectionActions -> Js.JsTree
 cActions actions =
   map go actions
@@ -279,8 +322,8 @@ cActions actions =
     # Js.object
   where
     go (ActionItem
-    { actionName: (PropertyName _ actionName)
-    , name
+    { actionName
+    , label
     , icon
     , ask
     , selection
@@ -294,9 +337,9 @@ cActions actions =
     , query
     , requires
     }) =
-      Js.objectProperty2 actionName $
+      Js.objectProperty2 (getPropertyName actionName) $
         collectionProperties
-          [ collectionPropertyM "name" Js.string name
+          [ collectionPropertyM "label" Js.string label
           , collectionPropertyM "icon" Js.string icon
           , collectionPropertyM "ask" Js.boolean ask
           , collectionPropertyM "selection" Js.boolean selection
@@ -332,6 +375,35 @@ cLayout layout =
         , collectionPropertyM "props" (\(Macro _ code) -> Js.code code) props
         ]
 
+cTableLayout :: CollectionTableLayout -> Js.JsTree
+cTableLayout tableLayout =
+  map go tableLayout
+    # L.toUnfoldable
+    # Js.object
+  where
+    go (TableLayoutItem { actionName, route, if_, button, action }) =
+      let
+        baseObjectProperties =
+          [ collectionPropertyM "if" (\(Cond _ expr) -> cExpr expr) if_
+          , collectionPropertyM "button" cButton button
+          ]
+
+        properties = collectionProperties $
+          case cActions (L.singleton action) of
+            Js.JSLiteral (Js.JSObject action') ->
+              case head action' of
+                Just (Js.JsObjectProperty2 _ (Js.JSLiteral (Js.JSObject actionProperties))) ->
+                  union baseObjectProperties [actionProperties]
+                _ -> baseObjectProperties
+            _ -> []
+
+      in case route of
+          Just route' -> Js.objectProperty2' (Js.string route') properties
+          Nothing -> Js.objectProperty2 (getPropertyName actionName) properties
+
+    cButton (Left bool) = Js.boolean bool
+    cButton (Right (Cond _ expr)) = cExpr expr
+
 cFiltersPresets :: CollectionFiltersPresets -> Js.JsTree
 cFiltersPresets filtersPresets =
   map go filtersPresets
@@ -350,8 +422,15 @@ cFunctions :: CollectionFunctions -> Js.JsTree
 cFunctions functions = Js.object
   $ L.toUnfoldable
   $ functions
-    # L.filter (\(FunctionItem _ _ custom) -> not custom)
-    # map (\(FunctionItem _ functionName _) -> Js.objectProperty1 (getFunctionName functionName))
+    # L.filter (\(FunctionItem _ _ custom _) -> not custom)
+    # map (\(FunctionItem _ functionName _ _) -> Js.objectProperty1 (getFunctionName functionName))
+
+cExposedFunctions :: CollectionFunctions -> Js.JsTree
+cExposedFunctions functions = Js.array
+  $ L.toUnfoldable
+  $ functions
+    # L.filter (\(FunctionItem _ _ _ exposed) -> exposed)
+    # map (\(FunctionItem _ functionName _ _) -> Js.string (getFunctionName functionName))
 
 cSecurity :: CollectionSecurity -> Js.JsTree
 cSecurity secutiry =
