@@ -29,17 +29,17 @@
     - [x] `owned`
     - [x] `table`
     - [x] `tableMeta`
-    - [ ] `tableLayout`
+    - [x] `tableLayout`
     - [x] `timestamps`
     - [x] `required`
     - [x] `writable`
     - [x] `search`
     - [x] `layout`
-    - [ ] `preferred`
+    - [x] `preferred`
     - [x] `presets`
     - [x] `temporary`
   - [x] functions
-  - [ ] exposedFunctions
+  - [x] exposedFunctions
   - [x] security
 
 - [ ] `contract`

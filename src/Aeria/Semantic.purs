@@ -5,7 +5,7 @@ import Prelude
 import Aeria.Diagnostic.Message (Diagnostic(..), DiagnosticInfo(..))
 import Aeria.Diagnostic.Position (Span)
 import Aeria.Semantic.Error (ExprError(..), PropertyError(..), SemanticError(..))
-import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionImmutable(..), CollectionIndexes, CollectionIndividualActions, CollectionLayout, CollectionName(..), CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), Typ(..), WritableItem(..))
+import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionImmutable(..), CollectionIndexes, CollectionIndividualActions, CollectionLayout, CollectionName(..), CollectionPreferred, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), PreferredItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), Typ(..), WritableItem(..))
 import Control.Monad.Except (Except, runExcept, throwError)
 import Control.Monad.Reader (ReaderT, ask, local, runReaderT)
 import Data.Array (elem)
@@ -165,6 +165,7 @@ sCollection (Collection
   , search
   , filtersPresets
   , layout
+  , preferred
   , tableLayout
   , security
   , functions
@@ -193,6 +194,7 @@ sCollection (Collection
     sIndividualActions name individualActions
     sFormLayout name formLayout
     sImmutable name immutable
+    sPreferred name preferred
     case search of
       Just search' -> sSearch name search'
       Nothing -> pure unit
@@ -252,6 +254,32 @@ sLayout _ = traverse_ go
   go layoutItem@(LayoutItem
     { component: (Just (LayoutItemComponent { span, name }))
     }) = when (isNothing name) (throwDiagnostic span (LayoutComponentError layoutItem))
+
+sPreferred :: CollectionName -> CollectionPreferred -> SemanticM Unit
+sPreferred collectionName = traverse_ go
+  where
+  go (PreferredItem
+    { tableMeta
+    , actions
+    , individualActions
+    , filters
+    , filtersPresets
+    , layout
+    , table
+    , form
+    , tableLayout
+    , formLayout
+    }) = do
+      sTableMeta collectionName tableMeta
+      sActions collectionName actions
+      sIndividualActions collectionName individualActions
+      sFilters collectionName filters
+      sFiltersPresets collectionName filtersPresets
+      sLayout collectionName layout
+      sTable collectionName table
+      sForm collectionName form
+      sTableLayout collectionName tableLayout
+      sFormLayout collectionName formLayout
 
 sSearch :: CollectionName -> CollectionSearch -> SemanticM Unit
 sSearch collectionName (CollectionSearch { indexes }) = sCheckIfPropertiesIsValid collectionName indexes
