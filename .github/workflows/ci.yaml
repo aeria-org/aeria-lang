@@ -19,13 +19,14 @@ jobs:
           node-version: 20
           cache: pnpm
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install && cd playground && pnpm install
       - name: Build packages
         run: pnpm spago build
       - name: Test packages
         run: pnpm spago test
       - name: Build playground
         run: |
-          pnpm --filter=playground compile
-          pnpm --filter=playground build
+          cd playground
+          pnpm compile
+          pnpm build
 

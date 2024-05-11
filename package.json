@@ -5,15 +5,14 @@
   "repository": "git@github.com:gabrielolivrp/aeria-lang.git",
   "author": "Gabriel Augusto <gabrielolivrp@gmail.com>",
   "license": "MIT",
-  "packageManager": "pnpm@8.7.6",
+  "packageManager": "pnpm@9.1.0",
   "scripts": {
     "test": "npx spago test",
     "compile": "node scripts/compile.js",
     "postinstall": "if test -d playground/.aeria; then rm -rf .aeria; else mv .aeria playground; fi"
   },
   "dependencies": {
-    "purescript": "^0.15.13",
-    "spago": "^0.21.0",
-    "purty": "^7.0.0"
+    "purescript": "^0.15.15",
+    "spago": "^0.21.0"
   }
 }
