@@ -1,0 +1,24 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "properties": [
+        {
+          "type": {
+            "kind": "PBoolean"
+          },
+          "name": {
+            "value": "active",
+            "kind": "PropertyName"
+          },
+          "kind": "Property"
+        }
+      ],
+      "name": {
+        "value": "user",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+collection Category {
+  properties {
+    name str
+  }
+}
+
+collection Product {
+  properties {
+    categories []Category
+  }
+}

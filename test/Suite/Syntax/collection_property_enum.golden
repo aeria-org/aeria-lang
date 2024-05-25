@@ -1,0 +1,49 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "properties": [
+        {
+          "type": {
+            "kind": "PEnum"
+          },
+          "name": {
+            "value": "type",
+            "kind": "PropertyName"
+          },
+          "kind": "Property",
+          "attributes": [
+            {
+              "kind": "Attribute",
+              "attributeValue": {
+                "literal": {
+                  "value": [
+                    {
+                      "value": "cat",
+                      "kind": "LString"
+                    },
+                    {
+                      "value": "dog",
+                      "kind": "LString"
+                    }
+                  ],
+                  "kind": "LArray"
+                },
+                "kind": "ALiteral"
+              },
+              "attributeName": {
+                "value": "options",
+                "kind": "AttributeName"
+              }
+            }
+          ]
+        }
+      ],
+      "name": {
+        "value": "animal",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection"
+    }
+  ]
+}

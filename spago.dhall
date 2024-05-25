@@ -34,6 +34,7 @@ to generate this file without the comments in this block.
   , "tuples"
   , "unicode"
   , "unsafe-coerce"
+  , "yoga-json"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]

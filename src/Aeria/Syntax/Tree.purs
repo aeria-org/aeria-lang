@@ -6,10 +6,11 @@ import Aeria.Diagnostic.Position (Span)
 import Data.Either (Either)
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
-import Data.List (List)
+import Data.List (List, toUnfoldable)
 import Data.Maybe (Maybe)
 import Data.Ord.Generic (genericCompare)
 import Data.Show.Generic (genericShow)
+import Yoga.JSON (class WriteForeign, writeImpl)
 
 type Ident
   = String
@@ -27,6 +28,14 @@ instance eqFunctionName :: Eq FunctionName where
 instance ordFunctionName :: Ord FunctionName where
   compare = genericCompare
 
+instance WriteForeign FunctionName
+  where
+  writeImpl (FunctionName _ functionName) =
+    writeImpl
+      { kind: "FunctionName"
+      , value: writeImpl functionName
+      }
+
 data CollectionName
   = CollectionName Span Ident
 
@@ -41,8 +50,15 @@ instance eqCollectionName :: Eq CollectionName where
 instance ordCollectionName :: Ord CollectionName where
   compare = genericCompare
 
-data PropertyName
-  = PropertyName Span Ident
+instance WriteForeign CollectionName
+  where
+  writeImpl (CollectionName _ collectionName) =
+    writeImpl
+      { kind: "CollectionName"
+      , value: writeImpl collectionName
+      }
+
+data PropertyName = PropertyName Span Ident
 
 derive instance genericPropertyName :: Generic PropertyName _
 
@@ -55,6 +71,14 @@ instance eqPropertyName :: Eq PropertyName where
 instance ordPropertyName :: Ord PropertyName where
   compare = genericCompare
 
+instance WriteForeign PropertyName
+  where
+  writeImpl (PropertyName _ propertyName) =
+    writeImpl
+    { kind: "PropertyName"
+    , value: writeImpl propertyName
+    }
+
 data AttributeName
   = AttributeName Span Ident
 
@@ -65,6 +89,14 @@ instance showAttributeName :: Show AttributeName where
 
 instance eqAttributeName :: Eq AttributeName where
   eq = genericEq
+
+instance WriteForeign AttributeName
+  where
+  writeImpl (AttributeName _ attributeName) =
+    writeImpl
+    { kind: "AttributeName"
+    , value: writeImpl attributeName
+    }
 
 data Typ
   = TInteger
@@ -82,6 +114,33 @@ instance showTyp :: Show Typ where
 instance eqTyp :: Eq Typ where
   eq = genericEq
 
+instance WriteForeign Typ
+  where
+  writeImpl TInteger =
+    writeImpl
+      { kind: "TInteger"
+      }
+  writeImpl TFloat =
+    writeImpl
+      { kind: "TFloat"
+      }
+  writeImpl TString =
+    writeImpl
+      { kind: "TString"
+      }
+  writeImpl TBoolean =
+    writeImpl
+      { kind: "TBoolean"
+      }
+  writeImpl TProperty =
+    writeImpl
+      { kind: "TProperty"
+      }
+  writeImpl TArray =
+    writeImpl
+      { kind: "TArray"
+      }
+
 data Literal
   = LInteger Span Int
   | LFloat Span Number
@@ -97,6 +156,38 @@ instance showLiteral :: Show Literal where
 
 instance eqLiteral :: Eq Literal where
   eq x = genericEq x
+
+instance WriteForeign Literal
+  where
+  writeImpl (LInteger _ x) =
+    writeImpl
+    { kind: "LInteger"
+    , value: x
+    }
+  writeImpl (LFloat _ x) =
+    writeImpl
+    { kind: "LFloat"
+    , value: x
+    }
+  writeImpl (LString _ x) =
+    writeImpl
+    { kind: "LString"
+    , value: x
+    }
+  writeImpl (LBoolean _ x) =
+    writeImpl
+    { kind: "LBoolean"
+    , value: x
+    }
+  writeImpl (LProperty _ x) =
+    writeImpl
+    { kind: "LProperty"
+    , value: writeImpl x
+    }
+  writeImpl (LArray _ arr) =
+    writeImpl { kind: "LArray"
+    , value: writeImpl (toUnfoldable arr :: Array Literal)
+    }
 
 data Expr
   = ELiteral Literal
@@ -119,6 +210,68 @@ instance showExpr :: Show Expr where
 instance eqExpr :: Eq Expr where
   eq x = genericEq x
 
+instance WriteForeign Expr
+  where
+  writeImpl (ELiteral e1) =
+    writeImpl
+    { kind: "ELiteral"
+    , expr: writeImpl e1
+    }
+  writeImpl (ELte e1 e2) =
+    writeImpl
+    { kind: "ELte"
+    , left: writeImpl e1
+    , right: writeImpl e2
+    }
+  writeImpl (EGte e1 e2) =
+    writeImpl
+    { kind: "EGte"
+    , left: writeImpl e1
+    , right: writeImpl e2
+    }
+  writeImpl (EAnd e1 e2) =
+    writeImpl
+    { kind: "EAnd"
+    , left: writeImpl e1
+    , right: writeImpl e2
+    }
+  writeImpl (EIn e1 e2) =
+    writeImpl
+    { kind: "EIn"
+    , left: writeImpl e1
+    , right: writeImpl e2
+    }
+  writeImpl (ELt e1 e2) =
+    writeImpl
+    { kind: "ELt"
+    , left: writeImpl e1, right: writeImpl e2
+    }
+  writeImpl (EGt e1 e2) =
+    writeImpl
+    { kind: "EGt"
+    , left: writeImpl e1, right: writeImpl e2
+    }
+  writeImpl (EEq e1 e2) =
+    writeImpl
+    { kind: "EEq"
+    , left: writeImpl e1, right: writeImpl e2
+    }
+  writeImpl (EOr e1 e2) =
+    writeImpl
+    { kind: "EOr"
+    , left: writeImpl e1, right: writeImpl e2
+    }
+  writeImpl (EExists e1) =
+    writeImpl
+    { kind: "EExists"
+    , expr: writeImpl e1
+    }
+  writeImpl (ENot e1) =
+    writeImpl
+    { kind: "ENot"
+    , expr: writeImpl e1
+    }
+
 data Cond = Cond Span Expr
 
 derive instance genericCond :: Generic Cond _
@@ -128,6 +281,14 @@ instance showCond :: Show Cond where
 
 instance eqCond :: Eq Cond where
   eq x = genericEq x
+
+instance WriteForeign Cond
+  where
+  writeImpl (Cond _ expr) =
+    writeImpl
+      { kind: "Cond"
+      , expr: writeImpl expr
+      }
 
 data PropertyType
   = PEnum Span
@@ -147,6 +308,44 @@ instance showPropertyType :: Show PropertyType where
 instance eqPropertyType :: Eq PropertyType where
   eq x = genericEq x
 
+instance WriteForeign PropertyType
+  where
+  writeImpl (PEnum _) =
+    writeImpl
+    { kind: "PEnum"
+    }
+  writeImpl (PFloat _) =
+    writeImpl
+    { kind: "PFloat"
+    }
+  writeImpl (PString _) =
+    writeImpl
+    { kind: "PString"
+    }
+  writeImpl (PInteger _) =
+    writeImpl
+    { kind: "PInteger"
+    }
+  writeImpl (PBoolean _) =
+    writeImpl
+    { kind: "PBoolean"
+    }
+  writeImpl (PRef _ _) =
+    writeImpl
+    { kind: "PRef"
+    }
+  writeImpl (PArray _ arr) =
+    writeImpl
+    { kind: "PArray"
+    , type: writeImpl arr
+    }
+  writeImpl (PObject _ required properties) =
+    writeImpl
+    { kind: "PObject"
+    , required: writeImpl (toUnfoldable required :: Array Required)
+    , properties: writeImpl (toUnfoldable properties :: Array Property)
+    }
+
 type CollectionRequired
   = List Required
 
@@ -160,6 +359,15 @@ instance showRequired :: Show Required where
 
 instance eqRequired :: Eq Required where
   eq = genericEq
+
+instance WriteForeign Required
+  where
+  writeImpl (Required _ name cond) =
+    writeImpl
+      { kind: "Required"
+      , name: writeImpl name
+      , cond: writeImpl cond
+      }
 
 type Attributes
   = List Attribute
@@ -175,6 +383,15 @@ instance showAttribute :: Show Attribute where
 instance eqAttribute :: Eq Attribute where
   eq = genericEq
 
+instance WriteForeign Attribute
+  where
+  writeImpl (Attribute _ attributeName attributeValue) =
+    writeImpl
+      { kind: "Attribute"
+      , attributeName: writeImpl attributeName
+      , attributeValue: writeImpl attributeValue
+      }
+
 data AttributeValue
   = ALiteral Span Literal
   | AExpr Span Expr
@@ -187,6 +404,19 @@ instance showAttributeValue :: Show AttributeValue where
 instance eqAttributeValue :: Eq AttributeValue where
   eq = genericEq
 
+instance WriteForeign AttributeValue
+  where
+  writeImpl (ALiteral _ literal) =
+    writeImpl
+      { kind: "ALiteral"
+      , literal: writeImpl literal
+      }
+  writeImpl (AExpr _ expr) =
+    writeImpl
+      { kind: "AExpr"
+      , expr: writeImpl expr
+      }
+
 type CollectionProperties
   = List Property
 
@@ -197,6 +427,15 @@ data Property
     , type_ :: PropertyType
     , attributes :: Attributes
     }
+
+instance WriteForeign Property where
+  writeImpl (Property { name, type_, attributes }) =
+    writeImpl
+      { kind: "Property"
+      , name: writeImpl name
+      , type: writeImpl type_
+      , attributes: writeImpl (toUnfoldable attributes :: Array Attribute)
+      }
 
 derive instance genericProperty :: Generic Property _
 
@@ -217,6 +456,13 @@ instance showMacro :: Show Macro where
 instance eqMacro :: Eq Macro where
   eq = genericEq
 
+instance WriteForeign Macro where
+  writeImpl (Macro _ code) =
+    writeImpl
+      { kind: "Macro"
+      , macro: writeImpl code
+      }
+
 type CollectionGetters
   = List Getter
 
@@ -235,6 +481,14 @@ instance showGetter :: Show Getter where
 instance eqGetter :: Eq Getter where
   eq = genericEq
 
+instance WriteForeign Getter where
+  writeImpl (Getter { name, macro }) =
+    writeImpl
+      { kind: "Getter"
+      , name: writeImpl name
+      , macro: writeImpl macro
+      }
+
 type CollectionTable
   = List TableItem
 
@@ -247,6 +501,13 @@ instance showTableItem :: Show TableItem where
 
 instance eqTableItem :: Eq TableItem where
   eq = genericEq
+
+instance WriteForeign TableItem where
+  writeImpl (TableItem _ propertyName) =
+    writeImpl
+      { kind: "TableItem"
+      , propertyName: writeImpl propertyName
+      }
 
 type CollectionTableMeta
   = List TableMetaItem
@@ -261,6 +522,12 @@ instance showTableMetaItem :: Show TableMetaItem where
 instance eqTableMetaItem :: Eq TableMetaItem where
   eq = genericEq
 
+instance WriteForeign TableMetaItem where
+  writeImpl (TableMetaItem _ propertyName) =
+    writeImpl
+      { kind: "TableMetaItem"
+      , propertyName: writeImpl propertyName
+      }
 
 type CollectionForm
   = List FormItem
@@ -275,6 +542,13 @@ instance showFormItem :: Show FormItem where
 instance eqFormItem :: Eq FormItem where
   eq = genericEq
 
+instance WriteForeign FormItem where
+  writeImpl (FormItem _ propertyName) =
+    writeImpl
+      { kind: "FormItem"
+      , propertyName: writeImpl propertyName
+      }
+
 type CollectionFilters
   = List FilterItem
 
@@ -287,6 +561,13 @@ instance showFilterItem :: Show FilterItem where
 
 instance eqFilterItem :: Eq FilterItem where
   eq = genericEq
+
+instance WriteForeign FilterItem where
+  writeImpl (FilterItem _ propertyName) =
+    writeImpl
+      { kind: "FilterItem"
+      , propertyName: writeImpl propertyName
+      }
 
 type CollectionIndexes
   = List IndexesItem
@@ -301,6 +582,12 @@ instance showIndexesItem :: Show IndexesItem where
 instance eqIndexesItem :: Eq IndexesItem where
   eq = genericEq
 
+instance WriteForeign IndexesItem where
+  writeImpl (IndexesItem _ propertyName) =
+    writeImpl
+      { kind: "IndexesItem"
+      , propertyName: writeImpl propertyName
+      }
 
 data CollectionSearch = CollectionSearch
   { placeholder :: Maybe String,
@@ -315,6 +602,14 @@ instance showCollectionSearch :: Show CollectionSearch where
 instance eqCollectionSearch :: Eq CollectionSearch where
   eq = genericEq
 
+instance WriteForeign CollectionSearch where
+  writeImpl (CollectionSearch { placeholder, indexes}) =
+    writeImpl
+      { kind: "CollectionSearch"
+      , placeholder: writeImpl placeholder
+      , indexes:  writeImpl (toUnfoldable indexes :: Array PropertyName)
+      }
+
 data CollectionIcon = CollectionIcon String
 
 derive instance genericCollectionIcon :: Generic CollectionIcon _
@@ -324,6 +619,13 @@ instance showCollectionIcon :: Show CollectionIcon where
 
 instance eqCollectionIcon :: Eq CollectionIcon where
   eq = genericEq
+
+instance WriteForeign CollectionIcon where
+  writeImpl (CollectionIcon icon) =
+    writeImpl
+      { kind: "CollectionIcon"
+      , icon: writeImpl icon
+      }
 
 data CollectionOwned = CollectionOwned Boolean
 
@@ -335,6 +637,13 @@ instance showCollectionOwned :: Show CollectionOwned where
 instance eqCollectionOwned :: Eq CollectionOwned where
   eq = genericEq
 
+instance WriteForeign CollectionOwned where
+  writeImpl (CollectionOwned owned) =
+    writeImpl
+      { kind: "CollectionOwned"
+      , owned: writeImpl owned
+      }
+
 data CollectionTimestamps = CollectionTimestamps Boolean
 
 derive instance genericCollectionTimestamps :: Generic CollectionTimestamps _
@@ -344,6 +653,13 @@ instance showCollectionTimestamps :: Show CollectionTimestamps where
 
 instance eqCollectionTimestamps :: Eq CollectionTimestamps where
   eq = genericEq
+
+instance WriteForeign CollectionTimestamps where
+  writeImpl (CollectionTimestamps timestamps) =
+    writeImpl
+      { kind: "CollectionTimestamps"
+      , timestamps: writeImpl timestamps
+      }
 
 type CollectionFiltersPresets = List FiltersPresetsItem
 
@@ -362,6 +678,16 @@ instance showFiltersPresetsItem :: Show FiltersPresetsItem where
 
 instance eqFiltersPresetsItem :: Eq FiltersPresetsItem where
   eq = genericEq
+
+instance WriteForeign FiltersPresetsItem where
+  writeImpl (FiltersPresetsItem { name, label, badgeFunction, filters }) =
+    writeImpl
+      { kind: "FiltersPresetsItem"
+      , name: writeImpl name
+      , label: writeImpl label
+      , badgeFunction: writeImpl badgeFunction
+      , filters: writeImpl filters
+      }
 
 type CollectionLayout = List LayoutItem
 
@@ -383,6 +709,18 @@ instance showLayoutItem :: Show LayoutItem where
 instance eqLayoutItem :: Eq LayoutItem where
   eq = genericEq
 
+instance WriteForeign LayoutItem where
+  writeImpl (LayoutItem { name, verticalSpacing, separator, span_, component, if_ }) =
+    writeImpl
+      { kind: "LayoutItem"
+      , name: writeImpl name
+      , verticalSpacing: writeImpl verticalSpacing
+      , separator: writeImpl separator
+      , span_: writeImpl span_
+      , component: writeImpl component
+      , if_: writeImpl if_
+      }
+
 data LayoutItemCondition = LayoutItemCondition PropertyName Cond
 
 derive instance genericLayoutItemCondition :: Generic LayoutItemCondition _
@@ -392,6 +730,14 @@ instance showLayoutItemCondition :: Show LayoutItemCondition where
 
 instance eqLayoutItemCondition :: Eq LayoutItemCondition where
   eq = genericEq
+
+instance WriteForeign LayoutItemCondition where
+  writeImpl (LayoutItemCondition propertyName cond) =
+    writeImpl
+      { kind: "LayoutItemCondition"
+      , propertyName: writeImpl propertyName
+      , cond: writeImpl cond
+      }
 
 data LayoutItemComponent = LayoutItemComponent
   { span :: Span
@@ -407,6 +753,14 @@ instance showLayoutItemComponent :: Show LayoutItemComponent where
 instance eqLayoutItemComponent :: Eq LayoutItemComponent where
   eq = genericEq
 
+instance WriteForeign LayoutItemComponent where
+  writeImpl (LayoutItemComponent { name, props }) =
+    writeImpl
+      { kind: "LayoutItemComponent"
+      , name: writeImpl name
+      , props: writeImpl props
+      }
+
 data CollectionImmutable
   = CollectionImmutableBool Boolean
   | CollectionImmutableList (List ImmutableItem)
@@ -419,6 +773,18 @@ instance showCollectionImmutable :: Show CollectionImmutable where
 instance eqCollectionImmutable :: Eq CollectionImmutable where
   eq = genericEq
 
+instance WriteForeign CollectionImmutable where
+  writeImpl (CollectionImmutableBool immutable) =
+    writeImpl
+      { kind: "CollectionImmutableBool"
+      , immutable: writeImpl immutable
+      }
+  writeImpl (CollectionImmutableList immutables) =
+    writeImpl
+      { kind: "CollectionImmutableList"
+      , immutables: writeImpl (toUnfoldable immutables :: Array ImmutableItem)
+      }
+
 data ImmutableItem = ImmutableItem Span PropertyName
 
 derive instance genericImmutableItem :: Generic ImmutableItem _
@@ -428,6 +794,13 @@ instance showImmutableItem :: Show ImmutableItem where
 
 instance eqImmutableItem :: Eq ImmutableItem where
   eq = genericEq
+
+instance WriteForeign ImmutableItem where
+  writeImpl (ImmutableItem _ propertyName) =
+    writeImpl
+      { kind: "ImmutableItem"
+      , propertyName: writeImpl propertyName
+      }
 
 type CollectionWritable = List WritableItem
 
@@ -440,6 +813,13 @@ instance showWritableItem :: Show WritableItem where
 
 instance eqWritableItem :: Eq WritableItem where
   eq = genericEq
+
+instance WriteForeign WritableItem where
+  writeImpl (WritableItem _ propertyName) =
+    writeImpl
+      { kind: "WritableItem"
+      , propertyName: writeImpl propertyName
+      }
 
 type CollectionFunctions = List FunctionItem
 
@@ -456,6 +836,15 @@ instance showFunctionItem :: Show FunctionItem where
 
 instance eqFunctionItem :: Eq FunctionItem where
   eq = genericEq
+
+instance WriteForeign FunctionItem where
+  writeImpl (FunctionItem _ functioName custom exposed) =
+    writeImpl
+      { kind: "FunctionItem"
+      , functioName: writeImpl functioName
+      , exposed: writeImpl exposed
+      , custom: writeImpl custom
+      }
 
 type CollectionSecurity = List SecurityItem
 
@@ -474,6 +863,15 @@ instance showSecurityItem :: Show SecurityItem where
 instance eqSecurityItem :: Eq SecurityItem where
   eq = genericEq
 
+instance WriteForeign SecurityItem where
+  writeImpl (SecurityItem { functionName, rateLimiting, logging}) =
+    writeImpl
+      { kind: "SecurityItem"
+      , functionName: writeImpl functionName
+      , rateLimiting: writeImpl rateLimiting
+      , logging: writeImpl logging
+      }
+
 data SecurityRateLimiting = SecurityRateLimiting
   { span :: Span
   , strategy :: Maybe String
@@ -488,6 +886,14 @@ instance showSecurityRateLimiting :: Show SecurityRateLimiting where
 instance eqSecurityRateLimiting :: Eq SecurityRateLimiting where
   eq = genericEq
 
+instance WriteForeign SecurityRateLimiting where
+  writeImpl (SecurityRateLimiting { strategy, scale }) =
+    writeImpl
+      { kind: "SecurityRateLimiting"
+      , strategy: writeImpl strategy
+      , scale: writeImpl scale
+      }
+
 data SecurityLogging = SecurityLogging
   { span :: Span
   , strategy :: Maybe String
@@ -501,6 +907,13 @@ instance showSecurityLogging :: Show SecurityLogging where
 instance eqSecurityLogging :: Eq SecurityLogging where
   eq = genericEq
 
+instance WriteForeign SecurityLogging where
+  writeImpl (SecurityLogging { strategy }) =
+    writeImpl
+      { kind: "SecurityLogging"
+      , strategy: writeImpl strategy
+      }
+
 type CollectionPresets = List PresetItem
 
 data PresetItem = PresetItem Span PropertyName
@@ -512,6 +925,13 @@ instance showPresetItem :: Show PresetItem where
 
 instance eqPresetItem :: Eq PresetItem where
   eq = genericEq
+
+instance WriteForeign PresetItem where
+  writeImpl (PresetItem _ propertyName) =
+    writeImpl
+      { kind: "PresetItem"
+      , propertyName: writeImpl propertyName
+      }
 
 type CollectionActions = List ActionItem
 
@@ -541,6 +961,41 @@ instance showActionItem :: Show ActionItem where
 instance eqActionItem :: Eq ActionItem where
   eq = genericEq
 
+instance WriteForeign ActionItem where
+  writeImpl (ActionItem
+  { actionName
+  , label
+  , icon
+  , ask
+  , selection
+  , effect
+  , button
+  , translate
+  , setItem
+  , fetchItem
+  , clearItem
+  , params
+  , query
+  , requires
+  }) =
+    writeImpl
+      { kind: "ActionItem"
+      , actionName: writeImpl actionName
+      , label: writeImpl label
+      , icon: writeImpl icon
+      , ask: writeImpl ask
+      , selection: writeImpl selection
+      , effect: writeImpl effect
+      , button: writeImpl button
+      , translate: writeImpl translate
+      , setItem: writeImpl setItem
+      , fetchItem: writeImpl fetchItem
+      , clearItem: writeImpl clearItem
+      , params: writeImpl params
+      , query: writeImpl query
+      , requires: writeImpl (toUnfoldable requires :: Array RequireItem)
+      }
+
 type CollectionIndividualActions = List ActionItem
 
 data RequireItem = RequireItem Span PropertyName
@@ -552,6 +1007,13 @@ instance showRequireItem :: Show RequireItem where
 
 instance eqRequireItem :: Eq RequireItem where
   eq = genericEq
+
+instance WriteForeign RequireItem where
+  writeImpl (RequireItem _ propertyName) =
+    writeImpl
+      { kind: "RequireItem"
+      , propertyName: writeImpl propertyName
+      }
 
 data CollectionTemporary =
   CollectionTemporary
@@ -566,6 +1028,14 @@ instance showCollectionTemporary :: Show CollectionTemporary where
 
 instance eqCollectionTemporary :: Eq CollectionTemporary where
   eq = genericEq
+
+instance WriteForeign CollectionTemporary where
+  writeImpl (CollectionTemporary { index, expireAfterSeconds }) =
+    writeImpl
+      { kind: "CollectionTemporary"
+      , index: index
+      , expireAfterSeconds: writeImpl expireAfterSeconds
+      }
 
 type CollectionFormLayout = List LayoutItem
 
@@ -587,6 +1057,17 @@ instance showTableLayoutItem :: Show TableLayoutItem where
 
 instance eqTableLayoutItem :: Eq TableLayoutItem where
   eq = genericEq
+
+instance WriteForeign TableLayoutItem where
+  writeImpl (TableLayoutItem { actionName, route, button, if_, action }) =
+    writeImpl
+      { kind: "TableLayoutItem"
+      , actionName: writeImpl actionName
+      , route: writeImpl route
+      , button: writeImpl button
+      , if_: writeImpl if_
+      , action: writeImpl action
+      }
 
 type CollectionPreferred = List PreferredItem
 
@@ -612,6 +1093,35 @@ instance showPreferredItem :: Show PreferredItem where
 
 instance eqPreferredItem :: Eq PreferredItem where
   eq = genericEq
+
+instance WriteForeign PreferredItem where
+  writeImpl (PreferredItem
+    { role
+    , tableMeta
+    , actions
+    , individualActions
+    , filters
+    , filtersPresets
+    , layout
+    , table
+    , form
+    , tableLayout
+    , formLayout
+    }) =
+    writeImpl
+      { kind: "PreferredItem"
+      , role: writeImpl role
+      , tableMeta: writeImpl (toUnfoldable tableMeta :: Array TableMetaItem)
+      , actions: writeImpl (toUnfoldable actions :: Array ActionItem)
+      , individualActions: writeImpl (toUnfoldable individualActions :: Array ActionItem)
+      , filters: writeImpl (toUnfoldable filters :: Array FilterItem)
+      , filtersPresets: writeImpl (toUnfoldable filtersPresets :: Array FiltersPresetsItem)
+      , layout: writeImpl (toUnfoldable layout :: Array LayoutItem)
+      , form: writeImpl (toUnfoldable form :: Array FormItem)
+      , table: writeImpl (toUnfoldable table :: Array TableItem)
+      , formLayout: writeImpl (toUnfoldable formLayout :: Array LayoutItem)
+      , tableLayout: writeImpl (toUnfoldable tableLayout :: Array TableLayoutItem)
+      }
 
 data Collection
   = Collection
@@ -652,6 +1162,65 @@ instance showCollection :: Show Collection where
 instance eqCollection :: Eq Collection where
   eq = genericEq
 
+instance WriteForeign Collection where
+  writeImpl (Collection
+    { name
+    , icon
+    , owned
+    , timestamps
+    , immutable
+    , temporary
+    , preferred
+    , presets
+    , writable
+    , tableLayout
+    , functions
+    , actions
+    , individualActions
+    , security
+    , properties
+    , required
+    , getters
+    , table
+    , tableMeta
+    , form
+    , filters
+    , filtersPresets
+    , indexes
+    , layout
+    , formLayout
+    , search
+    }) =
+      writeImpl
+        { kind: "Collection"
+        , name: writeImpl name
+        , icon: writeImpl icon
+        , owned: writeImpl owned
+        , timestamps: writeImpl timestamps
+        , immutable: writeImpl immutable
+        , temporary: writeImpl temporary
+        , search: writeImpl search
+        , preferred: writeImpl (toUnfoldable preferred :: Array PreferredItem)
+        , presets: writeImpl (toUnfoldable presets :: Array PresetItem)
+        , writable: writeImpl (toUnfoldable writable :: Array WritableItem)
+        , tableLayout: writeImpl (toUnfoldable tableLayout :: Array TableLayoutItem)
+        , functions: writeImpl (toUnfoldable functions :: Array FunctionItem)
+        , actions: writeImpl (toUnfoldable actions :: Array ActionItem)
+        , individualActions: writeImpl (toUnfoldable individualActions :: Array ActionItem)
+        , security: writeImpl (toUnfoldable security :: Array SecurityItem)
+        , properties: writeImpl (toUnfoldable properties :: Array Property)
+        , required: writeImpl (toUnfoldable required :: Array Required)
+        , getters: writeImpl (toUnfoldable getters :: Array Getter)
+        , table: writeImpl (toUnfoldable table :: Array TableItem)
+        , tableMeta: writeImpl (toUnfoldable tableMeta :: Array TableMetaItem)
+        , form: writeImpl (toUnfoldable form :: Array FormItem)
+        , filters: writeImpl (toUnfoldable filters :: Array FilterItem)
+        , filtersPresets: writeImpl (toUnfoldable filtersPresets :: Array FiltersPresetsItem)
+        , indexes: writeImpl (toUnfoldable indexes :: Array IndexesItem)
+        , layout: writeImpl (toUnfoldable layout :: Array LayoutItem)
+        , formLayout: writeImpl (toUnfoldable formLayout :: Array LayoutItem)
+        }
+
 data Program
   = Program
     { collections :: List Collection
@@ -664,3 +1233,10 @@ instance showProgram :: Show Program where
 
 instance eqProgram :: Eq Program where
   eq = genericEq
+
+instance WriteForeign Program where
+  writeImpl (Program { collections }) =
+    writeImpl
+      { kind: "Program"
+      , collections: writeImpl (toUnfoldable collections :: Array Collection)
+      }

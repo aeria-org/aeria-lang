@@ -1,0 +1,12 @@
+collection User {
+  properties {
+    name      str
+    email     str
+    password  str
+  }
+
+  tableMeta {
+    name
+    email
+  }
+}

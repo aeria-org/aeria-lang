@@ -1,0 +1,24 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "properties": [
+        {
+          "type": {
+            "kind": "PInteger"
+          },
+          "name": {
+            "value": "quantity",
+            "kind": "PropertyName"
+          },
+          "kind": "Property"
+        }
+      ],
+      "name": {
+        "value": "product",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection"
+    }
+  ]
+}

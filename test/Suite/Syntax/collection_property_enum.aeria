@@ -1,0 +1,5 @@
+collection Animal {
+  properties {
+    type enum @options(["cat", "dog"])
+  }
+}

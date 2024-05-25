@@ -1,0 +1,60 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "table": [
+        {
+          "propertyName": {
+            "value": "name",
+            "kind": "PropertyName"
+          },
+          "kind": "TableItem"
+        },
+        {
+          "propertyName": {
+            "value": "email",
+            "kind": "PropertyName"
+          },
+          "kind": "TableItem"
+        }
+      ],
+      "properties": [
+        {
+          "type": {
+            "kind": "PString"
+          },
+          "name": {
+            "value": "name",
+            "kind": "PropertyName"
+          },
+          "kind": "Property"
+        },
+        {
+          "type": {
+            "kind": "PString"
+          },
+          "name": {
+            "value": "email",
+            "kind": "PropertyName"
+          },
+          "kind": "Property"
+        },
+        {
+          "type": {
+            "kind": "PString"
+          },
+          "name": {
+            "value": "password",
+            "kind": "PropertyName"
+          },
+          "kind": "Property"
+        }
+      ],
+      "name": {
+        "value": "user",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection"
+    }
+  ]
+}

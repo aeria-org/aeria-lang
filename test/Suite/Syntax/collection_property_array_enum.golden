@@ -1,0 +1,49 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "properties": [
+        {
+          "type": {
+            "kind": "PEnum"
+          },
+          "name": {
+            "value": "roles",
+            "kind": "PropertyName"
+          },
+          "kind": "Property",
+          "attributes": [
+            {
+              "kind": "Attribute",
+              "attributeValue": {
+                "literal": {
+                  "value": [
+                    {
+                      "value": "admin",
+                      "kind": "LString"
+                    },
+                    {
+                      "value": "guest",
+                      "kind": "LString"
+                    }
+                  ],
+                  "kind": "LArray"
+                },
+                "kind": "ALiteral"
+              },
+              "attributeName": {
+                "value": "options",
+                "kind": "AttributeName"
+              }
+            }
+          ]
+        }
+      ],
+      "name": {
+        "value": "user",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection"
+    }
+  ]
+}

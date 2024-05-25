@@ -1,0 +1,31 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "name": {
+        "value": "profile",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection"
+    },
+    {
+      "properties": [
+        {
+          "type": {
+            "kind": "PRef"
+          },
+          "name": {
+            "value": "profile",
+            "kind": "PropertyName"
+          },
+          "kind": "Property"
+        }
+      ],
+      "name": {
+        "value": "user",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "properties": [
+        {
+          "type": {
+            "kind": "PString"
+          },
+          "name": {
+            "value": "name",
+            "kind": "PropertyName"
+          },
+          "kind": "Property"
+        }
+      ],
+      "name": {
+        "value": "category",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection"
+    },
+    {
+      "properties": [
+        {
+          "type": {
+            "type": {
+              "kind": "PRef"
+            },
+            "kind": "PArray"
+          },
+          "name": {
+            "value": "categories",
+            "kind": "PropertyName"
+          },
+          "kind": "Property"
+        }
+      ],
+      "name": {
+        "value": "product",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection"
+    }
+  ]
+}

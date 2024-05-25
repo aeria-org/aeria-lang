@@ -1,0 +1,90 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "required": [
+        {
+          "name": {
+            "value": "first_name",
+            "kind": "PropertyName"
+          },
+          "kind": "Required"
+        },
+        {
+          "name": {
+            "value": "last_name",
+            "kind": "PropertyName"
+          },
+          "kind": "Required"
+        },
+        {
+          "name": {
+            "value": "active",
+            "kind": "PropertyName"
+          },
+          "kind": "Required",
+          "cond": {
+            "kind": "Cond",
+            "expr": {
+              "right": {
+                "kind": "ELiteral",
+                "expr": {
+                  "value": true,
+                  "kind": "LBoolean"
+                }
+              },
+              "left": {
+                "kind": "ELiteral",
+                "expr": {
+                  "value": {
+                    "value": "active",
+                    "kind": "PropertyName"
+                  },
+                  "kind": "LProperty"
+                }
+              },
+              "kind": "EEq"
+            }
+          }
+        }
+      ],
+      "properties": [
+        {
+          "type": {
+            "kind": "PString"
+          },
+          "name": {
+            "value": "first_name",
+            "kind": "PropertyName"
+          },
+          "kind": "Property"
+        },
+        {
+          "type": {
+            "kind": "PString"
+          },
+          "name": {
+            "value": "last_name",
+            "kind": "PropertyName"
+          },
+          "kind": "Property"
+        },
+        {
+          "type": {
+            "kind": "PBoolean"
+          },
+          "name": {
+            "value": "active",
+            "kind": "PropertyName"
+          },
+          "kind": "Property"
+        }
+      ],
+      "name": {
+        "value": "user",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection"
+    }
+  ]
+}

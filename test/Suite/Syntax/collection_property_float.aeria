@@ -1,0 +1,5 @@
+collection Product {
+  properties {
+    price float
+  }
+}
