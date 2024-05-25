@@ -10,8 +10,4 @@ collection User {
     }
     @end
   }
-
-  tableMeta {
-    full_name
-  }
 }

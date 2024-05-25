@@ -2,15 +2,6 @@
   "kind": "Program",
   "collections": [
     {
-      "tableMeta": [
-        {
-          "propertyName": {
-            "value": "full_name",
-            "kind": "PropertyName"
-          },
-          "kind": "TableMetaItem"
-        }
-      ],
       "properties": [
         {
           "type": {
