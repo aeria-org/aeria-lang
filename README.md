@@ -2,6 +2,10 @@
 
 ```
 collection PetToy {
+  indexes {
+    name
+  }
+
   properties {
     name str
     brand enum @values(["dogs choice", "the pet company"])
@@ -9,6 +13,10 @@ collection PetToy {
 }
 
 collection Pet {
+  indexes {
+    name
+  }
+
   properties {
     name str
     toys {
