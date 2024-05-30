@@ -24,19 +24,10 @@ collection Person {
         pet []Pet
         friends []Person
         disabled bool
---         friends []{
---           required {
---             type
---             pet
---           }
---           properties {
---             type str
---             pet Pet
---           }
---         }
       }
     }
   }
+
   functions {
     get
     getAll

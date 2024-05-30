@@ -1,0 +1,13 @@
+{
+  "name": "aeria-compile",
+  "version": "1.0.0",
+  "packageManager": "pnpm@9.1.0",
+  "scripts": {
+    "test": "npx spago test"
+  },
+  "dependencies": {
+    "purescript": "^0.15.15",
+    "prettier": "^3.2.5",
+    "spago": "^0.21.0"
+  }
+}

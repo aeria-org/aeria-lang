@@ -25,6 +25,16 @@ syntaxTest name schema golden = do
         let json = writeJSON program'
         compareJSON json golden `shouldEqual` true
 
+-- codegenTest name schema golden = do
+--   it name do
+--     let program = compile name schema
+--     case program of
+--       Left err -> fail (ppDiagnostic err)
+--       Right program' -> do
+
+        -- let json = writeJSON program'
+        -- compareJSON json golden `shouldEqual` true
+
 main :: Effect Unit
 main = do
   programs <- readPrograms "./test/Suite/Syntax"
