@@ -189,6 +189,7 @@ sCollection (Collection
     sLayout name layout
     sFiltersPresets name filtersPresets
     sWritable name writable
+    sFunctions name functions
     sSecurity functions security
     sActions name actions
     sIndividualActions name individualActions
@@ -294,7 +295,7 @@ sSecurity functions = traverse_ go
     pure unit
 
   sFunctionName span functionName@(FunctionName _ name) =
-    case L.find (\(FunctionItem _ (FunctionName _ function) _ _) -> function == name) functions of
+    case L.find (\(FunctionItem { functionName: (FunctionName _ function) }) -> function == name) functions of
       Just _ -> pure unit
       Nothing -> throwDiagnostic span (UndefinedFunction functionName)
 
@@ -357,10 +358,16 @@ sWritable collectionName collectionWritable =
   let properties = map (\(WritableItem _ propertyName) -> propertyName) collectionWritable
     in sCheckIfPropertiesIsValid collectionName properties
 
--- sFunctions :: CollectionName -> CollectionFunctions -> SemanticM Unit
--- sFunctions collectionName collectionFunctions =
---   let properties = map (\(FunctionItem _ propertyName) -> propertyName) collectionFunctions
---     in sCheckIfPropertiesIsValid collectionName properties
+sFunctions :: CollectionName -> CollectionFunctions -> SemanticM Unit
+sFunctions _ collectionFunctions =
+  traverse_ (\(FunctionItem { functionName, expose }) ->
+    case expose of
+      -- TODO: check if the array is of strings
+      Just (Attribute _ (AttributeName _ "expose") (ALiteral _ (LArray _ _))) -> pure unit
+      Just (Attribute _ (AttributeName _ "expose") (ALiteral _ (LBoolean _ _))) -> pure unit
+      Just (Attribute span _ _) -> throwDiagnostic span (FunctionError functionName)
+      Nothing -> pure unit
+  ) collectionFunctions
 
 sImmutable :: CollectionName -> Maybe CollectionImmutable -> SemanticM Unit
 sImmutable _ Nothing = pure unit

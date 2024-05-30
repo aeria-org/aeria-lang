@@ -10,7 +10,7 @@ import Control.Lazy (fix)
 import Data.Array (concat, head, union)
 import Data.Either (Either(..))
 import Data.List as L
-import Data.Maybe (Maybe(..), isNothing)
+import Data.Maybe (Maybe(..), isJust, isNothing)
 import Data.String.Utils (ucfirst)
 
 data Codegen
@@ -26,8 +26,8 @@ codegen (Program { collections }) = map go collections
 
     functionNames = L.toUnfoldable $
       functions
-        # L.filter (\(FunctionItem _ _ custom _) -> not custom)
-        # map (\(FunctionItem _ functionName _ _) -> getFunctionName functionName)
+        # L.filter (\(FunctionItem { custom }) -> not custom)
+        # map (\(FunctionItem { functionName }) -> getFunctionName functionName)
 
     tsFile =
       Ts.statements
@@ -422,15 +422,22 @@ cFunctions :: CollectionFunctions -> Js.JsTree
 cFunctions functions = Js.object
   $ L.toUnfoldable
   $ functions
-    # L.filter (\(FunctionItem _ _ custom _) -> not custom)
-    # map (\(FunctionItem _ functionName _ _) -> Js.objectProperty1 (getFunctionName functionName))
+    # L.filter (\(FunctionItem { custom }) -> not custom)
+    # map (\(FunctionItem { functionName }) -> Js.objectProperty1 (getFunctionName functionName))
 
 cExposedFunctions :: CollectionFunctions -> Js.JsTree
-cExposedFunctions functions = Js.array
+cExposedFunctions functions = Js.object
   $ L.toUnfoldable
   $ functions
-    # L.filter (\(FunctionItem _ _ _ exposed) -> exposed)
-    # map (\(FunctionItem _ functionName _ _) -> Js.string (getFunctionName functionName))
+    # L.filter (\(FunctionItem { expose }) -> isJust expose)
+    # map (\(FunctionItem { functionName, expose }) ->
+      case expose of
+        Just (Attribute _ _ attributeValue) ->
+          case attributeValue of
+            ALiteral _ literal -> Js.objectProperty2 (getFunctionName functionName) (cLiteral literal)
+            _ -> Js.objectProperty1 (getFunctionName functionName) -- unresansable
+        Nothing -> Js.objectProperty1 (getFunctionName functionName) -- unresansable
+    )
 
 cSecurity :: CollectionSecurity -> Js.JsTree
 cSecurity secutiry =

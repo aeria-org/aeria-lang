@@ -18,7 +18,7 @@ import Data.String (toLower)
 import Data.String.CodeUnits (fromCharArray)
 import Data.String.Utils (concatChar)
 import Data.Tuple.Nested (type (/\), (/\))
-import Parsing (ParseError(..), Parser, Position(..), fail, position, runParser)
+import Parsing (ParseError(..), Parser, Position(..), position, runParser)
 import Parsing.Combinators (choice, many, manyTill, optionMaybe, sepBy, try, (<|>))
 import Parsing.Expr (Assoc(..), Operator(..), buildExprParser)
 import Parsing.Language (emptyDef)
@@ -376,17 +376,14 @@ pCollectionFunctions = lang.braces (many (try item))
       begin <- sourcePos
       functionName <- pFunctionName
       custom <- optionMaybe $ lang.reserved "?"
-      exposed <- pExposedFunction
+      attribute <- optionMaybe $ pAttribute
       end <- sourcePos
-      pure $ FunctionItem (Span begin end) functionName (isJust custom) (exposed)
-
-    pExposedFunction = do
-      attribute <- optionMaybe (string "@" *> lang.identifier)
-      case attribute of
-        Just "private" -> pure false
-        Just "public" -> pure true
-        Just _ -> fail "Expected \"public\" or \"private\" attributes"
-        Nothing -> pure true
+      pure $ FunctionItem
+        { span: (Span begin end)
+        , functionName
+        , custom: (isJust custom)
+        , expose: attribute
+        }
 
 pCollectionWritable :: ParserM CollectionWritable
 pCollectionWritable = pListProperty WritableItem

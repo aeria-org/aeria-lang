@@ -45,6 +45,7 @@ data SemanticError
   | FiltersPresetsError FiltersPresetsItem
   | LayoutComponentError LayoutItem
   | ActionError ActionItem
+  | FunctionError FunctionName
   | UndefinedFunction FunctionName
   | UndefinedStrategy String
 
@@ -57,6 +58,7 @@ instance showSemanticError :: Show SemanticError where
   show (FiltersPresetsError _) = "\"Filters\" is required"
   show (LayoutComponentError _) = "\"Component name\" is required"
   show (ActionError _) = "\"Action name\" is required"
+  show (FunctionError _) = "Function error"
   show (UndefinedFunction (FunctionName _ name)) = "Undefined function: \"" <> name <> "\""
   show (UndefinedStrategy strategy) = "Undefined strategy: \"" <> strategy <> "\""
   show (PropertyIsAlreadyInUse _) = "PropertyIsAlreadyInUse"

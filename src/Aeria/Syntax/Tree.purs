@@ -823,11 +823,13 @@ instance WriteForeign WritableItem where
 
 type CollectionFunctions = List FunctionItem
 
-data FunctionItem = FunctionItem
-  Span -- Span
-  FunctionName -- Function name
-  Boolean -- Custom function
-  Boolean -- Exposed function
+data FunctionItem =
+  FunctionItem
+    { span :: Span
+    , functionName :: FunctionName
+    , custom :: Boolean
+    , expose :: Maybe Attribute
+    }
 
 derive instance genericFunctionItem :: Generic FunctionItem _
 
@@ -838,12 +840,12 @@ instance eqFunctionItem :: Eq FunctionItem where
   eq = genericEq
 
 instance WriteForeign FunctionItem where
-  writeImpl (FunctionItem _ functioName custom exposed) =
+  writeImpl (FunctionItem { functionName, custom, expose }) =
     writeImpl
       { kind: "FunctionItem"
-      , functioName: writeImpl functioName
-      , exposed: writeImpl exposed
+      , functioName: writeImpl functionName
       , custom: writeImpl custom
+      , expose: writeImpl expose
       }
 
 type CollectionSecurity = List SecurityItem
