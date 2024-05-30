@@ -16,8 +16,8 @@ ppStatement output =
   case _ of
     JSImportDeclaration specifiers ident ->
       case output of
-        EsNext -> "import { " <> ppSpecifiers specifiers <> " } from \"" <> ppTree ident <> "\""
-        CommonJs -> "const {" <> ppSpecifiers specifiers <> " } = require(\"" <> ppTree ident <> "\")"
+        EsNext -> "import { " <> ppSpecifiers output specifiers <> " } from \"" <> ppTree ident <> "\""
+        CommonJs -> "const {" <> ppSpecifiers output specifiers <> " } = require(\"" <> ppTree ident <> "\")"
     JSVariableDeclaration ident body ->
       case output of
         EsNext -> "const " <> ppTree ident <> " = " <> ppTree body
@@ -49,11 +49,15 @@ ppLiteral =
           (JsObjectProperty2 k v) -> ppTree k <> ": " <> ppTree v
           (JsObjectProperty1 k) -> ppTree k) <> "}"
 
-ppSpecifiers :: JsSpecifiers -> String
-ppSpecifiers (JsSpecifiers specifiers) = concatWith specifiers ppImportSpecifier
+ppSpecifiers :: Output -> JsSpecifiers -> String
+ppSpecifiers output (JsSpecifiers specifiers) = concatWith specifiers (ppImportSpecifier output)
 
-ppImportSpecifier :: JsImportSpecifier -> String
-ppImportSpecifier (JsImportSpecifier importSpecifier alias) =
+ppImportSpecifier :: Output -> JsImportSpecifier -> String
+ppImportSpecifier output (JsImportSpecifier importSpecifier alias) =
   case alias of
-    Just alias' -> ppTree importSpecifier <> " as " <> ppTree alias'
+    Just alias' -> ppTree importSpecifier <>
+      (case output of
+        CommonJs -> " : "
+        EsNext -> " as ")
+      <> ppTree alias'
     Nothing -> ppTree importSpecifier

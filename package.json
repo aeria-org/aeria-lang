@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "purescript": "^0.15.15",
+    "prettier": "^3.2.5",
     "spago": "^0.21.0"
   }
 }

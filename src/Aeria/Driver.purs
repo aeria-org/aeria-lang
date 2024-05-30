@@ -13,7 +13,9 @@ import Data.Either (Either(..))
 import Data.Foldable (for_)
 import Effect (Effect)
 import Effect.Aff as Aff
+import Effect.Class.Console (logShow)
 import Effect.Console (log)
+import Prettier.Format (formatJavascript, formatTypescript)
 import Node.Buffer (fromString, toString)
 import Node.Encoding (Encoding(..))
 import Node.FS.Aff (mkdir, writeFile)
@@ -31,24 +33,34 @@ readSource filePath = do
   content <- readFile filePath
   toString UTF8 content
 
-makeExtenssion :: Output -> String
-makeExtenssion = case _ of
+makeJsFileOutputName :: String -> Output -> String
+makeJsFileOutputName name output = name <> case output of
   CommonJs -> ".js"
   EsNext -> ".mjs"
+
+emitCode :: String -> Output -> Codegen -> Effect Unit
+emitCode outputPath output (Codegen name js ts)  = do
+  let js' = ppJavascript output js
+  let ts' = ppTypescript ts
+  Aff.runAff_ (
+    case _ of
+      Right code -> writeOutput outputPath (makeJsFileOutputName name output) code
+      Left err -> logShow err
+  ) (formatJavascript js')
+
+  Aff.runAff_ (
+    case _ of
+      Right code -> writeOutput outputPath (name <> ".d.ts") code
+      Left err -> logShow err
+  ) (formatTypescript ts')
 
 compile :: String -> String -> Output -> Effect Unit
 compile filepath outputPath output = do
   source <- readSource filepath
-  let program = runProgram filepath source
-  case program of
+  case runProgram filepath source of
     Right program' ->
       case runSemantic filepath source program' of
-        Right _ -> do
-          for_ (codegen program')
-            ( \(Codegen name jsFile tsFile) -> do
-                writeOutput outputPath (name <> makeExtenssion output) (ppJavascript output jsFile)
-                writeOutput outputPath (name <> ".d.ts") (ppTypescript tsFile)
-            )
+        Right _ -> for_ (codegen program') (emitCode outputPath output )
         Left err -> do
           log (ppDiagnostic err)
           exit' 1

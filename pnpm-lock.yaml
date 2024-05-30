@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      prettier:
+        specifier: ^3.2.5
+        version: 3.2.5
       purescript:
         specifier: ^0.15.15
         version: 0.15.15
@@ -484,6 +487,11 @@ packages:
   path-scurry@1.11.0:
     resolution: {integrity: sha512-LNHTaVkzaYaLGlO+0u3rQTz7QrHTFOuKyba9JMTQutkmtNew8dw8wOD7mTU/5fCPZzCWpfW0XnQKzY61P0aTaw==}
     engines: {node: '>=16 || 14 >=14.17'}
+
+  prettier@3.2.5:
+    resolution: {integrity: sha512-3/GWa9aOC0YeD7LUfvOG2NiDyhOWRvt1k+rcKhOuYnMY24iiCphgneUfJDyFXd6rZCAnuLBv6UeAULtrhT/F4A==}
+    engines: {node: '>=14'}
+    hasBin: true
 
   process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
@@ -1278,6 +1286,8 @@ snapshots:
     dependencies:
       lru-cache: 10.2.2
       minipass: 7.1.1
+
+  prettier@3.2.5: {}
 
   process-nextick-args@2.0.1: {}
 
