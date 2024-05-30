@@ -32,7 +32,7 @@
                 "kind": "ALiteral"
               },
               "attributeName": {
-                "value": "options",
+                "value": "values",
                 "kind": "AttributeName"
               }
             }

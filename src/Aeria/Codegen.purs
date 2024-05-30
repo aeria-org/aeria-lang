@@ -544,7 +544,7 @@ cCollectionProperties properties getters = Js.object $ union (cProperties proper
           collectionProperties [props, attrs]
           where
             props = cPropertyType property type_
-            attrs = cAttributes $ L.filter (\(Attribute _ attributeName _) -> getAttributeName attributeName /= "options") attributes
+            attrs = cAttributes $ L.filter (\(Attribute _ attributeName _) -> getAttributeName attributeName /= "values") attributes
 
         cPropertyType :: Property -> PropertyType -> Array Js.JsObjectProperty
         cPropertyType property type_ =
@@ -580,10 +580,10 @@ cCollectionProperties properties getters = Js.object $ union (cProperties proper
                 ALiteral _ literal -> Js.objectProperty2 attributeName' (cLiteral literal)
                 AExpr _ expr -> Js.objectProperty2 attributeName' (cExpr expr)
 
-        cEnumType (Property { attributes }) = Js.array cOptions
+        cEnumType (Property { attributes }) = Js.array cvalues
           where
-          cOptions =
-            case L.find (\(Attribute _ attributeName _) -> getAttributeName attributeName == "options") attributes of
+          cvalues =
+            case L.find (\(Attribute _ attributeName _) -> getAttributeName attributeName == "values") attributes of
               Just (Attribute _ _ (ALiteral _ (LArray _ value))) ->
                 L.toUnfoldable $ map cLiteral value
               _ -> []

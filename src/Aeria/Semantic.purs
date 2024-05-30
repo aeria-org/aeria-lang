@@ -522,7 +522,7 @@ sEnumProperty property = sAttributes property literalAttributes M.empty
   where
   literalAttributes =
     M.fromFoldable
-      [ "options" /\ sArrayType TString
+      [ "values" /\ sArrayType TString
       , "default" /\ sType [TString]
       ]
 

@@ -1,6 +1,6 @@
 collection User {
   properties {
-    roles enum @options([
+    roles enum @values([
       "admin",
       "guest"
     ])
