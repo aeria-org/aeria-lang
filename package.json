@@ -2,5 +2,17 @@
   "name": "aeria-compile",
   "version": "1.0.0",
   "license": "MIT",
-  "packageManager": "pnpm@9.1.0"
+  "packageManager": "pnpm@9.1.0",
+  "scripts": {
+    "postinstall": "husky",
+    "esm-transform": "./scripts/transform-import-extensions.ts"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.5",
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@swc/cli": "^0.3.12",
+    "husky": "^9.0.11",
+    "ts-node": "^10.9.2"
+  }
 }
