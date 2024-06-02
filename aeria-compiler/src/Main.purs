@@ -1,9 +1,9 @@
-module Main where
+module Main (main, module Aeria.Driver) where
 
 import Prelude
 
 import Aeria.Codegen.Javascript.Tree (Output(..))
-import Aeria.Driver (compile)
+import Aeria.Driver (compile, compile')
 import Data.Array (reverse, slice)
 import Data.Maybe (Maybe(..))
 import Effect (Effect)

@@ -18,11 +18,9 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-      - name: Aeria Lang
-        run: cd aeria-lang
       - name: Install dependencies
         run: pnpm install
       - name: Build packages
-        run: pnpm spago build
+        run: pnpm --filter=aeria-compiler build
       - name: Test packages
-        run: pnpm spago test
+        run: pnpm --filter=aeria-compiler test

@@ -33,12 +33,12 @@ readFile filePath = do
   content <- S.readFile filePath
   toString UTF8 content
 
-readPrograms :: String -> Effect (Array Program)
-readPrograms path = do
+readPrograms :: String -> String -> Effect (Array Program)
+readPrograms path goldenExtenssion = do
   programs <- getPrograms path
   traverse (\program -> do
     let schemaName = program <> ".aeria"
-    let goldenName = program <> ".golden"
+    let goldenName = program <> goldenExtenssion
     schema <- readFile (path <> "/" <> schemaName)
     golden <- readFile (path <> "/" <> goldenName)
     pure (Program { name: program, schema, golden })) programs

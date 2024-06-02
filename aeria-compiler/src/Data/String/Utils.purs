@@ -5,7 +5,7 @@ import Prelude
 import Data.Array (intercalate)
 import Data.CodePoint.Unicode (toUpper)
 import Data.Maybe (Maybe(..))
-import Data.String (fromCodePointArray, uncons)
+import Data.String (Pattern(..), fromCodePointArray, split, uncons)
 import Data.String.CodeUnits (fromCharArray)
 
 ucfirst :: String -> String
@@ -23,3 +23,6 @@ concatWith xs f  =
   xs
     # map f
     # intercalate ","
+
+splitLines :: String -> Array String
+splitLines str = split (Pattern "\n") str

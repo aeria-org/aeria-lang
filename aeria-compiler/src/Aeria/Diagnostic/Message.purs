@@ -12,7 +12,7 @@ import Aeria.Semantic.Error (SemanticError)
 import Aeria.Syntax.Error (SyntaxError(..))
 import Data.Array (replicate, slice)
 import Data.Array as A
-import Data.String (Pattern(..), split)
+import Data.String.Utils (splitLines)
 
 data DiagnosticInfo
   = DiagnosticSyntaxError SyntaxError
@@ -25,13 +25,10 @@ data Diagnostic = Diagnostic
   , info        :: DiagnosticInfo
   }
 
-getLines :: String -> Array String
-getLines str = split (Pattern "\n") str
-
 getSourceCode :: String -> Int -> Int -> Array String
 getSourceCode source startLine endLine =
   let
-    lines = getLines source
+    lines = splitLines source
     startLine' = max (startLine - 4) 0
   in if startLine' >= 0 && endLine < A.length lines
       then slice startLine' endLine lines
