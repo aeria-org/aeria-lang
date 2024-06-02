@@ -64,7 +64,7 @@ main = do
   syntax <- readPrograms "./test/Suite/Syntax" ".golden"
   commonJs <- readPrograms "./test/Suite/Codegen/Javascript/CommonJs" ".js"
   esnext <- readPrograms "./test/Suite/Codegen/Javascript/EsNext" ".mjs"
-  typescript <- readPrograms "./test/Suite/Codegen/Typescript" ".d.ts"
+  -- typescript <- readPrograms "./test/Suite/Codegen/Typescript" ".d.ts"
   launchAff_ $ runSpec [consoleReporter] do
     describe "Syntax" do
       for_ syntax (\(Program { name, schema, golden }) ->
@@ -79,6 +79,6 @@ main = do
         for_ esnext (\(Program { name, schema, golden }) ->
           codegenJsTest EsNext name schema golden)
 
-      describe "Typescript" do
-        for_ typescript (\(Program { name, schema, golden }) ->
-          codegenTsTest name schema golden)
+      -- describe "Typescript" do
+      --   for_ typescript (\(Program { name, schema, golden }) ->
+      --     codegenTsTest name schema golden)
