@@ -4,9 +4,8 @@ module Aeria.Syntax.Parser
 
 import Prelude hiding (between)
 
-import Aeria.Diagnostic.Message (Diagnostic(..), DiagnosticInfo(..))
+import Aeria.Diagnostic.Message (Diagnostic(..))
 import Aeria.Diagnostic.Position (SourcePos(..), Span(..))
-import Aeria.Syntax.Error (SyntaxError(..))
 import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionIndividualActions, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPreferred, CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PreferredItem(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), WritableItem(..))
 import Control.Lazy (fix)
 import Data.Array as A
@@ -989,7 +988,7 @@ runProgram filepath source =
       Left $ Diagnostic
         { filepath
         , source
-        , info: DiagnosticSyntaxError (SyntaxError syntaxError)
+        , info: syntaxError
         , span: (Span (SourcePos index line column) (SourcePos index line column))
         }
     Right program -> Right program

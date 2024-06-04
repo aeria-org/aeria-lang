@@ -1,6 +1,5 @@
 module Aeria.Diagnostic.Message
   ( Diagnostic(..)
-  , DiagnosticInfo(..)
   , ppDiagnostic
   )
   where
@@ -8,21 +7,15 @@ module Aeria.Diagnostic.Message
 import Prelude
 
 import Aeria.Diagnostic.Position (SourcePos(..), Span(..))
-import Aeria.Semantic.Error (SemanticError)
-import Aeria.Syntax.Error (SyntaxError(..))
 import Data.Array (replicate, slice)
 import Data.Array as A
 import Data.String.Utils (splitLines)
-
-data DiagnosticInfo
-  = DiagnosticSyntaxError SyntaxError
-  | DiagnosticSemanticError SemanticError
 
 data Diagnostic = Diagnostic
   { filepath    :: String
   , span        :: Span
   , source      :: String
-  , info        :: DiagnosticInfo
+  , info        :: String
   }
 
 getSourceCode :: String -> Int -> Int -> Array String
@@ -39,17 +32,12 @@ ppDiagnostic (Diagnostic { filepath, span, source, info }) =
   let
     Span (SourcePos _ startLine _) (SourcePos _ endline _) = span
 
-    message =
-      case info of
-        DiagnosticSyntaxError (SyntaxError m) -> m
-        DiagnosticSemanticError se -> show se
-
     above = getSourceCode source startLine endline
   in
     A.intercalate "\n"
       [ ppPosition span filepath
       , ppSourceCode above
-      , ppMessage span message
+      , ppMessage span info
       ]
 
 ppSourceCode :: Array String -> String

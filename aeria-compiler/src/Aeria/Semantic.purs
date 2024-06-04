@@ -2,9 +2,8 @@ module Aeria.Semantic where
 
 import Prelude
 
-import Aeria.Diagnostic.Message (Diagnostic(..), DiagnosticInfo(..))
+import Aeria.Diagnostic.Message (Diagnostic(..))
 import Aeria.Diagnostic.Position (Span)
-import Aeria.Semantic.Error (ExprError(..), PropertyError(..), SemanticError(..))
 import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionImmutable(..), CollectionIndexes, CollectionIndividualActions, CollectionLayout, CollectionName(..), CollectionPreferred, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), PreferredItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), Typ(..), WritableItem(..))
 import Control.Monad.Except (Except, runExcept, throwError)
 import Control.Monad.Reader (ReaderT, ask, local, runReaderT)
@@ -53,28 +52,26 @@ extendContext (CollectionName _ collectionName) properties getters (Context { co
       propertiesContext' <- L.foldM go propertiesContext properties
       pure $ CollectionContext { properties: propertiesContext', getters: gettersContext }
       where
-        go pts property@(Property { name: pn@(PropertyName span name) }) = do
+        go pts property@(Property { name: (PropertyName span name) }) = do
           context <- ask
           case M.lookup name pts of
             Nothing -> pure $ M.insert name property pts
             Just _ -> do
-              let diagnostic = makeDiagnostic context span (PropertyIsAlreadyInUse pn)
+              let diagnostic = makeDiagnostic context span ""
               throwError diagnostic
-
 
     extendGetters :: CollectionContext -> SemanticM CollectionContext
     extendGetters (CollectionContext { getters: gettersContext, properties: propertiesContext }) = do
       gettersContext' <- L.foldM go gettersContext getters
       pure $ CollectionContext { properties: propertiesContext, getters: gettersContext' }
       where
-        go gts getter@(Getter { name: pn@(PropertyName span name) }) = do
+        go gts getter@(Getter { name: (PropertyName span name) }) = do
           context <- ask
           case M.lookup name gts of
             Nothing -> pure $ M.insert name getter gts
             Just _ -> do
-              let diagnostic = makeDiagnostic context span (PropertyIsAlreadyInUse pn)
+              let diagnostic = makeDiagnostic context span ""
               throwError diagnostic
-
 
 lookupProperty :: Context -> CollectionName -> PropertyName -> Maybe Property
 lookupProperty (Context { collections }) (CollectionName _ collectionName) (PropertyName _ propertyName) = do
@@ -102,22 +99,22 @@ collectionHasProperty context collectionName propertyName =
         Just _ -> Just unit
     Just _ -> Just unit
 
-makeDiagnostic :: Context -> Span -> SemanticError -> Diagnostic
+makeDiagnostic :: Context -> Span -> String -> Diagnostic
 makeDiagnostic (Context { filepath, source }) span semanticError =
   Diagnostic
     { filepath
     , span
     , source
-    , info: DiagnosticSemanticError semanticError
+    , info: semanticError
     }
 
-throwDiagnostic :: Span -> SemanticError -> SemanticM Unit
+throwDiagnostic :: Span -> String -> SemanticM Unit
 throwDiagnostic span semanticError = do
   context <- ask
   let diagnostic = makeDiagnostic context span semanticError
   throwError diagnostic
 
-sExpr :: Context -> CollectionName -> Expr -> Either ExprError Unit
+sExpr :: Context -> CollectionName -> Expr -> Either String Unit
 sExpr context collectionName expr =
   case expr of
     EIn lft rgt   -> sBinaryExpr lft rgt
@@ -132,7 +129,7 @@ sExpr context collectionName expr =
     ENot expr'    -> sExpr context collectionName expr'
     ELiteral _    -> pure unit
   where
-    sBinaryExpr :: Expr -> Expr -> Either ExprError Unit
+    sBinaryExpr :: Expr -> Expr -> Either String Unit
     sBinaryExpr lft rgt =
       case lft /\ rgt of
         (ELiteral (LProperty _ propertyName)) /\ _ -> do
@@ -141,15 +138,16 @@ sExpr context collectionName expr =
         _ /\ (ELiteral (LProperty _ propertyName)) -> do
           isStrictProperty propertyName
           sExpr context collectionName lft
-        _ /\ _ -> Left ExpectedProperty
+        _ /\ _ -> Left "Expected property in this expression"
 
-    sExists :: Expr -> Either ExprError Unit
+    sExists :: Expr -> Either String Unit
     sExists (ELiteral (LProperty _ propertyName)) = isStrictProperty propertyName
-    sExists _ = Left ExpectedProperty
+    sExists _ = Left "Expected property in this expression"
 
-    isStrictProperty :: PropertyName -> Either ExprError Unit
-    isStrictProperty propertyName =
-      when (isNothing (lookupProperty context collectionName propertyName)) (Left $ NotProperty propertyName)
+    isStrictProperty :: PropertyName -> Either String Unit
+    isStrictProperty propertyName@(PropertyName _ name) =
+      when (isNothing (lookupProperty context collectionName propertyName))
+        (Left $ "Property \"" <> name  <> "\" is not defined")
 
 sCollection :: Collection -> SemanticM Context
 sCollection (Collection
@@ -204,34 +202,27 @@ sCollection (Collection
 sFiltersPresets :: CollectionName -> CollectionFiltersPresets -> SemanticM Unit
 sFiltersPresets _ = traverse_ go
   where
-  go filterPreset@(FiltersPresetsItem { span, filters }) = do
-    when (isNothing filters) (throwDiagnostic span (FiltersPresetsError filterPreset))
+  go (FiltersPresetsItem { span, filters }) = do
+    when (isNothing filters) (throwDiagnostic span "\"filters\" property in \"filtersPresets\" is required")
 
 sFormLayout :: CollectionName -> CollectionFormLayout -> SemanticM Unit
 sFormLayout _ = traverse_ go
   where
   go (LayoutItem { component: Nothing }) = pure unit
-  go layoutItem@(LayoutItem
-    { component: (Just (LayoutItemComponent { span, name }))
-    }) = when (isNothing name) (throwDiagnostic span (LayoutComponentError layoutItem))
+  go (LayoutItem { component: (Just (LayoutItemComponent { span, name })) }) =
+    when (isNothing name) (throwDiagnostic span "\"name\" property in \"formLayout\" is required")
 
 sIndividualActions :: CollectionName -> CollectionIndividualActions -> SemanticM Unit
 sIndividualActions _ = traverse_ go
   where
-  go action@(ActionItem
-    { span
-    , label
-    }) = do
-      when (isNothing label) (throwDiagnostic span (ActionError action))
+  go (ActionItem { span, label }) =
+    when (isNothing label) (throwDiagnostic span "\"label\" property in \"individualActions\" is required")
 
 sActions :: CollectionName -> CollectionActions -> SemanticM Unit
 sActions _ = traverse_ go
   where
-  go action@(ActionItem
-    { span
-    , label
-    }) = do
-      when (isNothing label) (throwDiagnostic span (ActionError action))
+  go (ActionItem { span, label }) =
+    when (isNothing label) (throwDiagnostic span "\"label\" property in \"actions\" is required")
 
 sTableLayout :: CollectionName -> CollectionTableLayout -> SemanticM Unit
 sTableLayout collectionName = traverse_ go
@@ -244,7 +235,7 @@ sTableLayout collectionName = traverse_ go
       case button of
         Just (Right (Cond _ cond)) ->
           case sExpr context collectionName cond of
-            Left err ->  throwDiagnostic span (ExprError cond err)
+            Left err -> throwDiagnostic span "Invalid condition" -- TODO
             Right _ -> pure unit
         _ -> pure unit
 
@@ -252,9 +243,8 @@ sLayout :: CollectionName -> CollectionLayout -> SemanticM Unit
 sLayout _ = traverse_ go
   where
   go (LayoutItem { component: Nothing }) = pure unit
-  go layoutItem@(LayoutItem
-    { component: (Just (LayoutItemComponent { span, name }))
-    }) = when (isNothing name) (throwDiagnostic span (LayoutComponentError layoutItem))
+  go (LayoutItem { component: (Just (LayoutItemComponent { span, name }))}) =
+    when (isNothing name) (throwDiagnostic span "\"name\" property in \"layout\" is required")
 
 sPreferred :: CollectionName -> CollectionPreferred -> SemanticM Unit
 sPreferred collectionName = traverse_ go
@@ -294,38 +284,39 @@ sSecurity functions = traverse_ go
     sLogging logging
     pure unit
 
-  sFunctionName span functionName@(FunctionName _ name) =
-    case L.find (\(FunctionItem { functionName: (FunctionName _ function) }) -> function == name) functions of
+  sFunctionName span (FunctionName _ functionName) =
+    case L.find (\(FunctionItem { functionName: (FunctionName _ function) }) -> function == functionName) functions of
       Just _ -> pure unit
-      Nothing -> throwDiagnostic span (UndefinedFunction functionName)
+      Nothing -> throwDiagnostic span ("Function \"" <> functionName <> "\" is not defined")
 
   sRateLimiting (Just (SecurityRateLimiting {span, strategy})) =
     case strategy of
       Just strategy' ->
         if strategy' `elem` ["tenant", "ip"]
         then pure unit
-        else throwDiagnostic span (UndefinedStrategy strategy')
+        else throwDiagnostic span "Invalid rate limiting strategy"
       Nothing -> pure unit
   sRateLimiting _ = pure unit
 
   sLogging (Just (SecurityLogging { span, strategy: (Just strategy) })) =
     if strategy `elem` ["tenant", "ip"]
       then pure unit
-      else throwDiagnostic span (UndefinedStrategy strategy)
+      else throwDiagnostic span "Invalid logging strategy"
   sLogging _ = pure unit
 
 sRequired :: CollectionName -> CollectionRequired -> SemanticM Unit
 sRequired collectionName = traverse_ go
   where
-    go (Required _ propertyName@(PropertyName span _) cond) = do
+    go (Required _ propertyName@(PropertyName span name) cond) = do
       context <- ask
-      when (isNothing (lookupProperty context collectionName propertyName)) (throwDiagnostic span (UndefinedProperty propertyName))
+      when (isNothing (lookupProperty context collectionName propertyName))
+        (throwDiagnostic span $ "Property \""<> name <>"\" is not defined")
       sCond context cond
 
     sCond context (Just (Cond span expr)) =
       case sExpr context collectionName expr of
         Right unit -> pure unit
-        Left exprError -> throwDiagnostic span (ExprError expr exprError)
+        Left exprError -> throwDiagnostic span "Invalid condition" -- TODO
     sCond _ Nothing = pure unit
 
 sTable :: CollectionName -> CollectionTable -> SemanticM Unit
@@ -360,12 +351,13 @@ sWritable collectionName collectionWritable =
 
 sFunctions :: CollectionName -> CollectionFunctions -> SemanticM Unit
 sFunctions _ collectionFunctions =
-  traverse_ (\(FunctionItem { functionName, expose }) ->
+  traverse_ (\(FunctionItem { expose }) ->
     case expose of
       -- TODO: check if the array is of strings
       Just (Attribute _ (AttributeName _ "expose") (ALiteral _ (LArray _ _))) -> pure unit
       Just (Attribute _ (AttributeName _ "expose") (ALiteral _ (LBoolean _ _))) -> pure unit
-      Just (Attribute span _ _) -> throwDiagnostic span (FunctionError functionName)
+      Just (Attribute span (AttributeName _ name) _) ->
+        throwDiagnostic span ("Attribute \"" <> name <> "\" is not allowed")
       Nothing -> pure unit
   ) collectionFunctions
 
@@ -381,12 +373,13 @@ sCheckIfPropertiesIsValid collectionName = traverse_ \propertyName@(PropertyName
   context <- ask
   case collectionHasProperty context collectionName propertyName of
     Just _  -> pure unit
-    Nothing -> throwDiagnostic span (UndefinedProperty propertyName)
+    Nothing -> throwDiagnostic span ""
 
 sGetters :: CollectionName -> CollectionGetters -> SemanticM Unit
-sGetters collectionName = traverse_ \(Getter { name: name@(PropertyName span _) }) -> do
+sGetters collectionName = traverse_ \(Getter { name: propertyName@(PropertyName span name) }) -> do
   context <- ask
-  when (isJust (lookupProperty context collectionName name)) (throwDiagnostic span (PropertyIsAlreadyInUse name))
+  when (isJust (lookupProperty context collectionName propertyName))
+    (throwDiagnostic span $ "Property \"" <> name <> "\" is already defined")
 
 sProperties :: CollectionName -> CollectionProperties -> SemanticM Unit
 sProperties collectionName = traverse_ (sProperty collectionName)
@@ -424,8 +417,8 @@ sArrayProperty collectionName = sAttributes'
       case type' of
         object@(PObject _ _ _)  -> sObjectProperty collectionName (Property { span, type_: object, attributes: typeAttributes, name })
         _                       -> sProperty collectionName (Property { span, type_: type', attributes: typeAttributes, name })
-    sAttributes' property@(Property { span }) =
-      throwDiagnostic span (PropertyError property PropertyTypeDoesNotExpectType)
+    sAttributes' property@(Property { span, type_ }) =
+      throwDiagnostic span ("Expected array, but received " <> show property) -- TODO
 
     literalAttributes =
       M.fromFoldable
@@ -436,7 +429,7 @@ sObjectProperty :: CollectionName -> Property -> SemanticM Unit
 sObjectProperty (CollectionName _ collectionName) = sAttributes' 0
   where
     sAttributes' idx property@(Property { span, type_ }) = do
-      sAttributes property literalAttributes M.empty
+      sAttributes property M.empty M.empty
       case type_ of
         PObject _ required properties -> do
           let objectName =  (CollectionName span (collectionName <> (show idx)))
@@ -444,18 +437,14 @@ sObjectProperty (CollectionName _ collectionName) = sAttributes' 0
           local (const context) $ do
             sRequired objectName required
             traverse_ (sProperty objectName) properties
-        _ -> throwDiagnostic span (PropertyError property PropertyTypeDoesNotExpectType)
-
-    literalAttributes =
-      M.fromFoldable
-        [ --"default" /\ sType []
-        ]
+        _ ->
+          throwDiagnostic span ("Expected object, but received " <> show type_)
 
 sRefProperty :: CollectionName -> Property -> SemanticM Unit
-sRefProperty collectionName@(CollectionName span _) property = do
+sRefProperty collectionName@(CollectionName span collectionName') property = do
   context <- ask
   when (isNothing (lookupCollection context collectionName))
-    (throwDiagnostic span (PropertyError property (UndefinedReference collectionName)))
+    (throwDiagnostic span ("Collection \"" <> collectionName' <> "\" is not defined"))
   sAttributes' property
   where
     sAttributes' property' = sAttributes property' literalAttributes exprAttributes
@@ -475,23 +464,23 @@ sRefProperty collectionName@(CollectionName span _) property = do
     sArrayType' property' literal@(LArray _ values) = do
       sArrayType TProperty property' literal
       traverse_ collectionHasProperty' values
-    sArrayType' property' literal =
-      throwDiagnostic (literalPos literal) (PropertyError property' (TypeMismatch [] (typeOf literal)))
+    sArrayType' _ literal =
+      throwDiagnostic (literalPos literal) ("Expected list of properties, but received " <> show (typeOf literal))
 
     collectionHasProperty' (LProperty span' propertyName) = do
       context <- ask
       case collectionHasProperty context collectionName propertyName of
         Nothing ->
-          throwDiagnostic span' (UndefinedProperty propertyName)
+          throwDiagnostic span' ""
         Just _ -> pure unit
     collectionHasProperty' literal =
-      throwDiagnostic (literalPos literal) (PropertyError property (TypeMismatch [TArray] (typeOf literal)))
+      throwDiagnostic (literalPos literal) ("Expected property, but received " <> show (typeOf literal))
 
     sConstraints _property' expr = do
       context <- ask
       case sExpr context collectionName expr of
         Right unit -> pure unit
-        Left exprError -> throwDiagnostic span (ExprError expr exprError)
+        Left exprError -> throwDiagnostic span exprError
 
 sFileProperty :: Property -> SemanticM Unit
 sFileProperty property = sAttributes property literalAttributes M.empty
@@ -502,20 +491,22 @@ sFileProperty property = sAttributes property literalAttributes M.empty
       ]
 
 sType :: Array Typ -> Property -> Literal -> SemanticM Unit
-sType accepts property literal = do
+sType accepts _ literal = do
   let type' = typeOf literal
   let span = literalPos literal
-  when (not (type' `elem` accepts)) (throwDiagnostic span (PropertyError property (TypeMismatch accepts type')))
+  when (not (type' `elem` accepts)) (throwDiagnostic span "Type mismatch")
 
 sArrayType :: Typ -> Property -> Literal -> SemanticM Unit
-sArrayType expected property (LArray _ arr@(l:_)) =
+sArrayType expected _ (LArray _ arr@(l:_)) =
   case typeOfArray arr of
     Just arrType ->
-      when (arrType /= expected) $ throwDiagnostic (literalPos l) (PropertyError property (ArrayTypeMismatch expected arrType))
+      when (arrType /= expected) $
+        throwDiagnostic (literalPos l) ("Array type mismatch, expected array of " <> show expected <> "but received " <> show arrType)
     Nothing ->
-      throwDiagnostic (literalPos l) (PropertyError property (ArrayTypeMismatch expected (typeOf l)))
-sArrayType expected property literal =
-  throwDiagnostic (literalPos literal) (PropertyError property (ArrayTypeMismatch expected (typeOf literal)))
+      throwDiagnostic (literalPos l) ("Array type mismatch, expected array of " <> show expected <> "but received " <> show (typeOf l))
+sArrayType expected _ literal =
+  throwDiagnostic (literalPos literal)
+    ("Array type mismatch, expected array of " <> show expected <> "but received " <> show (typeOf literal))
 
 sEnumProperty :: Property -> SemanticM Unit
 sEnumProperty property = sAttributes property literalAttributes M.empty
@@ -578,28 +569,24 @@ sStringProperty property = sAttributes property literalAttributes M.empty
       ]
 
   checkFormat :: Property -> Literal -> SemanticM Unit
-  checkFormat property' (LString span value)
+  checkFormat _ (LString span value)
     | elem value formatOptions = pure unit
-    | otherwise = throwDiagnostic span (PropertyError property' (AttributeLiteralMustBe (L.fromFoldable formatOptions)))
-  checkFormat property' literal = throwDiagnostic (literalPos literal) (PropertyError property' (TypeMismatch [TString] received))
-    where
-    received = typeOf literal
+    | otherwise = throwDiagnostic span "Atribute must be one of: date, date-time"
+  checkFormat _ literal =
+    throwDiagnostic (literalPos literal) ("Expected string but received " <> show (typeOf literal))
 
   checkType :: Property -> Literal -> SemanticM Unit
-  checkType property' (LString span value)
+  checkType _ (LString span value)
     | elem value typeOptions = pure unit
-    | otherwise = throwDiagnostic span (PropertyError property' (AttributeLiteralMustBe (L.fromFoldable typeOptions)))
-  checkType property' literal = throwDiagnostic (literalPos literal) (PropertyError property' (TypeMismatch [TString] received))
-    where
-    received = typeOf literal
+    | otherwise = throwDiagnostic span "Attribute must be one of: text, email, password, search, time, month"
+  checkType _ literal =
+    throwDiagnostic (literalPos literal) ("Expected string but received " <> show (typeOf literal))
 
   checkMask :: Property -> Literal -> SemanticM Unit
   checkMask property' array@(LArray _ _) = sArrayType TString property' array
   checkMask _ (LString _ _) = pure unit
-  checkMask property' literal = throwDiagnostic (literalPos literal) (PropertyError property' (TypeMismatch expected  received))
-    where
-    received = typeOf literal
-    expected = [TString, TArray]
+  checkMask _ literal =
+    throwDiagnostic (literalPos literal) ("Expected string or array of strings but received " <> show (typeOf literal))
 
   typeOptions :: Array String
   typeOptions = [ "text", "email", "password", "search", "time", "month" ]
@@ -614,14 +601,14 @@ sAttributes ::
   SemanticM Unit
 sAttributes property@(Property { attributes }) fl fe = traverse_ go attributes
   where
-  go (Attribute _ attribute@(AttributeName span attributeName) (ALiteral _ value)) =
+  go (Attribute _ (AttributeName span attributeName) (ALiteral _ value)) =
     case M.lookup attributeName fl of
       Just f -> f property value
-      Nothing -> throwDiagnostic span (PropertyError property (UndefinedAttribute attribute))
-  go (Attribute _ attribute@(AttributeName span attributeName) (AExpr _ value)) =
+      Nothing -> throwDiagnostic span $ "Attribute\"" <> attributeName <> "\"is not allowed"
+  go (Attribute _ (AttributeName span attributeName) (AExpr _ value)) =
     case M.lookup attributeName fe of
       Just f -> f property value
-      Nothing -> throwDiagnostic span (PropertyError property (UndefinedAttribute attribute))
+      Nothing -> throwDiagnostic span $ "Attribute\"" <> attributeName <> "\"is not allowed"
 
 sProgram :: Program -> SemanticM Unit
 sProgram (Program { collections }) = do

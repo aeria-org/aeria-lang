@@ -7,7 +7,7 @@ import Aeria.Codegen.Javascript.Pretty (ppJavascript)
 import Aeria.Codegen.Javascript.Tree (Output(..))
 import Aeria.Codegen.Typescript.Pretty (ppTypescript)
 import Aeria.Diagnostic.Message (ppDiagnostic)
-import Aeria.Driver (compile')
+import Aeria.Driver (compile'')
 import Aeria.Syntax.Parser (runProgram)
 import Control.Monad.Error.Class (class MonadThrow)
 import Data.Either (Either(..))
@@ -36,7 +36,7 @@ syntaxTest testName schema golden = do
 codegenJsTest :: forall m52. Monad m52 => Output -> String -> String -> String -> SpecT Aff Unit m52 Unit
 codegenJsTest output testName schema golden = do
   it testName do
-    let codegen = compile'  "<stdin>" schema
+    let codegen = compile'' "<stdin>" schema
     case codegen of
       Left err -> fail (ppDiagnostic err)
       Right codegen' -> do
@@ -49,7 +49,7 @@ codegenJsTest output testName schema golden = do
 codegenTsTest ∷ ∀ (m23 ∷ Type -> Type). Monad m23 ⇒ String → String → String → SpecT Aff Unit m23 Unit
 codegenTsTest testName schema golden = do
   it testName do
-    let codegen = compile' "<stdin>" schema
+    let codegen = compile'' "<stdin>" schema
     case codegen of
       Left err -> fail (ppDiagnostic err)
       Right codegen' -> do
