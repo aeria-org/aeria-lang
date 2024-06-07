@@ -2,10 +2,16 @@
   "name": "aeria-compiler",
   "version": "1.0.0",
   "packageManager": "pnpm@9.1.0",
+  "main": "dist/index.mjs",
+  "types": "aeria-compiler.d.ts",
+  "files": [
+    "dist",
+    "aeria-compiler.d.ts"
+  ],
   "scripts": {
-    "test": "npx spago test",
-    "build": "npx spago build",
-    "bundle": "npx spago bundle-module --platform=node"
+    "test": "spago test",
+    "build": "spago build",
+    "bundle": "spago bundle-module --platform=node --to=dist/index.mjs"
   },
   "devDependencies": {
     "purescript": "^0.15.15",
