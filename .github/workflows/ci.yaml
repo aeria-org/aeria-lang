@@ -25,5 +25,16 @@ jobs:
           pnpm --filter=aeria-compiler build
           pnpm --filter=aeria-compiler bundle
           pnpm --filter=aeria-build build
+          pnpm --filter=playground build
       - name: Test packages
         run: pnpm -r test
+
+      - name: Create release PR
+        uses: changesets/action@v1
+        with:
+          publish: ./.github/scripts/publish.sh
+        env:
+          BRANCH_NAME: ${{ github.ref_name  }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
