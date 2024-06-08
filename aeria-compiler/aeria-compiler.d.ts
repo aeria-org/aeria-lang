@@ -1,9 +1,9 @@
 export declare class Left<T> {
-  value0: T
+  readonly value0: T
 }
 
 export declare class Right<T> {
-  value0: T
+  readonly value0: T
 }
 
 export type Either<L, R> = Left<L> | Right<R>
