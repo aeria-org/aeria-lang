@@ -1,5 +1,5 @@
+import type { Declaration, RootPackageJson, BuildOptions } from './types.js'
 import * as compiler from 'aeria-compiler'
-import { Declaration, RootPackageJson, BuildOptions } from './types.js'
 
 const DECLARATION_PATH: Record<compiler.DeclarationType, string> = {
   collection: 'collections'
