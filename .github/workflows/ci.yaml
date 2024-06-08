@@ -22,9 +22,9 @@ jobs:
         run: pnpm install
       - name: Build packages
         run: |
-          pnpm --filter=aeria-compiler build
-          pnpm --filter=aeria-compiler bundle
-          pnpm --filter=aeria-build build
+          pnpm --filter='./packages/aeria-compiler' build
+          pnpm --filter='./packages/aeria-compiler' bundle
+          pnpm --filter='./packages/aeria-build' build
           # pnpm --filter=playground build
       - name: Test packages
         run: pnpm -r test
