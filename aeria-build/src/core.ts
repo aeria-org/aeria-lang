@@ -1,5 +1,5 @@
+import type { CompilationTarget, Declaration } from './types.js'
 import * as compiler from 'aeria-compiler'
-import { CompilationTarget, Declaration } from './types.js'
 
 export const compile = (target: CompilationTarget) => {
   return compiler.compile(target.filename)(target.source)(target.module)
