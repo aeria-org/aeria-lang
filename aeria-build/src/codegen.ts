@@ -12,6 +12,13 @@ export const addJsExtension = (filename: string, options: BuildOptions) => {
   }
 }
 
+export const addDtsExtension = (filename: string, options: BuildOptions) => {
+  switch( options.module ) {
+    case 'esnext': return `${filename}.d.mts`
+    case 'commonjs': return `${filename}.d.ts`
+  }
+}
+
 export const getDeclarationPath = (decl: Declaration, outDir: string) => {
   const doubleSlashesRemoved = outDir.replace('//', '/')
   const sanitizedOutDir = doubleSlashesRemoved.endsWith('/')
@@ -24,17 +31,33 @@ export const getDeclarationPath = (decl: Declaration, outDir: string) => {
 export const generateRootPackageJson = (options: BuildOptions) => {
   const json: RootPackageJson = {
     main: addJsExtension('index', options),
-    types: 'index.d.ts',
+    types: addDtsExtension('index', options),
     exports: {
+      '.': {
+        require: './index.js',
+        import: './index.mjs',
+        types: './index.d.ts',
+      },
       './collections': {
         require: './collections/index.js',
         import: './collections/index.mjs',
         types: './collections/index.d.ts',
-      }
+      },
     },
   }
 
   return json
+}
+
+export const generateRootIndexJs = (options: BuildOptions) => {
+  switch( options.module ) {
+    case 'esnext': return `export * as collections from '${addJsExtension('./collections/index', options)}'`
+    case 'commonjs': return `exports.collections = require('${addJsExtension('./collections/index', options)}')`
+  }
+}
+
+export const generateRootIndexDts = (options: BuildOptions) => {
+  return `export * as collections from '${addJsExtension('./collections/index', options)}'`
 }
 
 export const generateCollectionsIndexJs = (declarations: Declaration[], options: BuildOptions) => {

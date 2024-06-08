@@ -5,8 +5,11 @@ import * as path from 'path'
 import { compile, isLeft, unwrapEither, getDeclarations } from './core.js'
 import {
   addJsExtension,
+  addDtsExtension,
   getDeclarationPath,
   generateRootPackageJson,
+  generateRootIndexJs,
+  generateRootIndexDts,
   generateCollectionsIndexJs,
   generateCollectionsIndexDts,
 
@@ -43,11 +46,19 @@ export const writeBaseFiles = async (declarations: Declaration[], options: Build
     JSON.stringify(generateRootPackageJson(options), null, 2)
   )
   await write(
+    path.join(options.outDir, addJsExtension('index', options)),
+    generateRootIndexJs(options),
+  )
+  await write(
+    path.join(options.outDir, addDtsExtension('index', options)),
+    generateRootIndexDts(options),
+  )
+  await write(
     path.join(options.outDir, 'collections', addJsExtension('index', options)),
     generateCollectionsIndexJs(declarations, options)
   )
   await write(
-    path.join(options.outDir, 'collections', 'index.d.ts'),
+    path.join(options.outDir, 'collections', addDtsExtension('index', options)),
     generateCollectionsIndexDts(declarations, options)
   )
 
@@ -89,7 +100,7 @@ export const build = async (inputs: string[], options: BuildOptions) => {
   for( const decl of declarations ) {
     const declPath = getDeclarationPath(decl, options.outDir)
     const jsPath = addJsExtension(declPath, options)
-    const tsPath = `${declPath}.d.ts`
+    const tsPath = addDtsExtension(declPath, options)
 
     await fs.promises.writeFile(jsPath, decl.js)
     await fs.promises.writeFile(tsPath, decl.ts)

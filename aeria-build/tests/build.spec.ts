@@ -89,13 +89,18 @@ describe('Build', () => {
     const json = generateRootPackageJson(buildOptions)
 
     assert(JSON.stringify(json) === JSON.stringify({
-      "main": "index.mjs",
-      "types": "index.d.ts",
-      "exports": {
-        "./collections": {
-          "require": "./collections/index.js",
-          "import": "./collections/index.mjs",
-          "types": "./collections/index.d.ts"
+      main: 'index.mjs',
+      types: 'index.d.mts',
+      exports: {
+        '.': {
+          'require': './index.js',
+          'import': './index.mjs',
+          'types': './index.d.ts'
+        },
+        './collections': {
+          'require': './collections/index.js',
+          'import': './collections/index.mjs',
+          'types': './collections/index.d.ts'
         }
       }
     }))
@@ -134,8 +139,10 @@ describe('Build', () => {
     const files = Object.keys(await writeBaseFiles(declarations, buildOptions))
 
     assert(files[0] === 'node_modules/.test/package.json')
-    assert(files[1] === 'node_modules/.test/collections/index.mjs')
-    assert(files[2] === 'node_modules/.test/collections/index.d.ts')
+    assert(files[1] === 'node_modules/.test/index.mjs')
+    assert(files[2] === 'node_modules/.test/index.d.mts')
+    assert(files[3] === 'node_modules/.test/collections/index.mjs')
+    assert(files[4] === 'node_modules/.test/collections/index.d.mts')
   })
   it('emits scaffolding files (cjs)', async () => {
     assert(!isLeft(validResultEither))
@@ -146,7 +153,12 @@ describe('Build', () => {
       ...buildOptions,
       module: 'commonjs',
     }))
-    assert(files[1] === 'node_modules/.test/collections/index.js')
+
+    console.log(files)
+    assert(files[1] === 'node_modules/.test/index.js')
+    assert(files[2] === 'node_modules/.test/index.d.ts')
+    assert(files[3] === 'node_modules/.test/collections/index.js')
+    assert(files[4] === 'node_modules/.test/collections/index.d.ts')
   })
 })
 

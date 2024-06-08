@@ -2,8 +2,8 @@ import { build } from './filesystem.js'
 
 export const main = async () => {
   const result = await build(['/tmp/1.aeria'], {
-    outDir: '/tmp/banana1',
-    module: 'commonjs',
+    outDir: '/tmp/aeria-test/node_modules/aeria-runtime',
+    module: 'esnext',
   })
 
   console.log(result)
