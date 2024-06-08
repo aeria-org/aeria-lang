@@ -23,6 +23,7 @@ jobs:
       - name: Build packages
         run: |
           pnpm --filter=aeria-compiler build
+          pnpm --filter=aeria-compiler bundle
           pnpm --filter=aeria-build build
       - name: Test packages
         run: pnpm -r test

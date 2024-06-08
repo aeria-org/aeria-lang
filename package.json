@@ -4,7 +4,7 @@
   "license": "MIT",
   "packageManager": "pnpm@9.1.0",
   "scripts": {
-    "postinstall": "husky; if test -d .aeria; then mv .aeria playground; fi",
+    "postinstall": "husky; if test -d .aeria; then rm -rf playground/.aeria; mv .aeria playground; fi",
     "esm-transform": "./scripts/transform-import-extensions.ts"
   },
   "devDependencies": {
