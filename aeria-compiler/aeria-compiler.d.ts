@@ -12,11 +12,13 @@ export type TargetModule =
   | 'commonjs'
   | 'esnext'
 
-export type CompilationResult = readonly [
+export type CompilationOutput = readonly [
   string,
   string,
   string,
 ]
+
+export type CompilationResult = CompilationOutput[]
 
 export type CompilationError = {
   filepath: string
@@ -24,5 +26,8 @@ export type CompilationError = {
   info: string
 }
 
-export const compile: (filename: string) => (source: string) => (targetModule: TargetModule) => Either<CompilationError, CompilationResult[]>
+export const compile: (filename: string) => (source: string) => (targetModule: TargetModule) => Either<
+  CompilationError,
+  CompilationResult
+>
 
