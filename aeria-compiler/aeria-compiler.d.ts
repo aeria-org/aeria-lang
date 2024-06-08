@@ -6,31 +6,37 @@ export declare class Right<T> {
   readonly value0: T
 }
 
-export type Either<L, R> = Left<L> | Right<R>
+export declare class Diagnostic {
+  readonly value0: CompilationError
+}
 
-export type TargetModule =
+export declare type Either<L, R> = Left<L> | Right<R>
+
+export declare type TargetModule =
   | 'commonjs'
   | 'esnext'
 
-export type DeclarationType =
+export declare type DeclarationType =
   | 'collection'
 
-export type CompilationOutput = readonly [
+export declare type CompilationOutput = readonly [
   string,
   string,
   string,
 ]
 
-export type CompilationResult = CompilationOutput[]
+export declare type CompilationResult = CompilationOutput[]
 
-export type CompilationError = {
+export declare type CompilationError = {
   filepath: string
   source: string
   info: string
 }
 
-export const compile: (filename: string) => (source: string) => (targetModule: TargetModule) => Either<
-  CompilationError,
+export declare const compile: (filename: string) => (source: string) => (targetModule: TargetModule) => Either<
+  Diagnostic,
   CompilationResult
 >
+
+export declare const ppDiagnostic = (diagnostic: Diagnostic) => string
 

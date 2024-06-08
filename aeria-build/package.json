@@ -16,5 +16,8 @@
   "license": "ISC",
   "devDependencies": {
     "aeria-compiler": "link:../aeria-compiler"
+  },
+  "dependencies": {
+    "glob": "^10.4.1"
   }
 }

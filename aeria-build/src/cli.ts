@@ -1,15 +1,55 @@
+import type { TargetModule } from 'aeria-compiler'
+import { ppDiagnostic } from 'aeria-compiler'
+import { glob } from 'glob'
+import { parseArgs } from 'util'
 import { build } from './filesystem.js'
 
+const { values: opts, positionals } = parseArgs({
+  allowPositionals: true,
+  options: {
+    module: {
+      type: 'string',
+      short: 'm',
+    },
+    outDir: {
+      type: 'string',
+      short: 'o',
+    },
+  },
+})
+
+const isValidModule = (module: string): module is TargetModule => {
+  return [
+    'esnext',
+    'commojs',
+  ].includes(module)
+}
+
 export const main = async () => {
-  const result = await build(['/tmp/1.aeria'], {
-    outDir: '/tmp/aeria-test/node_modules/aeria-runtime',
-    module: 'esnext',
+  const targetModule = opts.module || 'esnext'
+  if( !isValidModule(targetModule) ) {
+    console.error(`invalid target module: "${targetModule}"`)
+    process.exit(1)
+  }
+
+  if( !opts.outDir ) {
+    console.error(`missing -o flag`)
+    process.exit(1)
+  }
+
+  const patterns = positionals
+    .map((directory) => `${directory}/*.aeria`)
+
+  const input = await glob(patterns)
+
+  const result = await build(input, {
+    outDir: opts.outDir,
+    module: targetModule,
   })
 
-  console.log(result)
   if( !result.success ) {
+    console.error(ppDiagnostic(result.diagnostics))
     process.exit(1)
   }
 }
-
 
