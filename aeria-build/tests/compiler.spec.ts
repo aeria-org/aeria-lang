@@ -8,6 +8,8 @@ import {
   generateRootIndexJs,
   generateRootIndexDts,
   generateScaffolding,
+  writeFiles,
+
 } from '../src/index.js'
 
 const DUMMY_FILENAME = 'dummy.aeria'
@@ -78,7 +80,7 @@ describe('Compile', () => {
   it('generates the root package.json right', () => {
     assert(!isLeft(validResultEither))
     const result = unwrapEither(validResultEither)
-    const json = generateRootPackageJson(result)
+    const json = generateRootPackageJson(getDeclarations(result))
 
     assert(JSON.stringify(json) === JSON.stringify({
       "exports": {
@@ -98,14 +100,14 @@ describe('Compile', () => {
   it('generates the root index.js right', () => {
     assert(!isLeft(validResultEither))
     const result = unwrapEither(validResultEither)
-    const source = generateRootIndexJs(result)
+    const source = generateRootIndexJs(getDeclarations(result))
 
     console.log(source)
   })
   it('generates the root index.d.ts right', () => {
     assert(!isLeft(validResultEither))
     const result = unwrapEither(validResultEither)
-    const source = generateRootIndexDts(result)
+    const source = generateRootIndexDts(getDeclarations(result))
 
     console.log(source)
   })
@@ -115,11 +117,26 @@ describe('Compile', () => {
     const declarations = getDeclarations(result)
 
     const scaffolding = await generateScaffolding(declarations, {
-      outDir: 'node_modules/.test'
+      outDir: 'node_modules/.test',
+      dryRun: true,
     })
 
     assert(scaffolding[0] === 'node_modules/.test/collections/pet')
     assert(scaffolding[1] === 'node_modules/.test/collections/person')
+  })
+  it('emits scaffolding files', async () => {
+    assert(!isLeft(validResultEither))
+    const result = unwrapEither(validResultEither)
+    const declarations = getDeclarations(result)
+
+    const files = Object.keys(await writeFiles(declarations, {
+      outDir: 'node_modules/.test',
+      dryRun: true,
+    }))
+
+    assert(files[0] === 'node_modules/.test/package.json')
+    assert(files[1] === 'node_modules/.test/index.js')
+    assert(files[2] === 'node_modules/.test/index.d.ts')
   })
 })
 

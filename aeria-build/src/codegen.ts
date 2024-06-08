@@ -1,6 +1,5 @@
 import * as compiler from 'aeria-compiler'
 import { Declaration, RootPackageJson } from './types.js'
-import { getDeclarations } from './core.js'
 
 const DECLARATION_PATH: Record<compiler.DeclarationType, string> = {
   collection: 'collections'
@@ -15,8 +14,7 @@ export const getDeclarationPath = (decl: Declaration, outDir = './') => {
   return `${sanitizedOutDir}${DECLARATION_PATH[decl.type]}/${decl.name}`
 }
 
-export const generateRootPackageJson = (result: compiler.CompilationResult) => {
-  const declarations = getDeclarations(result)
+export const generateRootPackageJson = (declarations: Declaration[]) => {
   const json: RootPackageJson = {
     exports: {}
   }
@@ -34,8 +32,7 @@ export const generateRootPackageJson = (result: compiler.CompilationResult) => {
   return json
 }
 
-export const generateRootIndexJs = (result: compiler.CompilationResult) => {
-  const declarations = getDeclarations(result)
+export const generateRootIndexJs = (declarations: Declaration[]) => {
   let source = ''
 
   for( const decl of declarations ) {
@@ -45,8 +42,7 @@ export const generateRootIndexJs = (result: compiler.CompilationResult) => {
   return source
 }
 
-export const generateRootIndexDts = (result: compiler.CompilationResult) => {
-  const declarations = getDeclarations(result)
+export const generateRootIndexDts = (declarations: Declaration[]) => {
   let source = ''
 
   for( const decl of declarations ) {
