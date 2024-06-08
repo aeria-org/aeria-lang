@@ -46,9 +46,10 @@ export const generateCollectionsIndexJs = (declarations: Declaration[], options:
     }
 
     const importPath = addJsExtension(`./${decl.name}`, options)
-    source += options.module === 'esnext'
-      ? `export * from '${importPath}'\n`
-      : `exports['${decl.name}'] = require('${importPath}')['${decl.name}']\n`
+    switch( options.module ) {
+      case 'esnext': source += `export * from '${importPath}'\n`; break
+      case 'commonjs': source += `exports['${decl.name}'] = require('${importPath}')['${decl.name}']\n`; break
+    }
   }
 
   return source
