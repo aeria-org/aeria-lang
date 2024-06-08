@@ -67,7 +67,7 @@ const invalidResultEither = compile({
   module: 'esnext'
 })
 
-describe('Compile', () => {
+describe('Build', () => {
   it('compiles to esnext successfully', () => {
     assert(!isLeft(validResultEither))
   })
