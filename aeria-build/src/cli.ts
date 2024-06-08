@@ -1,5 +1,5 @@
-import type { TargetModule } from 'aeria-compiler'
-import { ppDiagnostic } from 'aeria-compiler'
+import type { TargetModule } from '@aeria-lang/compiler'
+import { ppDiagnostic } from '@aeria-lang/compiler'
 import { glob } from 'glob'
 import { parseArgs } from 'util'
 import { build } from './filesystem.js'

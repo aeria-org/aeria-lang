@@ -1,4 +1,4 @@
-import * as compiler from 'aeria-compiler'
+import * as compiler from '@aeria-lang/compiler'
 
 export type CompilationTarget = {
   filename: string

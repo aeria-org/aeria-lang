@@ -1,4 +1,4 @@
-import type { CompilationResult } from 'aeria-compiler'
+import type { CompilationResult } from '@aeria-lang/compiler'
 import type { Declaration, BuildOptions } from './types.js'
 import * as fs from 'fs'
 import * as path from 'path'
