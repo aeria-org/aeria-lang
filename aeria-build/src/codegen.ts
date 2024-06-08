@@ -1,11 +1,18 @@
 import * as compiler from 'aeria-compiler'
-import { Declaration, RootPackageJson } from './types.js'
+import { Declaration, RootPackageJson, BuildOptions } from './types.js'
 
 const DECLARATION_PATH: Record<compiler.DeclarationType, string> = {
   collection: 'collections'
 }
 
-export const getDeclarationPath = (decl: Declaration, outDir = './') => {
+export const addJsExtension = (filename: string, options: BuildOptions) => {
+  switch( options.module ) {
+    case 'esnext': return `${filename}.mjs`
+    case 'commonjs': return `${filename}.js`
+  }
+}
+
+export const getDeclarationPath = (decl: Declaration, outDir: string) => {
   const doubleSlashesRemoved = outDir.replace('//', '/')
   const sanitizedOutDir = doubleSlashesRemoved.endsWith('/')
     ? doubleSlashesRemoved
@@ -14,39 +21,48 @@ export const getDeclarationPath = (decl: Declaration, outDir = './') => {
   return `${sanitizedOutDir}${DECLARATION_PATH[decl.type]}/${decl.name}`
 }
 
-export const generateRootPackageJson = (declarations: Declaration[]) => {
+export const generateRootPackageJson = (options: BuildOptions) => {
   const json: RootPackageJson = {
-    exports: {}
-  }
-
-  for( const decl of declarations ) {
-    const declPath = getDeclarationPath(decl)
-
-    json.exports[declPath] = {
-      require: `${declPath}.js`,
-      import: `${declPath}.mjs`,
-      types: `${declPath}.d.ts`,
-    }
+    main: addJsExtension('index', options),
+    types: 'index.d.ts',
+    exports: {
+      './collections': {
+        require: './collections/index.js',
+        import: './collections/index.mjs',
+        types: './collections/index.d.ts',
+      }
+    },
   }
 
   return json
 }
 
-export const generateRootIndexJs = (declarations: Declaration[]) => {
+export const generateCollectionsIndexJs = (declarations: Declaration[], options: BuildOptions) => {
   let source = ''
 
   for( const decl of declarations ) {
-    source += `export * from '${getDeclarationPath(decl)}'\n`
+    if( decl.type !== 'collection' ) {
+      continue
+    }
+
+    const importPath = addJsExtension(`./${decl.name}`, options)
+    source += options.module === 'esnext'
+      ? `export * from '${importPath}'\n`
+      : `exports['${decl.name}'] = require('${importPath}')['${decl.name}']\n`
   }
 
   return source
 }
 
-export const generateRootIndexDts = (declarations: Declaration[]) => {
+export const generateCollectionsIndexDts = (declarations: Declaration[], options: BuildOptions) => {
   let source = ''
 
   for( const decl of declarations ) {
-    source += `export * from '${getDeclarationPath(decl)}'\n`
+    if( decl.type !== 'collection' ) {
+      continue
+    }
+    const importPath = addJsExtension(`./${decl.name}`, options)
+    source += `export * from '${importPath}'\n`
   }
 
   return source

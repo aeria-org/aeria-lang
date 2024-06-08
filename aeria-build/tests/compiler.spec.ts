@@ -1,3 +1,4 @@
+import type { BuildOptions } from '../src/index.js'
 import assert from 'assert'
 import {
   compile,
@@ -5,14 +6,20 @@ import {
   unwrapEither,
   getDeclarations,
   generateRootPackageJson,
-  generateRootIndexJs,
-  generateRootIndexDts,
+  generateCollectionsIndexJs,
+  generateCollectionsIndexDts,
   generateScaffolding,
-  writeFiles,
+  writeBaseFiles,
 
 } from '../src/index.js'
 
 const DUMMY_FILENAME = 'dummy.aeria'
+
+const buildOptions: BuildOptions = {
+  outDir: 'node_modules/.test',
+  module: 'esnext',
+  dryRun: true,
+}
 
 const validSource =
  `collection Pet {
@@ -77,66 +84,69 @@ describe('Compile', () => {
     assert(declarations[1].name === 'person')
     assert(declarations[1].type === 'collection')
   })
-  it('generates the root package.json right', () => {
-    assert(!isLeft(validResultEither))
-    const result = unwrapEither(validResultEither)
-    const json = generateRootPackageJson(getDeclarations(result))
+
+  it('generates the root package.json right (esm)', () => {
+    const json = generateRootPackageJson(buildOptions)
 
     assert(JSON.stringify(json) === JSON.stringify({
+      "main": "index.mjs",
+      "types": "index.d.ts",
       "exports": {
-        "./collections/pet": {
-          "require": "./collections/pet.js",
-          "import": "./collections/pet.mjs",
-          "types": "./collections/pet.d.ts"
-        },
-        "./collections/person": {
-          "require": "./collections/person.js",
-          "import": "./collections/person.mjs",
-          "types": "./collections/person.d.ts"
+        "./collections": {
+          "require": "./collections/index.js",
+          "import": "./collections/index.mjs",
+          "types": "./collections/index.d.ts"
         }
       }
     }))
   })
+  it('generates the root package.json right (cjs)', () => {
+    const json = generateRootPackageJson({
+      ...buildOptions,
+      module: 'commonjs',
+    })
+    assert(json.main === 'index.js')
+  })
+
   it('generates the root index.js right', () => {
     assert(!isLeft(validResultEither))
     const result = unwrapEither(validResultEither)
-    const source = generateRootIndexJs(getDeclarations(result))
+    const source = generateCollectionsIndexJs(getDeclarations(result), buildOptions)
 
     console.log(source)
   })
   it('generates the root index.d.ts right', () => {
     assert(!isLeft(validResultEither))
     const result = unwrapEither(validResultEither)
-    const source = generateRootIndexDts(getDeclarations(result))
+    const source = generateCollectionsIndexDts(getDeclarations(result), buildOptions)
 
     console.log(source)
   })
   it('generates proper scaffolding', async () => {
-    assert(!isLeft(validResultEither))
-    const result = unwrapEither(validResultEither)
-    const declarations = getDeclarations(result)
-
-    const scaffolding = await generateScaffolding(declarations, {
-      outDir: 'node_modules/.test',
-      dryRun: true,
-    })
-
-    assert(scaffolding[0] === 'node_modules/.test/collections/pet')
-    assert(scaffolding[1] === 'node_modules/.test/collections/person')
+    const scaffolding = await generateScaffolding(buildOptions)
+    assert(scaffolding[0] === 'node_modules/.test/collections')
   })
-  it('emits scaffolding files', async () => {
+  it('emits scaffolding files (esm)', async () => {
     assert(!isLeft(validResultEither))
     const result = unwrapEither(validResultEither)
     const declarations = getDeclarations(result)
 
-    const files = Object.keys(await writeFiles(declarations, {
-      outDir: 'node_modules/.test',
-      dryRun: true,
-    }))
+    const files = Object.keys(await writeBaseFiles(declarations, buildOptions))
 
     assert(files[0] === 'node_modules/.test/package.json')
-    assert(files[1] === 'node_modules/.test/index.js')
-    assert(files[2] === 'node_modules/.test/index.d.ts')
+    assert(files[1] === 'node_modules/.test/collections/index.mjs')
+    assert(files[2] === 'node_modules/.test/collections/index.d.ts')
+  })
+  it('emits scaffolding files (cjs)', async () => {
+    assert(!isLeft(validResultEither))
+    const result = unwrapEither(validResultEither)
+    const declarations = getDeclarations(result)
+
+    const files = Object.keys(await writeBaseFiles(declarations, {
+      ...buildOptions,
+      module: 'commonjs',
+    }))
+    assert(files[1] === 'node_modules/.test/collections/index.js')
   })
 })
 

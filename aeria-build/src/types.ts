@@ -7,6 +7,8 @@ export type CompilationTarget = {
 }
 
 export type RootPackageJson = {
+  main: string
+  types: string
   exports: Record<string, {
     require: string
     import: string
@@ -17,5 +19,13 @@ export type RootPackageJson = {
 export type Declaration = {
   name: string
   type: compiler.DeclarationType
+  js: string
+  ts: string
+}
+
+export type BuildOptions = {
+  module: compiler.TargetModule
+  outDir: string
+  dryRun?: boolean
 }
 
