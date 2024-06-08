@@ -12,6 +12,9 @@ export type TargetModule =
   | 'commonjs'
   | 'esnext'
 
+export type DeclarationType =
+  | 'collection'
+
 export type CompilationOutput = readonly [
   string,
   string,

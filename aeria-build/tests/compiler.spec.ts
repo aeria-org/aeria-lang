@@ -7,7 +7,8 @@ import {
   generateRootPackageJson,
   generateRootIndexJs,
   generateRootIndexDts,
-} from '../src'
+  generateScaffolding,
+} from '../src/index.js'
 
 const DUMMY_FILENAME = 'dummy.aeria'
 
@@ -64,13 +65,15 @@ describe('Compile', () => {
   it('detects error on invalid source', () => {
     assert(isLeft(invalidResultEither))
   })
-  it('extracts collection names right', () => {
+  it('extracts declarations right', () => {
     assert(!isLeft(validResultEither))
     const result = unwrapEither(validResultEither)
-    const collectionNames = getDeclarations(result)
-    assert(collectionNames.length === 2)
-    assert(collectionNames[0] === 'pet')
-    assert(collectionNames[1] === 'person')
+    const declarations = getDeclarations(result)
+    assert(declarations.length === 2)
+    assert(declarations[0].name === 'pet')
+    assert(declarations[0].type === 'collection')
+    assert(declarations[1].name === 'person')
+    assert(declarations[1].type === 'collection')
   })
   it('generates the root package.json right', () => {
     assert(!isLeft(validResultEither))
@@ -79,15 +82,15 @@ describe('Compile', () => {
 
     assert(JSON.stringify(json) === JSON.stringify({
       "exports": {
-        "pet": {
-          "require": "./pet.js",
-          "import": "./pet.mjs",
-          "types": "./pet.d.ts"
+        "./collections/pet": {
+          "require": "./collections/pet.js",
+          "import": "./collections/pet.mjs",
+          "types": "./collections/pet.d.ts"
         },
-        "person": {
-          "require": "./person.js",
-          "import": "./person.mjs",
-          "types": "./person.d.ts"
+        "./collections/person": {
+          "require": "./collections/person.js",
+          "import": "./collections/person.mjs",
+          "types": "./collections/person.d.ts"
         }
       }
     }))
@@ -105,6 +108,18 @@ describe('Compile', () => {
     const source = generateRootIndexDts(result)
 
     console.log(source)
+  })
+  it('generates proper scaffolding', async () => {
+    assert(!isLeft(validResultEither))
+    const result = unwrapEither(validResultEither)
+    const declarations = getDeclarations(result)
+
+    const scaffolding = await generateScaffolding(declarations, {
+      outDir: 'node_modules/.test'
+    })
+
+    assert(scaffolding[0] === 'node_modules/.test/collections/pet')
+    assert(scaffolding[1] === 'node_modules/.test/collections/person')
   })
 })
 
