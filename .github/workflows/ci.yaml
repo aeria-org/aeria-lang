@@ -25,6 +25,7 @@ jobs:
           pnpm --filter='./aeria-compiler' build
           pnpm --filter='./aeria-compiler' bundle
           pnpm --filter='./aeria-build' build
+          pnpm --filter='./aeria-lang' build
           # pnpm --filter=playground build
       - name: Test packages
         run: pnpm -r test

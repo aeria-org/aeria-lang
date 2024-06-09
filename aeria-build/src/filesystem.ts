@@ -3,7 +3,7 @@ import type { Declaration, BuildOptions } from './types.js'
 import * as fs from 'fs'
 import * as path from 'path'
 import { glob } from 'glob'
-import { compile, isLeft, unwrapEither, getDeclarations } from './core.js'
+import { compileSource, isLeft, unwrapEither, getDeclarations } from './core.js'
 import {
   addJsExtension,
   addDtsExtension,
@@ -75,7 +75,7 @@ export const build = async (patterns: string[], options: BuildOptions) => {
       encoding: 'utf-8',
     })
 
-    const resultEither = compile({
+    const resultEither = compileSource({
       filename: input,
       source,
       module: options.module,
