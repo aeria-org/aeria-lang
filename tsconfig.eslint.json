@@ -1,9 +1,18 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "noEmit": true,
     "strict": true,
     "target": "esnext",
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "paths": {
+      "@aeria-lang/build": [
+        "./aeria-build"
+      ],
+      "@aeria-lang/compiler": [
+        "./aeria-compiler"
+      ]
+    }
   }
 }
