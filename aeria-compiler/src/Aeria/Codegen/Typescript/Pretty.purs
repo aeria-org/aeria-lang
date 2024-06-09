@@ -18,7 +18,7 @@ ppStatement =
       "import { " <> ppSpecifiers specifiers <> " } from \"" <> ppIdentifier ident <> "\""
     TSVariableDeclaration statementSyntax ident type_ ->
        (L.foldr (\s r -> ppStatementSyntax s <> " " <> r) "" statementSyntax) <> ppIdentifier ident <> ": " <> ppType type_
-    TSTypeAliasDeclaration ident type_ -> "type " <> ppIdentifier ident <> " = " <> ppType type_
+    TSTypeAliasDeclaration ident type_ -> "declare type " <> ppIdentifier ident <> " = " <> ppType type_
     TSExportNamedDeclaration statement -> "export " <> ppStatement statement
 
 ppStatementSyntax :: TsStatementSyntax -> String

@@ -75,7 +75,7 @@ codegen (Program { collections }) = map go collections
 
         , Ts.exportNamed
             (Ts.typeAlias
-              (Ts.identifier "extendCollection")
+              (Ts.identifier $ "extend" <> (ucfirst collectionName) <> "Collection")
               (Ts.functionType
                 [ Ts.typeParameter
                     (Ts.typeExtends
@@ -95,7 +95,7 @@ codegen (Program { collections }) = map go collections
         [ Js.import_
             (Js.specifiers
               $ concat
-                [ [ Js.importSpecifier2 (Js.identifier "extendCollection") (Js.identifier "originalExtendCollection")
+                [ [ Js.importSpecifier1 (Js.identifier "extendCollection")
                   , Js.importSpecifier1 (Js.identifier "defineCollection")
                   ]
                 , map (Js.importSpecifier1 <<< Js.identifier) functionNames
@@ -109,10 +109,10 @@ codegen (Program { collections }) = map go collections
               [collection']))
         , Js.exportNamed
             (Js.variable
-              (Js.identifier "extendCollection")
+              (Js.identifier $ "extend" <> (ucfirst collectionName) <> "Collection")
               (Js.arrowFunction
                 [Js.identifier "collection"]
-                (Js.call (Js.identifier "originalExtendCollection")
+                (Js.call (Js.identifier "extendCollection")
                   [Js.identifier collectionName, Js.identifier "collection"]
                 )))]
 

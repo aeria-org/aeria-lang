@@ -63,7 +63,7 @@ compile filepath source output = do
         Right result ->
           pure $
             result
-              # map (\(Codegen name js ts) -> [name, ppJavascript output' js, ppTypescript ts])
+              # map (\(Codegen name js ts) -> ["collection", name, ppJavascript output' js, ppTypescript ts])
               # L.toUnfoldable
         Left err -> Left err
     Nothing -> Right []

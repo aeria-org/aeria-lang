@@ -20,10 +20,17 @@ export declare type DeclarationType =
   | 'collection'
   | 'contract'
 
+export declare type CollectionName = string
+
+export declare type JsCode = string
+
+export declare type TsCode = string
+
 export declare type CompilationOutput = readonly [
-  string,
-  string,
-  string,
+  DeclarationType,
+  CollectionName,
+  JsCode,
+  TsCode,
 ]
 
 export declare type CompilationResult = CompilationOutput[]
