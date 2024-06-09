@@ -1,9 +1,9 @@
 import {
-  extendCollection as originalExtendCollection,
+  extendCollection,
   defineCollection,
 } from "aeria";
 export const user = defineCollection({
   description: { $id: "user", properties: { name: { type: "string" } } },
 });
-export const extendCollection = (collection) =>
-  originalExtendCollection(user, collection);
+export const extendUserCollection = (collection) =>
+  extendCollection(user, collection);
