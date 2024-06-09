@@ -1,5 +1,11 @@
 # @aeria-lang/build
 
+## 0.0.7
+
+### Patch Changes
+
+- 99b0efe: Fix `getDeclarations()`
+
 ## 0.0.6
 
 ### Patch Changes
