@@ -1,6 +1,6 @@
 {
   "name": "@aeria-lang/compiler",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "packageManager": "pnpm@9.1.0",
   "main": "dist/index.mjs",
   "types": "aeria-compiler.d.ts",
