@@ -79,7 +79,7 @@ importers:
   aeria-lang:
     dependencies:
       '@aeria-lang/build':
-        specifier: ^0.0.4
+        specifier: '0.0'
         version: 0.0.4
       '@aeria-lang/compiler':
         specifier: '0.0'
