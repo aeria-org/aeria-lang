@@ -33,7 +33,7 @@ export const main = async () => {
   }
 
   if( !opts.outDir ) {
-    console.error(`missing -o flag`)
+    console.error('missing -o flag')
     process.exit(1)
   }
 

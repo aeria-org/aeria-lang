@@ -18,6 +18,7 @@ export declare type TargetModule =
 
 export declare type DeclarationType =
   | 'collection'
+  | 'contract'
 
 export declare type CompilationOutput = readonly [
   string,
@@ -38,5 +39,5 @@ export declare const compile: (filename: string) => (source: string) => (targetM
   CompilationResult
 >
 
-export declare const ppDiagnostic = (diagnostic: Diagnostic) => string
+export declare const ppDiagnostic: (diagnostic: Diagnostic) => string
 

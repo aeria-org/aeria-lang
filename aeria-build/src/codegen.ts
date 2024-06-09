@@ -1,8 +1,9 @@
 import type { Declaration, RootPackageJson, BuildOptions } from './types.js'
-import * as compiler from '@aeria-lang/compiler'
+import type * as compiler from '@aeria-lang/compiler'
 
 const DECLARATION_PATH: Record<compiler.DeclarationType, string> = {
-  collection: 'collections'
+  collection: 'collections',
+  contract: 'contracts',
 }
 
 export const addJsExtension = (filename: string, options: BuildOptions) => {
@@ -70,8 +71,12 @@ export const generateCollectionsIndexJs = (declarations: Declaration[], options:
 
     const importPath = addJsExtension(`./${decl.name}`, options)
     switch( options.module ) {
-      case 'esnext': source += `export * from '${importPath}'\n`; break
-      case 'commonjs': source += `exports['${decl.name}'] = require('${importPath}')['${decl.name}']\n`; break
+      case 'esnext':
+        source += `export * from '${importPath}'\n`
+        break
+      case 'commonjs':
+        source += `exports['${decl.name}'] = require('${importPath}')['${decl.name}']\n`
+        break
     }
   }
 
@@ -82,6 +87,7 @@ export const generateCollectionsIndexDts = (declarations: Declaration[], options
   let source = ''
 
   for( const decl of declarations ) {
+    decl.type === 'contract'
     if( decl.type !== 'collection' ) {
       continue
     }

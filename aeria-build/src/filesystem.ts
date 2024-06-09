@@ -16,14 +16,12 @@ import {
 } from './codegen.js'
 
 export const generateScaffolding = async (options: BuildOptions) => {
-  const directories = [
-    path.join(options.outDir, 'collections')
-  ]
+  const directories = [path.join(options.outDir, 'collections')]
 
   if( !options.dryRun ) {
     for( const dir of directories ) {
       await fs.promises.mkdir(dir, {
-        recursive: true
+        recursive: true,
       })
     }
   }
@@ -43,7 +41,7 @@ export const writeBaseFiles = async (declarations: Declaration[], options: Build
 
   await write(
     path.join(options.outDir, 'package.json'),
-    JSON.stringify(generateRootPackageJson(options), null, 2)
+    JSON.stringify(generateRootPackageJson(options), null, 2),
   )
   await write(
     path.join(options.outDir, addJsExtension('index', options)),
@@ -55,11 +53,11 @@ export const writeBaseFiles = async (declarations: Declaration[], options: Build
   )
   await write(
     path.join(options.outDir, 'collections', addJsExtension('index', options)),
-    generateCollectionsIndexJs(declarations, options)
+    generateCollectionsIndexJs(declarations, options),
   )
   await write(
     path.join(options.outDir, 'collections', addDtsExtension('index', options)),
-    generateCollectionsIndexDts(declarations, options)
+    generateCollectionsIndexDts(declarations, options),
   )
 
   return result
@@ -71,7 +69,7 @@ export const build = async (inputs: string[], options: BuildOptions) => {
 
   for( const input of inputs ) {
     const source = await fs.promises.readFile(input, {
-      encoding: 'utf-8'
+      encoding: 'utf-8',
     })
 
     const resultEither = compile({

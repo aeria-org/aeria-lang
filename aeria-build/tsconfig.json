@@ -7,7 +7,12 @@
     "moduleResolution": "bundler",
     "noEmitOnError": true,
     "declaration": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@aeria-lang/compiler": [
+        "../aeria-compiler"
+      ]
+    }
   },
   "include": [
     "src"
