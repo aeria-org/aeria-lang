@@ -6,9 +6,9 @@ export const compileSource = (target: CompilationTarget) => {
 }
 
 export const getDeclarations = (result: compiler.CompilationResult): Declaration[] => {
-  return result.map(([name, sourcejs, sourcets]) => ({
+  return result.map(([decltype, name, sourcejs, sourcets]) => ({
     name,
-    type: 'collection',
+    type: decltype,
     js: sourcejs,
     ts: sourcets,
   }))
