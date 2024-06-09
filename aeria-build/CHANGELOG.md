@@ -1,5 +1,11 @@
 # @aeria-lang/build
 
+## 0.0.5
+
+### Patch Changes
+
+- f63db19: Rename ambiguous function
+
 ## 0.0.4
 
 ### Patch Changes
