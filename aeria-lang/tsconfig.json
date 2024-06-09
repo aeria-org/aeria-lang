@@ -3,6 +3,9 @@
   "compilerOptions": {
     "outDir": "dist",
     "paths": {
+      "@aeria-lang/build": [
+        "../aeria-build"
+      ],
       "@aeria-lang/compiler": [
         "../aeria-compiler"
       ]

@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
-    "noEmit": true,
     "strict": true,
     "target": "esnext",
-    "esModuleInterop": true,
-    "moduleResolution": "node"
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmitOnError": true,
+    "declaration": true,
+    "skipLibCheck": true
   }
 }

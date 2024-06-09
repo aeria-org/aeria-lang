@@ -79,6 +79,15 @@ importers:
         specifier: ^0.21.0
         version: 0.21.0
 
+  aeria-lang:
+    dependencies:
+      '@aeria-lang/build':
+        specifier: ^0.0.4
+        version: 0.0.4
+      '@aeria-lang/compiler':
+        specifier: '0.0'
+        version: 0.0.1
+
   playground:
     dependencies:
       '@aeriajs/cli':
@@ -95,6 +104,9 @@ importers:
         version: 5.4.5
 
 packages:
+
+  '@aeria-lang/build@0.0.4':
+    resolution: {integrity: sha512-wTVOSgM59O2swymt/fRQ+rW+gXgJiG882Ndw8cF4SExcjVRNC5HWyQYfvviC0NkDl4wr8c25KVe78sOd3wEBmg==}
 
   '@aeria-lang/compiler@0.0.1':
     resolution: {integrity: sha512-h8O47Tkm6deefeC3Okaof97GCqClDyRJN9Ejym22CU2QK0yxJ9GuXchiKzdFnPy4sZ1poanHq67hzzrXhh6MVQ==}
@@ -3260,6 +3272,11 @@ packages:
     resolution: {integrity: sha512-PQ2PC7R9rslx84ndNBZB/Dkv8V8fZEpk83RLgXtYd0fwUgEjseMn1Dgajh2x6S8QbZAFa9p2qVCEuYZNgve0dQ==}
 
 snapshots:
+
+  '@aeria-lang/build@0.0.4':
+    dependencies:
+      '@aeria-lang/compiler': 0.0.1
+      glob: 10.4.1
 
   '@aeria-lang/compiler@0.0.1':
     dependencies:
