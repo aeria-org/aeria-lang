@@ -1,5 +1,6 @@
 {
   "name": "aeria-lang",
+  "type": "module",
   "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
@@ -8,9 +9,7 @@
     "test": "echo skipping",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "build": "pnpm build:cjs && pnpm build:esm",
-    "build:cjs": "tsc",
-    "build:esm": "esbuild './src/**/*.ts' --outdir=dist --out-extension:.js=.mjs && pnpm build:esm-transform",
+    "build": "tsc",
     "build:esm-transform": "pnpm -w esm-transform $PWD/dist",
     "prepublishOnly": "pnpm build"
   },
