@@ -2,6 +2,7 @@ import type { CompilationResult } from '@aeria-lang/compiler'
 import type { Declaration, BuildOptions } from './types.js'
 import * as fs from 'fs'
 import * as path from 'path'
+import { glob } from 'glob'
 import { compile, isLeft, unwrapEither, getDeclarations } from './core.js'
 import {
   addJsExtension,
@@ -63,9 +64,11 @@ export const writeBaseFiles = async (declarations: Declaration[], options: Build
   return result
 }
 
-export const build = async (inputs: string[], options: BuildOptions) => {
+export const build = async (patterns: string[], options: BuildOptions) => {
   const compilationResults: CompilationResult[] = []
   const emittedFiles: string[] = []
+
+  const inputs = await glob(patterns)
 
   for( const input of inputs ) {
     const source = await fs.promises.readFile(input, {

@@ -1,6 +1,5 @@
 import type { TargetModule } from '@aeria-lang/compiler'
 import { ppDiagnostic } from '@aeria-lang/compiler'
-import { glob } from 'glob'
 import { parseArgs } from 'util'
 import { build } from './filesystem.js'
 
@@ -37,12 +36,7 @@ export const main = async () => {
     process.exit(1)
   }
 
-  const patterns = positionals
-    .map((directory) => `${directory}/*.aeria`)
-
-  const input = await glob(patterns)
-
-  const result = await build(input, {
+  const result = await build(positionals, {
     outDir: opts.outDir,
     module: targetModule,
   })
