@@ -12,7 +12,7 @@ import Data.Either (Either(..))
 import Data.Foldable (traverse_)
 import Data.List ((:))
 import Data.List as L
-import Data.Map.Internal (Map, empty, fromFoldable, insert, keys, lookup) as M
+import Data.Map.Internal (Map, empty, fromFoldable, insert, lookup) as M
 import Data.Maybe (Maybe(..), isJust, isNothing)
 import Data.Tuple.Nested ((/\))
 
@@ -356,6 +356,7 @@ sFunctions _ collectionFunctions =
       -- TODO: check if the array is of strings
       Just (Attribute _ (AttributeName _ "expose") (ALiteral _ (LArray _ _))) -> pure unit
       Just (Attribute _ (AttributeName _ "expose") (ALiteral _ (LBoolean _ _))) -> pure unit
+      Just (Attribute _ (AttributeName _ "expose") (ALiteral _ (LString _ _))) -> pure unit
       Just (Attribute span (AttributeName _ name) _) ->
         throwDiagnostic span ("Attribute \"" <> name <> "\" is not allowed")
       Nothing -> pure unit

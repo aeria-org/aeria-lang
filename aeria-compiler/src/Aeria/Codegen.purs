@@ -435,8 +435,8 @@ cExposedFunctions functions = Js.object
         Just (Attribute _ _ attributeValue) ->
           case attributeValue of
             ALiteral _ literal -> Js.objectProperty2 (getFunctionName functionName) (cLiteral literal)
-            _ -> Js.objectProperty1 (getFunctionName functionName) -- unresansable
-        Nothing -> Js.objectProperty1 (getFunctionName functionName) -- unresansable
+            _ -> Js.objectProperty1 (getFunctionName functionName)
+        Nothing -> Js.objectProperty1 (getFunctionName functionName)
     )
 
 cSecurity :: CollectionSecurity -> Js.JsTree
