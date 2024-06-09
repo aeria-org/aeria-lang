@@ -1,5 +1,11 @@
 # @aeria-lang/build
 
+## 0.0.4
+
+### Patch Changes
+
+- 9024549: Use glob patterns in `build()`
+
 ## 0.0.3
 
 ### Patch Changes
