@@ -12,7 +12,7 @@ import Data.Either (Either(..))
 import Data.Foldable (traverse_)
 import Data.List ((:))
 import Data.List as L
-import Data.Map.Internal (Map, empty, fromFoldable, insert, lookup) as M
+import Data.Map.Internal (Map, empty, fromFoldable, insert, keys, lookup) as M
 import Data.Maybe (Maybe(..), isJust, isNothing)
 import Data.Tuple.Nested ((/\))
 
@@ -411,19 +411,29 @@ sArrayProperty :: CollectionName -> Property -> SemanticM Unit
 sArrayProperty collectionName = sAttributes'
   where
     sAttributes' (Property { span, name, type_: (PArray span' type'), attributes }) = do
-      let arrayAttributes = L.filter (\(Attribute _ (AttributeName _ attributeName) _) -> attributeName == "default") attributes
-      let typeAttributes = L.filter (\(Attribute _ (AttributeName _ attributeName) _) -> attributeName /= "default") attributes
+      let arrayAttributes = L.filter (\(Attribute _ (AttributeName _ attributeName) _) -> isArrayAttribute attributeName) attributes
+      let typeAttributes = L.filter (\(Attribute _ (AttributeName _ attributeName) _) -> not $ isArrayAttribute attributeName) attributes
+
       sAttributes (Property { span, name, type_: (PArray span' type'), attributes: arrayAttributes }) literalAttributes M.empty
       case type' of
         object@(PObject _ _ _)  -> sObjectProperty collectionName (Property { span, type_: object, attributes: typeAttributes, name })
         _                       -> sProperty collectionName (Property { span, type_: type', attributes: typeAttributes, name })
+
     sAttributes' property@(Property { span, type_ }) =
-      throwDiagnostic span ("Expected array, but received " <> show property) -- TODO
+      throwDiagnostic span ("Expected array but received another type") -- TODO
 
     literalAttributes =
       M.fromFoldable
         [ "default" /\ sType [TArray]
+        , "minItems" /\ sType [TInteger]
+        , "maxItems" /\ sType [TInteger]
+        , "uniqueItems" /\ sType [TBoolean]
         ]
+
+    isArrayAttribute attribute =
+      case M.lookup attribute literalAttributes of
+        Just _ -> true
+        Nothing -> false
 
 sObjectProperty :: CollectionName -> Property -> SemanticM Unit
 sObjectProperty (CollectionName _ collectionName) = sAttributes' 0
@@ -604,11 +614,11 @@ sAttributes property@(Property { attributes }) fl fe = traverse_ go attributes
   go (Attribute _ (AttributeName span attributeName) (ALiteral _ value)) =
     case M.lookup attributeName fl of
       Just f -> f property value
-      Nothing -> throwDiagnostic span $ "Attribute\"" <> attributeName <> "\"is not allowed"
+      Nothing -> throwDiagnostic span $ "\"" <> attributeName <> "\" attribute is not valid"
   go (Attribute _ (AttributeName span attributeName) (AExpr _ value)) =
     case M.lookup attributeName fe of
       Just f -> f property value
-      Nothing -> throwDiagnostic span $ "Attribute\"" <> attributeName <> "\"is not allowed"
+      Nothing -> throwDiagnostic span $ "\"" <> attributeName <> "\" attribute is not valid"
 
 sProgram :: Program -> SemanticM Unit
 sProgram (Program { collections }) = do
