@@ -1,7 +1,7 @@
 import type { BuildOptions } from '../src/index.js'
 import assert from 'assert'
 import {
-  compile,
+  compileSource,
   isLeft,
   unwrapEither,
   getDeclarations,
@@ -55,20 +55,20 @@ collection Person {
 }
 `
 
-const validResultEither = compile({
+const validResultEither = compileSource({
   filename: DUMMY_FILENAME,
   source: validSource,
   module: 'esnext'
 })
 
-const invalidResultEither = compile({
+const invalidResultEither = compileSource({
   filename: DUMMY_FILENAME,
   source: invalidSource,
   module: 'esnext'
 })
 
 describe('Build', () => {
-  it('compiles to esnext successfully', () => {
+  it('compileSources to esnext successfully', () => {
     assert(!isLeft(validResultEither))
   })
   it('detects error on invalid source', () => {
