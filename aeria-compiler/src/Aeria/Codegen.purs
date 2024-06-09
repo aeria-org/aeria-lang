@@ -74,7 +74,8 @@ codegen (Program { collections }) = map go collections
           )
 
         , Ts.exportNamed
-            (Ts.typeAlias
+            (Ts.variable
+              [Ts.declareKeyword, Ts.constKeyword]
               (Ts.identifier $ "extend" <> (ucfirst collectionName) <> "Collection")
               (Ts.functionType
                 [ Ts.typeParameter
