@@ -11,7 +11,8 @@
   "scripts": {
     "test": "spago test",
     "build": "spago build",
-    "bundle": "spago bundle-module --platform=node --to=dist/index.mjs"
+    "bundle": "spago bundle-module --platform=node --to=dist/index.mjs",
+    "prepublishOnly": "pnpm build && pnpm bundle"
   },
   "devDependencies": {
     "purescript": "^0.15.15",

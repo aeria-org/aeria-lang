@@ -1,4 +1,5 @@
-// @ts-check
+#!/usr/bin/env -S pnpm ts-node --swc
+
 import { Transform } from 'stream'
 import * as glob from 'glob'
 import * as fs from 'fs'
@@ -17,7 +18,7 @@ const main = async () => {
   for( const file of fileList ) {
     const tempPath = `${file}.tmp`
 
-    await new Promise((resolve) => {
+    await new Promise<void>((resolve) => {
       const writerStream = fs.createWriteStream(tempPath, {
         flags: 'w',
       })
