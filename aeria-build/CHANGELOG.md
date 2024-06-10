@@ -1,5 +1,11 @@
 # @aeria-lang/build
 
+## 0.0.8
+
+### Patch Changes
+
+- 11e2261: Emit empty modules
+
 ## 0.0.7
 
 ### Patch Changes
