@@ -62,8 +62,14 @@ export const generateRootIndexDts = (options: BuildOptions) => {
 }
 
 export const generateCollectionsIndexJs = (declarations: Declaration[], options: BuildOptions) => {
-  let source = ''
+  if( declarations.length === 0 ) {
+    switch( options.module ) {
+      case 'esnext': return 'export {}'
+      case 'commonjs': return 'module.exports = {}'
+    }
+  }
 
+  let source = ''
   for( const decl of declarations ) {
     if( decl.type !== 'collection' ) {
       continue
@@ -84,10 +90,12 @@ export const generateCollectionsIndexJs = (declarations: Declaration[], options:
 }
 
 export const generateCollectionsIndexDts = (declarations: Declaration[], options: BuildOptions) => {
-  let source = ''
+  if( declarations.length === 0 ) {
+    return 'export {}'
+  }
 
+  let source = ''
   for( const decl of declarations ) {
-    decl.type === 'contract'
     if( decl.type !== 'collection' ) {
       continue
     }
