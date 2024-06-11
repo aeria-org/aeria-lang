@@ -70,6 +70,13 @@ export const build = async (patterns: string[], options: BuildOptions) => {
 
   const inputs = await glob(patterns)
 
+  if( inputs.length === 0 ) {
+    return {
+      success: true,
+      emittedFiles: [],
+    }
+  }
+
   for( const input of inputs ) {
     const source = await fs.promises.readFile(input, {
       encoding: 'utf-8',
