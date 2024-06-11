@@ -71,7 +71,7 @@ export const build = async (patterns: string[], options: BuildOptions) => {
   const inputs = await glob(patterns)
 
   if( inputs.length === 0 ) {
-    return {
+    return <const>{
       success: true,
       emittedFiles: [],
     }
