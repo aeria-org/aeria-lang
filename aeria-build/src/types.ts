@@ -17,10 +17,10 @@ export type RootPackageJson = {
 }
 
 export type Declaration = {
-  name: string
+  name: compiler.CollectionName
   type: compiler.DeclarationType
-  js: string
-  ts: string
+  js: compiler.JsCode
+  ts: compiler.TsCode
 }
 
 export type BuildOptions = {
