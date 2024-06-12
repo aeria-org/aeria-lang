@@ -15,14 +15,13 @@ import Data.List as L
 import Data.Maybe (Maybe(..), fromMaybe, isJust)
 import Data.String (toLower)
 import Data.String.CodeUnits (fromCharArray)
-import Data.String.Utils (concatChar)
 import Data.Tuple.Nested (type (/\), (/\))
 import Parsing (ParseError(..), Parser, Position(..), position, runParser)
 import Parsing.Combinators (choice, many, manyTill, optionMaybe, sepBy, try, (<|>))
 import Parsing.Expr (Assoc(..), Operator(..), buildExprParser)
 import Parsing.Language (emptyDef)
 import Parsing.String (anyChar, eof, string)
-import Parsing.String.Basic (alphaNum, letter, lower, oneOf, skipSpaces, upper)
+import Parsing.String.Basic (alphaNum, letter, oneOf, skipSpaces)
 import Parsing.Token as P
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -73,34 +72,30 @@ sourcePos = do
 pPropertyName :: ParserM PropertyName
 pPropertyName = do
   begin <- sourcePos
-  char <- lower
-  rest <- lang.identifier
+  ident <- lang.identifier
   end <- sourcePos
-  pure (PropertyName (Span begin end) (concatChar char rest))
+  pure (PropertyName (Span begin end) ident)
 
 pFunctionName :: ParserM FunctionName
 pFunctionName = do
   begin <- sourcePos
-  char <- lower
-  rest <- lang.identifier
+  ident <- lang.identifier
   end <- sourcePos
-  pure (FunctionName (Span begin end) (concatChar char rest))
+  pure (FunctionName (Span begin end) ident)
 
 pCollectionName :: ParserM CollectionName
 pCollectionName = do
   begin <- sourcePos
-  char <- upper
-  rest <- lang.identifier
+  ident <- lang.identifier
   end <- sourcePos
-  pure (CollectionName (Span begin end) (toLower $ concatChar char rest))
+  pure (CollectionName (Span begin end) (toLower ident))
 
 pAttributeName :: ParserM AttributeName
 pAttributeName = do
   begin <- sourcePos
-  char <- lower
-  rest <- lang.identifier
+  ident <- lang.identifier
   end <- sourcePos
-  pure (AttributeName (Span begin end) (concatChar char rest))
+  pure (AttributeName (Span begin end) ident)
 
 pPropertyType :: ParserM CollectionProperties -> ParserM PropertyType
 pPropertyType p =
