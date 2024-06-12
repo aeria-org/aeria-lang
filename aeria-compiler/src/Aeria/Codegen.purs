@@ -154,7 +154,8 @@ cCollection (Collection
     ]
   where
   collectionFunctions = collectionPropertyL "functions" cFunctions functions
-  collectionExposedFunctions = collectionPropertyL "exposedFunctions" cExposedFunctions functions
+  collectionExposedFunctions = collectionPropertyL "exposedFunctions" cExposedFunctions
+    (L.filter (\(FunctionItem { expose }) -> isJust expose) functions)
   collectionSecurity = collectionPropertyL "security" cSecurity security
   collectionDescription =
     [ Js.objectProperty2 "description" $
@@ -430,7 +431,6 @@ cExposedFunctions :: CollectionFunctions -> Js.JsTree
 cExposedFunctions functions = Js.object
   $ L.toUnfoldable
   $ functions
-    # L.filter (\(FunctionItem { expose }) -> isJust expose)
     # map (\(FunctionItem { functionName, expose }) ->
       case expose of
         Just (Attribute _ _ attributeValue) ->
@@ -562,10 +562,12 @@ cCollectionProperties properties getters = Js.object $ union (cProperties proper
               , cArrayType property type_'
               ]
             PObject _ required properties'' ->
-              [ cType "object"
-              , Js.objectProperty2 "required" (cRequired required)
-              , Js.objectProperty2 "properties" (Js.object $ cProperties properties'')
-              ]
+              concat
+                [ collectionPropertyL "required" cRequired required
+                , [ cType "object"
+                  , Js.objectProperty2 "properties" (Js.object $ cProperties properties'')
+                  ]
+                ]
             PRef _ collectionName ->
               [ Js.objectProperty2 "$ref" (cCollectionName collectionName)
               ]
