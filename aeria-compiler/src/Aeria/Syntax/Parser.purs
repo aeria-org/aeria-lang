@@ -109,7 +109,8 @@ pPropertyType p =
   where
   tPrimitives :: ParserM PropertyType
   tPrimitives =
-    tStr
+    tConst
+      <|> tStr
       <|> tBool
       <|> tInt
       <|> tFloat
@@ -149,6 +150,13 @@ pPropertyType p =
     _ <- lang.reservedOp "enum"
     end <- sourcePos
     pure $ PEnum (Span begin end)
+
+  tConst :: ParserM PropertyType
+  tConst = do
+    begin <- sourcePos
+    _ <- lang.reservedOp "const"
+    end <- sourcePos
+    pure (PConst (Span begin end))
 
   tCollection :: ParserM PropertyType
   tCollection = do

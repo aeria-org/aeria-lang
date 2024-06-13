@@ -394,9 +394,19 @@ sProperty collectionName property@(Property { type_ }) =
     PEnum _ -> sEnumProperty property
     PString _ -> sStringProperty property
     PFloat _ -> sNumberProperty property
+    PConst _ -> sConstProperty property
     PInteger _ -> sNumberProperty property
     PRef _ (CollectionName _ "file") -> sFileProperty property
     PRef _ ref -> sRefProperty ref property
+
+sConstProperty :: Property -> SemanticM Unit
+sConstProperty = sAttributes'
+  where
+    sAttributes' property' = sAttributes property' literalAttributes M.empty
+    literalAttributes =
+      M.fromFoldable
+        [ "value" /\ sType [TBoolean, TFloat, TInteger, TString]
+        ]
 
 sBooleanProperty :: Property -> SemanticM Unit
 sBooleanProperty = sAttributes'

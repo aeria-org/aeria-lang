@@ -296,6 +296,7 @@ data PropertyType
   | PString Span
   | PInteger Span
   | PBoolean Span
+  | PConst Span
   | PRef Span CollectionName
   | PArray Span PropertyType
   | PObject Span CollectionRequired CollectionProperties
@@ -338,6 +339,10 @@ instance WriteForeign PropertyType
     writeImpl
     { kind: "PArray"
     , type: writeImpl arr
+    }
+  writeImpl (PConst _) =
+    writeImpl
+    { kind: "PConst"
     }
   writeImpl (PObject _ required properties) =
     writeImpl
