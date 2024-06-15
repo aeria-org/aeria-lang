@@ -55,5 +55,5 @@ export declare const compile: (filename: string) => (source: string) => (targetM
   CompilationResult
 >
 
-export declare const ppDiagnostic: (diagnostic: Diagnostic) => string
+export declare const ppDiagnostic: (error: CompilationError) => string
 
