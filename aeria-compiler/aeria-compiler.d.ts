@@ -6,8 +6,16 @@ export declare class Right<T> {
   readonly value0: T
 }
 
-export declare class Diagnostic {
-  readonly value0: CompilationError
+export declare class CompilationError {
+  readonly value0: Diagnostic
+}
+
+export declare class Span {
+  readonly value0: {
+    readonly value0: number
+    readonly value1: number
+    readonly value2: number
+  }
 }
 
 export declare type Either<L, R> = Left<L> | Right<R>
@@ -35,14 +43,15 @@ export declare type CompilationOutput = readonly [
 
 export declare type CompilationResult = CompilationOutput[]
 
-export declare type CompilationError = {
+export declare type Diagnostic = {
   filepath: string
   source: string
   info: string
+  span: Span
 }
 
 export declare const compile: (filename: string) => (source: string) => (targetModule: TargetModule) => Either<
-  Diagnostic,
+  CompilationError,
   CompilationResult
 >
 

@@ -3,7 +3,7 @@ import type { Declaration, BuildOptions } from './types.js'
 import * as fs from 'fs'
 import * as path from 'path'
 import { glob } from 'glob'
-import { compileSource, isLeft, unwrapEither, getDeclarations } from './core.js'
+import { compileSource, isLeft, unwrap, getDeclarations } from './core.js'
 import {
   addJsExtension,
   addDtsExtension,
@@ -91,11 +91,11 @@ export const build = async (patterns: string[], options: BuildOptions) => {
     if( isLeft(resultEither) ) {
       return <const>{
         success: false,
-        diagnostics: unwrapEither(resultEither),
+        diagnostics: unwrap(resultEither),
       }
     }
 
-    const result = unwrapEither(resultEither)
+    const result = unwrap(resultEither)
     compilationResults.push(result)
   }
 

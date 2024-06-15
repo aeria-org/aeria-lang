@@ -18,7 +18,7 @@ export const isLeft = <L>(obj: compiler.Either<L, unknown>): obj is compiler.Lef
   return obj instanceof compiler.Left
 }
 
-export const unwrapEither = <L, R>(obj: compiler.Either<L,R>) => {
+export const unwrap = <L, R>(obj: compiler.Either<L,R>) => {
   return obj.value0
 }
 

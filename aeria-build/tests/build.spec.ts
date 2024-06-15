@@ -3,7 +3,7 @@ import assert from 'assert'
 import {
   compileSource,
   isLeft,
-  unwrapEither,
+  unwrap,
   getDeclarations,
   generateRootPackageJson,
   generateCollectionsIndexJs,
@@ -76,7 +76,7 @@ describe('Build', () => {
   })
   it('extracts declarations right', () => {
     assert(!isLeft(validResultEither))
-    const result = unwrapEither(validResultEither)
+    const result = unwrap(validResultEither)
     const declarations = getDeclarations(result)
     assert(declarations.length === 2)
     assert(declarations[0].name === 'pet')
@@ -115,14 +115,14 @@ describe('Build', () => {
 
   it('generates the root index.js right', () => {
     assert(!isLeft(validResultEither))
-    const result = unwrapEither(validResultEither)
+    const result = unwrap(validResultEither)
     const source = generateCollectionsIndexJs(getDeclarations(result), buildOptions)
 
     console.log(source)
   })
   it('generates the root index.d.ts right', () => {
     assert(!isLeft(validResultEither))
-    const result = unwrapEither(validResultEither)
+    const result = unwrap(validResultEither)
     const source = generateCollectionsIndexDts(getDeclarations(result), buildOptions)
 
     console.log(source)
@@ -133,7 +133,7 @@ describe('Build', () => {
   })
   it('emits scaffolding files (esm)', async () => {
     assert(!isLeft(validResultEither))
-    const result = unwrapEither(validResultEither)
+    const result = unwrap(validResultEither)
     const declarations = getDeclarations(result)
 
     const files = Object.keys(await writeBaseFiles(declarations, buildOptions))
@@ -146,7 +146,7 @@ describe('Build', () => {
   })
   it('emits scaffolding files (cjs)', async () => {
     assert(!isLeft(validResultEither))
-    const result = unwrapEither(validResultEither)
+    const result = unwrap(validResultEither)
     const declarations = getDeclarations(result)
 
     const files = Object.keys(await writeBaseFiles(declarations, {
