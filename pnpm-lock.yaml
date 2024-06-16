@@ -50,12 +50,13 @@ importers:
 
   aeria-build:
     dependencies:
-      '@aeria-lang/compiler':
-        specifier: ^0.0.4
-        version: 0.0.4
       glob:
         specifier: ^10.4.1
         version: 10.4.1
+    devDependencies:
+      '@aeria-lang/compiler':
+        specifier: link:../aeria-compiler
+        version: link:../aeria-compiler
 
   aeria-compiler:
     dependencies:
