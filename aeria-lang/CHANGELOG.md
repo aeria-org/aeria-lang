@@ -1,5 +1,14 @@
 # aeria-lang
 
+## 0.0.3
+
+### Patch Changes
+
+- 217b70e: Add changeset
+- Updated dependencies [217b70e]
+  - @aeria-lang/build@0.0.10
+  - @aeria-lang/compiler@0.0.4
+
 ## 0.0.2
 
 ### Patch Changes
