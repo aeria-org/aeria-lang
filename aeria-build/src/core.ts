@@ -33,7 +33,7 @@ export const getNormalizedSpan = (span: compiler.Span): NormalizedSpan => {
       index: span.value0.value0,
       line: span.value0.value1 - 1,
       character: span.value0.value2,
-    }
+    },
   }
 }
 
