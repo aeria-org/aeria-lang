@@ -1,7 +1,7 @@
 {
   "name": "aeria-lang",
   "type": "module",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,7 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aeria-lang/build": "^0.0.9",
-    "@aeria-lang/compiler": "^0.0.3"
+    "@aeria-lang/build": "^0.0.10",
+    "@aeria-lang/compiler": "^0.0.5"
   }
 }
