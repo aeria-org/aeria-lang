@@ -1,5 +1,11 @@
 # @aeria-lang/build
 
+## 0.0.11
+
+### Patch Changes
+
+- 648be45: Bump versions
+
 ## 0.0.10
 
 ### Patch Changes
