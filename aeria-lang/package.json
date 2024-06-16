@@ -17,7 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aeria-lang/build": "0.0",
-    "@aeria-lang/compiler": "0.0"
+    "@aeria-lang/build": "^0.0.2",
+    "@aeria-lang/compiler": "^0.0.3"
   }
 }
