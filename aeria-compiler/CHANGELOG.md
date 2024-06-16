@@ -4,6 +4,12 @@
 
 ### Patch Changes
 
+- 25b76b7: Test release
+
+## 0.0.5
+
+### Patch Changes
+
 - 9117828: Test release
 
 ## 0.0.4
