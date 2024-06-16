@@ -1,5 +1,11 @@
 # @aeria-lang/compiler
 
+## 0.0.3
+
+### Patch Changes
+
+- aadfe7f: Update types and add utility functions
+
 ## 0.0.2
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @aeria-lang/build
 
+## 0.0.9
+
+### Patch Changes
+
+- 7f44828: Skip codegen if inputs length is 0
+- aadfe7f: Update types and add utility functions
+- Updated dependencies [aadfe7f]
+  - @aeria-lang/compiler@0.0.3
+
 ## 0.0.8
 
 ### Patch Changes
