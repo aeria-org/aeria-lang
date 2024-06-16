@@ -1,5 +1,13 @@
 # @aeria-lang/build
 
+## 0.0.10
+
+### Patch Changes
+
+- 9117828: Test release
+- Updated dependencies [9117828]
+  - @aeria-lang/compiler@0.0.5
+
 ## 0.0.11
 
 ### Patch Changes
