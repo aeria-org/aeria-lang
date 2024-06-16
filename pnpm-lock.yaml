@@ -76,8 +76,8 @@ importers:
   aeria-lang:
     dependencies:
       '@aeria-lang/build':
-        specifier: ^0.0.2
-        version: 0.0.2
+        specifier: ^0.0.9
+        version: 0.0.9
       '@aeria-lang/compiler':
         specifier: ^0.0.3
         version: 0.0.3
@@ -99,8 +99,8 @@ importers:
 
 packages:
 
-  '@aeria-lang/build@0.0.2':
-    resolution: {integrity: sha512-tY5cBQOD3mpoVkT9OAATwhUncb5n2aqHFqaw0lyZpD05Z4QYBK1i672omQYsBFcHJaLraHn+Y1r/FbTy3acgYg==}
+  '@aeria-lang/build@0.0.9':
+    resolution: {integrity: sha512-9Sy/jJffYLYJzoheE6act877+WEILmkJQaiwdkkqPSx9FeTtjQSrfhaMsK+DARdYmE0qitV6ooMMo+lYt4POjQ==}
 
   '@aeria-lang/compiler@0.0.3':
     resolution: {integrity: sha512-7b8eSDV1EczFPcZZVAMoPUcjkM/6Q+nlyknDgYQG/kQbsRiUM9GUmqfFDvDbSK+3j/rMFu5KF5etXdyzfKJXFQ==}
@@ -3195,7 +3195,7 @@ packages:
 
 snapshots:
 
-  '@aeria-lang/build@0.0.2':
+  '@aeria-lang/build@0.0.9':
     dependencies:
       '@aeria-lang/compiler': 0.0.3
       glob: 10.4.1
@@ -4046,7 +4046,7 @@ snapshots:
 
   aeria-lang@0.0.2:
     dependencies:
-      '@aeria-lang/build': 0.0.2
+      '@aeria-lang/build': 0.0.9
       '@aeria-lang/compiler': 0.0.3
     optional: true
 

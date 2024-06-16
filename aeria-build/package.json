@@ -23,7 +23,7 @@
     "@aeria-lang/compiler": "link:../aeria-compiler"
   },
   "dependencies": {
-    "@aeria-lang/compiler": "^0.0.4",
+    "@aeria-lang/compiler": "^0.0.3",
     "glob": "^10.4.1"
   }
 }
