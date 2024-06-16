@@ -51,8 +51,8 @@ importers:
   aeria-build:
     dependencies:
       '@aeria-lang/compiler':
-        specifier: ^0.0.3
-        version: 0.0.3
+        specifier: ^0.0.4
+        version: 0.0.4
       glob:
         specifier: ^10.4.1
         version: 10.4.1
@@ -79,8 +79,8 @@ importers:
         specifier: ^0.0.9
         version: 0.0.9
       '@aeria-lang/compiler':
-        specifier: ^0.0.3
-        version: 0.0.3
+        specifier: ^0.0.4
+        version: 0.0.4
 
   playground:
     dependencies:
@@ -104,6 +104,9 @@ packages:
 
   '@aeria-lang/compiler@0.0.3':
     resolution: {integrity: sha512-7b8eSDV1EczFPcZZVAMoPUcjkM/6Q+nlyknDgYQG/kQbsRiUM9GUmqfFDvDbSK+3j/rMFu5KF5etXdyzfKJXFQ==}
+
+  '@aeria-lang/compiler@0.0.4':
+    resolution: {integrity: sha512-0EUwmRNMBFeRcnhya0Jn0ecrHbqU1Mp5nrAHd9siT1Lov+c0tA9HoiKjfDQh/AUkK0GBYFU4PmsWTPHEM1AkQw==}
 
   '@aeriajs/builtins@0.0.110':
     resolution: {integrity: sha512-upoTDa7TEgq4BoWZ7ClQQ5ew+Z/96hAzMgFql7vhDhNSeYyHr99mUiIFca42W0OpcCXsNqj+EfAMAvZzHsN0JQ==}
@@ -866,8 +869,8 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  aeria-lang@0.0.2:
-    resolution: {integrity: sha512-tMJK8iifvXW6pXkvJjQmMNF2IiWDinjjkIYTf6fU2kCHXjTrzpKfGHAmhrQuNRUz1B8w/4czx5BTVCXqHIYz9w==}
+  aeria-lang@0.0.4:
+    resolution: {integrity: sha512-TRNx7o6b0iu1YgcaXHvjPnrcl6cHUWvWEQEaSVU2vArSaJs8yD2AW4SYo7ejMpoz7bkI+NDUJKgwdJlx7nRxuw==}
 
   aeria@0.0.118:
     resolution: {integrity: sha512-XdzTxuR12upOARS3kHiFhZ3KAm8h8HVTpfgT0MH92Aq7ebFz2c8NFg18DhR8LW6V03h4P3JRDk48DqCPwwAgZg==}
@@ -3197,10 +3200,15 @@ snapshots:
 
   '@aeria-lang/build@0.0.9':
     dependencies:
-      '@aeria-lang/compiler': 0.0.3
+      '@aeria-lang/compiler': 0.0.4
       glob: 10.4.1
 
   '@aeria-lang/compiler@0.0.3':
+    dependencies:
+      prettier: 3.3.2
+    optional: true
+
+  '@aeria-lang/compiler@0.0.4':
     dependencies:
       prettier: 3.3.2
 
@@ -3229,7 +3237,7 @@ snapshots:
       glob: 10.4.1
       json5: 2.2.3
     optionalDependencies:
-      aeria-lang: 0.0.2
+      aeria-lang: 0.0.4
 
   '@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0)':
     dependencies:
@@ -4044,7 +4052,7 @@ snapshots:
 
   acorn@8.12.0: {}
 
-  aeria-lang@0.0.2:
+  aeria-lang@0.0.4:
     dependencies:
       '@aeria-lang/build': 0.0.9
       '@aeria-lang/compiler': 0.0.3
