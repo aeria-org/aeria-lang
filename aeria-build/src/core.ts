@@ -1,4 +1,4 @@
-import type { CompilationTarget, Declaration } from './types.js'
+import type { CompilationTarget, Declaration, NormalizedSpan } from './types.js'
 import * as compiler from '@aeria-lang/compiler'
 
 export const compileSource = (target: CompilationTarget) => {
@@ -18,7 +18,22 @@ export const isLeft = <L>(obj: compiler.Either<L, unknown>): obj is compiler.Lef
   return obj instanceof compiler.Left
 }
 
-export const unwrap = <L, R>(obj: compiler.Either<L,R>) => {
+export const unwrap = <T>(obj: { value0: T }) => {
   return obj.value0
+}
+
+export const getNormalizedSpan = (span: compiler.Span): NormalizedSpan => {
+  return {
+    start: {
+      index: span.value0.value0,
+      line: span.value0.value1 - 1,
+      character: span.value0.value2,
+    },
+    end: {
+      index: span.value0.value0,
+      line: span.value0.value1 - 1,
+      character: span.value0.value2,
+    }
+  }
 }
 

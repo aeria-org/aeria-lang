@@ -10,12 +10,15 @@ export declare class CompilationError {
   readonly value0: Diagnostic
 }
 
+export declare class SourcePos {
+  readonly value0: number
+  readonly value1: number
+  readonly value2: number
+}
+
 export declare class Span {
-  readonly value0: {
-    readonly value0: number
-    readonly value1: number
-    readonly value2: number
-  }
+  readonly value0: SourcePos
+  readonly value1: SourcePos
 }
 
 export declare type Either<L, R> = Left<L> | Right<R>

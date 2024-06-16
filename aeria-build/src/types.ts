@@ -29,3 +29,16 @@ export type BuildOptions = {
   dryRun?: boolean
 }
 
+export type NormalizedSpan = {
+  start: {
+    index: number
+    line: number
+    character: number
+  }
+  end: {
+    index: number
+    line: number
+    character: number
+  }
+}
+
