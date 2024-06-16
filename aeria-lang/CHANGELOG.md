@@ -4,6 +4,12 @@
 
 ### Patch Changes
 
+- e10272e: Test release
+
+## 0.0.6
+
+### Patch Changes
+
 - 25b76b7: Test release
 - Updated dependencies [25b76b7]
   - @aeria-lang/build@0.0.10
