@@ -35,9 +35,9 @@ lang = P.makeTokenParser aeria
   aeria =
     P.LanguageDef
       (P.unGenLanguageDef emptyDef)
-        { commentStart = "{-"
-        , commentEnd = "-}"
-        , commentLine = "--"
+        { commentStart = "/*"
+        , commentEnd = "*/"
+        , commentLine = "//"
         , nestedComments = true
         , identStart = letter
         , reservedNames =
@@ -48,6 +48,7 @@ lang = P.makeTokenParser aeria
           , "bool"
           , "int"
           , "float"
+          , "const"
           , "file"
           , "search"
           , "placeholder"
