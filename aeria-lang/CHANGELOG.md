@@ -4,6 +4,14 @@
 
 ### Patch Changes
 
+- Updated dependencies [0e3e439]
+  - @aeria-lang/build@0.0.10
+  - @aeria-lang/compiler@0.0.5
+
+## 0.0.7
+
+### Patch Changes
+
 - Updated dependencies [534f688]
   - @aeria-lang/build@0.0.10
   - @aeria-lang/compiler@0.0.5
