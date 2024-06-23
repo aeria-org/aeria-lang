@@ -4,6 +4,14 @@
 
 ### Patch Changes
 
+- 534f688: Release
+- Updated dependencies [534f688]
+  - @aeria-lang/compiler@0.0.5
+
+## 0.0.10
+
+### Patch Changes
+
 - 25b76b7: Test release
 - Updated dependencies [25b76b7]
   - @aeria-lang/compiler@0.0.5
