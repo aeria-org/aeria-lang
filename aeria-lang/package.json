@@ -16,6 +16,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "devDependencies": {
+    "@aeria-lang/build": "link:../aeria-build",
+    "@aeria-lang/compiler": "link:../aeria-compiler"
+  },
   "peerDependencies": {
     "@aeria-lang/build": "^0.0.9",
     "@aeria-lang/compiler": "^0.0.4"
