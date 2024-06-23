@@ -6,6 +6,14 @@ const DECLARATION_PATH: Record<compiler.DeclarationType, string> = {
   contract: 'contracts',
 }
 
+const removeTrailingCharacters = (source: string) => {
+  return source.replace(/^(\s*|$)/mg, '')
+}
+
+const capitalize = (text: string) => {
+  return text[0].toUpperCase() + text.slice(1)
+}
+
 export const addJsExtension = (filename: string, options: BuildOptions) => {
   switch( options.module ) {
     case 'esnext': return `${filename}.mjs`
@@ -50,22 +58,43 @@ export const generateRootPackageJson = (options: BuildOptions) => {
   return json
 }
 
-export const generateRootIndexJs = (options: BuildOptions) => {
+export const generateRootIndexJs = (declarations: Declaration[], options: BuildOptions) => {
   switch( options.module ) {
-    case 'esnext': return `export * as collections from '${addJsExtension('./collections/index', options)}'`
-    case 'commonjs': return `exports.collections = require('${addJsExtension('./collections/index', options)}')`
+    case 'esnext': return removeTrailingCharacters(`
+      export * as collections from '${addJsExtension('./collections/index', options)}'
+      ${declarations.map((decl) => {
+        return `
+          export { ${`extend${capitalize(decl.name)}Collection`} } from '${addJsExtension(`./collections/${decl.name}`, options)}'
+        `
+      }).join('\n')}
+    `)
+    case 'commonjs': return removeTrailingCharacters(`
+      exports.collections = require('${addJsExtension('./collections/index', options)}')
+      ${declarations.map((decl) => {
+        return `
+          exports.${`extend${capitalize(decl.name)}Collection`} = require('${addJsExtension(`./collections/${decl.name}`, options)}')
+        `
+      })}
+    `)
   }
 }
 
-export const generateRootIndexDts = (options: BuildOptions) => {
-  return `export * as collections from '${addJsExtension('./collections/index', options)}'`
+export const generateRootIndexDts = (declarations: Declaration[], options: BuildOptions) => {
+   return removeTrailingCharacters(`
+    export * as collections from '${addJsExtension('./collections/index', options)}'
+    ${declarations.map((decl) => {
+      return `
+        export { ${`extend${capitalize(decl.name)}Collection`} } from '${addJsExtension(`./collections/${decl.name}`, options)}'
+      `
+    }).join('\n')}
+  `)
 }
 
 export const generateCollectionsIndexJs = (declarations: Declaration[], options: BuildOptions) => {
   if( declarations.length === 0 ) {
     switch( options.module ) {
       case 'esnext': return 'export {}'
-      case 'commonjs': return 'module.exports = {}'
+      case 'commonjs': return 'exports = {}'
     }
   }
 
@@ -78,7 +107,7 @@ export const generateCollectionsIndexJs = (declarations: Declaration[], options:
     const importPath = addJsExtension(`./${decl.name}`, options)
     switch( options.module ) {
       case 'esnext':
-        source += `export * from '${importPath}'\n`
+        source += `export { ${decl.name} } from '${importPath}'\n`
         break
       case 'commonjs':
         source += `exports['${decl.name}'] = require('${importPath}')['${decl.name}']\n`
@@ -100,7 +129,7 @@ export const generateCollectionsIndexDts = (declarations: Declaration[], options
       continue
     }
     const importPath = addJsExtension(`./${decl.name}`, options)
-    source += `export * from '${importPath}'\n`
+    source += `export { ${decl.name} } from '${importPath}'\n`
   }
 
   return source

@@ -46,11 +46,11 @@ export const writeBaseFiles = async (declarations: Declaration[], options: Build
   )
   await write(
     path.join(options.outDir, addJsExtension('index', options)),
-    generateRootIndexJs(options),
+    generateRootIndexJs(declarations, options),
   )
   await write(
     path.join(options.outDir, addDtsExtension('index', options)),
-    generateRootIndexDts(options),
+    generateRootIndexDts(declarations, options),
   )
   await write(
     path.join(options.outDir, 'collections', addJsExtension('index', options)),
