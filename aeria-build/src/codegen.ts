@@ -63,30 +63,30 @@ export const generateRootIndexJs = (declarations: Declaration[], options: BuildO
     case 'esnext': return removeTrailingCharacters(`
       export * as collections from '${addJsExtension('./collections/index', options)}'
       ${declarations.map((decl) => {
-        return `
+    return `
           export { ${`extend${capitalize(decl.name)}Collection`} } from '${addJsExtension(`./collections/${decl.name}`, options)}'
         `
-      }).join('\n')}
+  }).join('\n')}
     `)
     case 'commonjs': return removeTrailingCharacters(`
       exports.collections = require('${addJsExtension('./collections/index', options)}')
       ${declarations.map((decl) => {
-        return `
+    return `
           exports.${`extend${capitalize(decl.name)}Collection`} = require('${addJsExtension(`./collections/${decl.name}`, options)}')
         `
-      })}
+  })}
     `)
   }
 }
 
 export const generateRootIndexDts = (declarations: Declaration[], options: BuildOptions) => {
-   return removeTrailingCharacters(`
+  return removeTrailingCharacters(`
     export * as collections from '${addJsExtension('./collections/index', options)}'
     ${declarations.map((decl) => {
-      return `
+    return `
         export { ${`extend${capitalize(decl.name)}Collection`} } from '${addJsExtension(`./collections/${decl.name}`, options)}'
       `
-    }).join('\n')}
+  }).join('\n')}
   `)
 }
 
