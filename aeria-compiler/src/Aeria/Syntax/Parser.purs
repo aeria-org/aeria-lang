@@ -297,9 +297,13 @@ pAttribute = do
       pure $ AExpr (Span beginAttributeValue endAttributeValue) expr
     _ -> do
       beginAttributeValue <- sourcePos
-      literal <- lang.parens pLiteral
+      literal <- optionMaybe $ lang.parens pLiteral
       endAttributeValue <- sourcePos
-      pure $ ALiteral (Span beginAttributeValue endAttributeValue) literal
+      let span = (Span beginAttributeValue endAttributeValue)
+      case literal of
+        Nothing -> pure
+          $ ALiteral span (LBoolean span true)
+        Just literal' -> pure $ ALiteral span literal'
   end <- sourcePos
   pure $ Attribute (Span begin end) attributeName attributeValue
 
