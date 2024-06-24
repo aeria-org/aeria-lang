@@ -10,14 +10,13 @@ import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), Attr
 import Control.Lazy (fix)
 import Data.Array as A
 import Data.Either (Either(..))
-import Data.List (List, toUnfoldable)
 import Data.List as L
 import Data.Maybe (Maybe(..), fromMaybe, isJust)
 import Data.String (toLower)
 import Data.String.CodeUnits (fromCharArray)
 import Data.Tuple.Nested (type (/\), (/\))
-import Parsing (ParseError(..), Parser, Position(..), position, runParser)
-import Parsing.Combinators (choice, many, manyTill, optionMaybe, sepBy, try, (<|>))
+import Parsing (ParseError(..), Parser, Position(..), fail, position, runParser)
+import Parsing.Combinators (choice, many, manyTill, optionMaybe, sepBy, try, (<?>), (<|>))
 import Parsing.Expr (Assoc(..), Operator(..), buildExprParser)
 import Parsing.Language (emptyDef)
 import Parsing.String (anyChar, eof, string)
@@ -25,8 +24,7 @@ import Parsing.String.Basic (alphaNum, letter, oneOf, skipSpaces)
 import Parsing.Token as P
 import Unsafe.Coerce (unsafeCoerce)
 
-type ParserM a
-  = Parser String a
+type ParserM a = Parser String a
 
 lang :: P.TokenParser
 lang = P.makeTokenParser aeria
@@ -40,27 +38,6 @@ lang = P.makeTokenParser aeria
         , commentLine = "//"
         , nestedComments = true
         , identStart = letter
-        , reservedNames =
-          [ "collection"
-          , "properties"
-          , "required"
-          , "str"
-          , "bool"
-          , "int"
-          , "float"
-          , "const"
-          , "file"
-          , "search"
-          , "placeholder"
-          , "indexes"
-          , "filters"
-          , "filtersPresets"
-          , "component"
-          , "enum"
-          , "cond"
-          , "true"
-          , "false"
-          ]
         , identLetter = alphaNum <|> oneOf [ '_', '\'' ]
         , caseSensitive = true
         }
@@ -70,124 +47,79 @@ sourcePos = do
   Position {column, index, line} <- position
   pure $ SourcePos index line column
 
-pPropertyName :: ParserM PropertyName
-pPropertyName = do
+pName :: forall a. (Span -> String -> a) -> ParserM a
+pName constructor = do
   begin <- sourcePos
-  ident <- lang.identifier
+  ident <- lang.identifier <?> "Expected an identifier"
   end <- sourcePos
-  pure (PropertyName (Span begin end) ident)
+  pure $ constructor (Span begin end) ident
+
+pPropertyName :: ParserM PropertyName
+pPropertyName = pName PropertyName
 
 pFunctionName :: ParserM FunctionName
-pFunctionName = do
-  begin <- sourcePos
-  ident <- lang.identifier
-  end <- sourcePos
-  pure (FunctionName (Span begin end) ident)
+pFunctionName = pName FunctionName
+
+pAttributeName :: ParserM AttributeName
+pAttributeName = pName AttributeName
 
 pCollectionName :: ParserM CollectionName
 pCollectionName = do
-  begin <- sourcePos
-  ident <- lang.identifier
-  end <- sourcePos
-  pure (CollectionName (Span begin end) (toLower ident))
-
-pAttributeName :: ParserM AttributeName
-pAttributeName = do
-  begin <- sourcePos
-  ident <- lang.identifier
-  end <- sourcePos
-  pure (AttributeName (Span begin end) ident)
+  CollectionName span name <- pName CollectionName
+  pure (CollectionName span (toLower name))
 
 pPropertyType :: ParserM CollectionProperties -> ParserM PropertyType
-pPropertyType p =
-  fix \self ->
-    choice
-      [ try (tArray self)
-      , try tPrimitives
-      , try tCollection
-      , try tObject
-      ]
+pPropertyType p = fix \self -> choice
+  [ try (tArray self)
+  , try tPrimitives
+  , try tCollection
+  , try tObject
+  ] <?> "Expected a property type"
   where
-  tPrimitives :: ParserM PropertyType
-  tPrimitives =
-    tConst
-      <|> tStr
-      <|> tBool
-      <|> tInt
-      <|> tFloat
-      <|> tEnum
+    tPrimitives = choice [tConst, tStr, tBool, tInt, tFloat, tEnum]
+    tArray self = pArrayType self PArray
+    tCollection = pCollectionType PRef
+    tObject = pObjectType p PObject
 
-  tStr :: ParserM PropertyType
-  tStr = do
-    begin <- sourcePos
-    _ <- lang.reservedOp "str"
-    end <- sourcePos
-    pure $ PString (Span begin end)
+    pArrayType self constructor = do
+      begin <- sourcePos
+      _ <- string "[]" <?> "Expected '[]' for array type"
+      arrType <- self
+      end <- sourcePos
+      pure $ constructor (Span begin end) arrType
 
-  tBool :: ParserM PropertyType
-  tBool = do
-    begin <- sourcePos
-    _ <- lang.reservedOp "bool"
-    end <- sourcePos
-    pure $ PBoolean (Span begin end)
+    pCollectionType constructor = do
+      begin <- sourcePos
+      collectionName <- pCollectionName
+      end <- sourcePos
+      pure $ constructor (Span begin end) collectionName
 
-  tInt :: ParserM PropertyType
-  tInt = do
-    begin <- sourcePos
-    _ <- lang.reservedOp "int"
-    end <- sourcePos
-    pure $ PInteger (Span begin end)
+    pObjectType p' constructor = lang.braces $ do
+      begin <- sourcePos
+      results <- runParsers
+        [ "required" /\ unsafeCoerce (pPropertyParser "required" pCollectionRequired)
+        , "properties" /\ unsafeCoerce (pPropertyParser "properties" p')
+        ]
+      let required = unsafeCoerce $ getParserValue "required" results
+      let properties = unsafeCoerce $ getParserValue "properties" results
+      end <- sourcePos
+      pure $ constructor (Span begin end) (fromMaybe L.Nil required) (fromMaybe L.Nil properties)
 
-  tFloat :: ParserM PropertyType
-  tFloat = do
-    begin <- sourcePos
-    _ <- lang.reservedOp "float"
-    end <- sourcePos
-    pure $ PFloat (Span begin end)
+    tStr = pSimpleType PString "str"
+    tBool = pSimpleType PBoolean "bool"
+    tInt = pSimpleType PInteger "int"
+    tFloat = pSimpleType PFloat "float"
+    tEnum = pSimpleType PEnum "enum"
+    tConst = pSimpleType PConst "const"
 
-  tEnum :: ParserM PropertyType
-  tEnum = do
-    begin <- sourcePos
-    _ <- lang.reservedOp "enum"
-    end <- sourcePos
-    pure $ PEnum (Span begin end)
-
-  tConst :: ParserM PropertyType
-  tConst = do
-    begin <- sourcePos
-    _ <- lang.reservedOp "const"
-    end <- sourcePos
-    pure (PConst (Span begin end))
-
-  tCollection :: ParserM PropertyType
-  tCollection = do
-    begin <- sourcePos
-    collectionName <- pCollectionName
-    end <- sourcePos
-    pure (PRef (Span begin end) collectionName)
-
-  tArray :: ParserM PropertyType -> ParserM PropertyType
-  tArray self = do
-    begin <- sourcePos
-    _ <- string "[]"
-    arrType <- self
-    end <- sourcePos
-    pure (PArray (Span begin end) arrType)
-
-  tObject :: ParserM PropertyType
-  tObject = lang.braces $ do
-    begin <- sourcePos
-    results <- runParsers
-      [ "required" /\ (unsafeCoerce $ pPropertyParser "required" pCollectionRequired)
-      , "properties" /\ (unsafeCoerce $ pPropertyParser "properties" p)
-      ]
-    let required = unsafeCoerce $ getParserValue "required" results
-    let properties = unsafeCoerce $ getParserValue "properties" results
-    end <- sourcePos
-    pure (PObject (Span begin end) (fromMaybe L.Nil required) (fromMaybe L.Nil properties))
+    pSimpleType constructor keyword = do
+      begin <- sourcePos
+      _ <- lang.reservedOp keyword <?> ("Expected '" <> keyword <> "'")
+      end <- sourcePos
+      pure $ constructor (Span begin end)
 
 pBoolean :: ParserM Boolean
-pBoolean = pTrue <|> pFalse
+pBoolean = pTrue <|> pFalse <?> "Expected a boolean ('true' or 'false')"
   where
     pTrue :: ParserM Boolean
     pTrue = lang.reserved "true" $> true
@@ -196,99 +128,71 @@ pBoolean = pTrue <|> pFalse
     pFalse = lang.reserved "false" $> false
 
 pLiteral :: ParserM Literal
-pLiteral =
-  fix \self ->
-    choice
-      [ try pFloat
-      , try pInteger
-      , try pString
-      , try pBoolean'
-      , try pProp
-      , pArray self
-      ]
+pLiteral = fix \self -> choice
+  [ try pFloat
+  , try pInteger
+  , try pString
+  , try pBoolean'
+  , try pProp
+  , pArray self
+  ] <?> "Expected a literal value"
   where
-  pInteger :: ParserM Literal
-  pInteger = do
-    begin <- sourcePos
-    integerLiteral <- lang.integer
-    end <- sourcePos
-    pure $ LInteger (Span begin end) integerLiteral
+    pInteger = pLiteralValue LInteger lang.integer
+    pFloat = pLiteralValue LFloat lang.float
+    pBoolean' = pLiteralValue LBoolean pBoolean
+    pString = pLiteralValue LString lang.stringLiteral
+    pProp = pLiteralValue LProperty pPropertyName
 
-  pFloat :: ParserM Literal
-  pFloat = do
-    begin <- sourcePos
-    floatLiteral <- lang.float
-    end <- sourcePos
-    pure $ LFloat (Span begin end) floatLiteral
+    pLiteralValue :: forall a. (Span -> a -> Literal) -> ParserM a -> ParserM Literal
+    pLiteralValue constructor parser = do
+      begin <- sourcePos
+      value <- parser
+      end <- sourcePos
+      pure $ constructor (Span begin end) value
 
-  pString :: ParserM Literal
-  pString = do
-    begin <- sourcePos
-    stringLiteral <- lang.stringLiteral
-    end <- sourcePos
-    pure $ LString (Span begin end) stringLiteral
-
-  pBoolean' :: ParserM Literal
-  pBoolean' = do
-    begin <- sourcePos
-    booleanLiteral <- pBoolean
-    end <- sourcePos
-    pure $ LBoolean (Span begin end) booleanLiteral
-
-  pProp :: ParserM Literal
-  pProp = do
-    begin <- sourcePos
-    propertyName <- pPropertyName
-    end <- sourcePos
-    pure $ LProperty (Span begin end) propertyName
-
-  pArray :: ParserM Literal -> ParserM Literal
-  pArray p = do
-    begin <- sourcePos
-    arrayLiteral <- lang.brackets go
-    end <- sourcePos
-    pure $ LArray (Span begin end) arrayLiteral
-    where
-    go :: ParserM (List Literal)
-    go = sepBy (skipSpaces *> p <* skipSpaces) lang.comma
+    pArray p = do
+      begin <- sourcePos
+      arrayLiteral <- lang.brackets (sepBy (skipSpaces *> p <* skipSpaces) lang.comma)
+      end <- sourcePos
+      pure $ LArray (Span begin end) arrayLiteral
 
 pExpr :: ParserM Expr
 pExpr = fix \self -> buildExprParser table (expr self)
   where
-  table =
-    [ [ binary "==" EEq AssocLeft ]
-    , [ binary "in" EIn AssocLeft ]
-    , [ binary ">" EGt AssocLeft
-      , binary "<" ELt AssocLeft
-      , binary ">=" EGte AssocLeft
-      , binary "<=" ELte AssocLeft
+    table =
+      [ [ binary "==" EEq AssocLeft ]
+      , [ binary "in" EIn AssocLeft ]
+      , [ binary ">" EGt AssocLeft
+        , binary "<" ELt AssocLeft
+        , binary ">=" EGte AssocLeft
+        , binary "<=" ELte AssocLeft
+        ]
+      , [ binary "&&" EAnd AssocLeft ]
+      , [ binary "||" EOr AssocLeft ]
+      , [ unary "exists" EExists ]
+      , [ unary "!" ENot ]
       ]
-    , [ binary "&&" EAnd AssocLeft ]
-    , [ binary "||" EOr AssocLeft ]
-    , [ unary "exists" EExists ]
-    , [ unary "!" ENot ]
-    ]
 
-  binary name fun assoc = Infix go assoc
-    where
-    go = do
-      lang.reservedOp name
-      pure fun
+    binary name fun assoc = Infix go assoc
+      where
+        go = do
+          lang.reservedOp name <?> ("Expected binary operator '" <> name <> "'")
+          pure fun
 
-  unary name fun = Prefix go
-    where
-    go = do
-      lang.reservedOp name
-      pure fun
+    unary name fun = Prefix go
+      where
+        go = do
+          lang.reservedOp name <?> ("Expected unary operator '" <> name <> "'")
+          pure fun
 
-  expr self = lang.parens self <|> value
+    expr self = lang.parens self <|> value
 
-  value = ELiteral <$> pLiteral
+    value = ELiteral <$> pLiteral
 
 pAttribute :: ParserM Attribute
 pAttribute = do
   begin <- sourcePos
-  attributeName <- string "@" *> pAttributeName
+  attributeName <- lang.reservedOp "@" *> pAttributeName <?> "Expected attribute name starting with '@'"
   attributeValue <- case attributeName of
     AttributeName _ "constraints" -> do
       beginAttributeValue <- sourcePos
@@ -301,8 +205,7 @@ pAttribute = do
       endAttributeValue <- sourcePos
       let span = (Span beginAttributeValue endAttributeValue)
       case literal of
-        Nothing -> pure
-          $ ALiteral span (LBoolean span true)
+        Nothing -> pure $ ALiteral span (LBoolean span true)
         Just literal' -> pure $ ALiteral span literal'
   end <- sourcePos
   pure $ Attribute (Span begin end) attributeName attributeValue
@@ -310,32 +213,32 @@ pAttribute = do
 pRequired :: ParserM Required
 pRequired = go
   where
-  go :: ParserM Required
-  go = do
-    begin <- sourcePos
-    propertyName <- pPropertyName
-    cond <- optionMaybe pCond
-    end <- sourcePos
-    pure $ Required (Span begin end) propertyName cond
+    go :: ParserM Required
+    go = do
+      begin <- sourcePos
+      propertyName <- pPropertyName
+      cond <- optionMaybe pCond
+      end <- sourcePos
+      pure $ Required (Span begin end) propertyName cond
 
 pCond :: ParserM Cond
 pCond = do
   lang.reserved "@cond"
   begin <- sourcePos
-  expr <- lang.parens pExpr
+  expr <- lang.parens pExpr <?> "Expected condition expression"
   end <- sourcePos
   pure (Cond (Span begin end) expr)
 
 pProperty :: ParserM CollectionProperties -> ParserM Property
 pProperty p = do
   begin <- sourcePos
-  name <- pPropertyName
-  type_ <- pPropertyType p
+  name <- pPropertyName <?> "Expected property name"
+  type_ <- pPropertyType p <?> "Expected property type"
   attributes <- many pAttribute
   end <- sourcePos
   pure
     $ Property
-        { span: (Span begin end)
+        { span: Span begin end
         , name
         , type_
         , attributes
@@ -356,7 +259,11 @@ pGetter = do
 
 pCollectionProperties :: ParserM CollectionProperties
 pCollectionProperties =
-  fix \self -> lang.braces $ many (try (pProperty self))
+  fix \self -> lang.braces $ do
+    properties <- many (try (pProperty self)) <?> "Expected properties inside braces"
+    if L.null properties
+      then fail "Expected at least one property inside braces"
+      else pure properties
 
 pCollectionRequired :: ParserM CollectionRequired
 pCollectionRequired = lang.braces $ many (try pRequired)
@@ -734,11 +641,11 @@ pLayoutItem = do
       }
     where
       allParsers' =
-        [ "name" /\ (unsafeCoerce pName)
+        [ "name" /\ (unsafeCoerce pName')
         , "props" /\ (unsafeCoerce pProps)
         ]
 
-      pName = pPropertyParser "name" lang.stringLiteral
+      pName' = pPropertyParser "name" lang.stringLiteral
       pProps = pPropertyParser "props" (pMacro "@js () =>")
 
 pCollectionLayout :: ParserM CollectionLayout
@@ -753,7 +660,7 @@ pMacro prefix = do
   lang.reserved prefix
   code <- manyTill anyChar (lang.reserved "@end")
   end <- sourcePos
-  pure $ Macro (Span begin end) (fromCharArray <<< toUnfoldable $ code)
+  pure $ Macro (Span begin end) (fromCharArray <<< L.toUnfoldable $ code)
 
 pCollectionTemporary :: ParserM CollectionTemporary
 pCollectionTemporary = lang.braces $ do

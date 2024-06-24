@@ -1,4 +1,4 @@
-module Aeria.Driver (compile, compile', compile'') where
+module Aeria.Driver (compile, checker, compile', compile'') where
 
 import Prelude
 
@@ -67,6 +67,12 @@ compile filepath source output = do
               # L.toUnfoldable
         Left err -> Left err
     Nothing -> Right []
+
+checker :: FilePath -> String -> Either Diagnostic Unit
+checker filepath source = do
+  case runProgram filepath source of
+    Right program' -> runSemantic filepath source program'
+    Left err -> Left err
 
 compile' :: FilePath -> String -> String -> Effect Unit
 compile' filepath outputPath output = do
