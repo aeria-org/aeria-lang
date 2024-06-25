@@ -1,7 +1,7 @@
 {
   "name": "@aeria-lang/build",
   "type": "module",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,7 +23,7 @@
     "@aeria-lang/compiler": "link:../aeria-compiler"
   },
   "peerDependencies": {
-    "@aeria-lang/compiler": "^0.0.5"
+    "@aeria-lang/compiler": "^0.0.6"
   },
   "dependencies": {
     "glob": "^10.4.1"
