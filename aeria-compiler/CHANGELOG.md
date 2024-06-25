@@ -1,5 +1,11 @@
 # @aeria-lang/compiler
 
+## 0.0.6
+
+### Patch Changes
+
+- 5156a72: Fix nested array attributes
+
 ## 0.0.5
 
 ### Patch Changes
