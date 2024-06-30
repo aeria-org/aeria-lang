@@ -76,7 +76,7 @@ pPropertyType p = fix \self -> choice
   , try tObject
   ] <?> "Expected a property type"
   where
-    tPrimitives = choice [tConst, tStr, tBool, tInt, tFloat, tEnum]
+    tPrimitives = choice [tConst, tStr, tBool, tInt, tNum, tEnum]
     tArray self = pArrayType self PArray
     tCollection = pCollectionType PRef
     tObject = pObjectType p PObject
@@ -108,7 +108,7 @@ pPropertyType p = fix \self -> choice
     tStr = pSimpleType PString "str"
     tBool = pSimpleType PBoolean "bool"
     tInt = pSimpleType PInteger "int"
-    tFloat = pSimpleType PFloat "float"
+    tNum = pSimpleType PNum "num"
     tEnum = pSimpleType PEnum "enum"
     tConst = pSimpleType PConst "const"
 
@@ -129,7 +129,7 @@ pBoolean = pTrue <|> pFalse <?> "Expected a boolean ('true' or 'false')"
 
 pLiteral :: ParserM Literal
 pLiteral = fix \self -> choice
-  [ try pFloat
+  [ try pNum
   , try pInteger
   , try pString
   , try pBoolean'
@@ -138,7 +138,7 @@ pLiteral = fix \self -> choice
   ] <?> "Expected a literal value"
   where
     pInteger = pLiteralValue LInteger lang.integer
-    pFloat = pLiteralValue LFloat lang.float
+    pNum = pLiteralValue LNum lang.float
     pBoolean' = pLiteralValue LBoolean pBoolean
     pString = pLiteralValue LString lang.stringLiteral
     pProp = pLiteralValue LProperty pPropertyName

@@ -5,7 +5,7 @@
       "properties": [
         {
           "type": {
-            "kind": "PFloat"
+            "kind": "PNum"
           },
           "name": {
             "value": "price",

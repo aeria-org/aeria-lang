@@ -393,7 +393,7 @@ sProperty collectionName property@(Property { type_ }) =
     PObject _ _ _ -> sObjectProperty collectionName property
     PEnum _ -> sEnumProperty property
     PString _ -> sStringProperty property
-    PFloat _ -> sNumberProperty property
+    PNum _ -> sNumberProperty property
     PConst _ -> sConstProperty property
     PInteger _ -> sNumberProperty property
     PRef _ (CollectionName _ "file") -> sFileProperty property
@@ -405,7 +405,7 @@ sConstProperty = sAttributes'
     sAttributes' property' = sAttributes property' literalAttributes M.empty
     literalAttributes =
       M.fromFoldable
-        [ "value" /\ sType [TBoolean, TFloat, TInteger, TString]
+        [ "value" /\ sType [TBoolean, TNum, TInteger, TString]
         ]
 
 sBooleanProperty :: Property -> SemanticM Unit
@@ -543,11 +543,11 @@ sNumberProperty property = sAttributes property literalAttributes M.empty
   where
   literalAttributes =
     M.fromFoldable
-      [ "minimum" /\ sType [TFloat, TInteger]
-      , "maximum" /\ sType [TFloat, TInteger]
-      , "exclusiveMinimum" /\ sType [TFloat, TInteger]
-      , "exclusiveMaximum" /\ sType [TFloat, TInteger]
-      , "default" /\ sType [TInteger, TFloat]
+      [ "minimum" /\ sType [TNum, TInteger]
+      , "maximum" /\ sType [TNum, TInteger]
+      , "exclusiveMinimum" /\ sType [TNum, TInteger]
+      , "exclusiveMaximum" /\ sType [TNum, TInteger]
+      , "default" /\ sType [TInteger, TNum]
       ]
 
 typeOfArray :: L.List Literal -> Maybe Typ
@@ -561,7 +561,7 @@ typeOfArray (a : as) = go as (typeOf a)
 
 typeOf :: Literal -> Typ
 typeOf (LInteger _ _) = TInteger
-typeOf (LFloat _ _) = TFloat
+typeOf (LNum _ _) = TNum
 typeOf (LString _ _) = TString
 typeOf (LBoolean _ _) = TBoolean
 typeOf (LArray _ _) = TArray
@@ -569,7 +569,7 @@ typeOf (LProperty _ _) = TProperty
 
 literalPos :: Literal -> Span
 literalPos (LInteger span _) = span
-literalPos (LFloat span _) = span
+literalPos (LNum span _) = span
 literalPos (LString span _) = span
 literalPos (LBoolean span _) = span
 literalPos (LArray span _) = span

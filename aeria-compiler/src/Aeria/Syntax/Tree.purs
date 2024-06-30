@@ -100,7 +100,7 @@ instance WriteForeign AttributeName
 
 data Typ
   = TInteger
-  | TFloat
+  | TNum
   | TString
   | TBoolean
   | TProperty
@@ -120,9 +120,9 @@ instance WriteForeign Typ
     writeImpl
       { kind: "TInteger"
       }
-  writeImpl TFloat =
+  writeImpl TNum =
     writeImpl
-      { kind: "TFloat"
+      { kind: "TNum"
       }
   writeImpl TString =
     writeImpl
@@ -143,7 +143,7 @@ instance WriteForeign Typ
 
 data Literal
   = LInteger Span Int
-  | LFloat Span Number
+  | LNum Span Number
   | LString Span String
   | LBoolean Span Boolean
   | LProperty Span PropertyName
@@ -164,9 +164,9 @@ instance WriteForeign Literal
     { kind: "LInteger"
     , value: x
     }
-  writeImpl (LFloat _ x) =
+  writeImpl (LNum _ x) =
     writeImpl
-    { kind: "LFloat"
+    { kind: "LNum"
     , value: x
     }
   writeImpl (LString _ x) =
@@ -292,7 +292,7 @@ instance WriteForeign Cond
 
 data PropertyType
   = PEnum Span
-  | PFloat Span
+  | PNum Span
   | PString Span
   | PInteger Span
   | PBoolean Span
@@ -315,9 +315,9 @@ instance WriteForeign PropertyType
     writeImpl
     { kind: "PEnum"
     }
-  writeImpl (PFloat _) =
+  writeImpl (PNum _) =
     writeImpl
-    { kind: "PFloat"
+    { kind: "PNum"
     }
   writeImpl (PString _) =
     writeImpl

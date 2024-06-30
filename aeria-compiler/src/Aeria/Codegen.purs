@@ -558,7 +558,7 @@ cCollectionProperties properties getters = Js.object $ union (cProperties proper
         cPropertyType :: Property -> PropertyType -> Array Js.JsObjectProperty
         cPropertyType property@(Property { attributes }) type_ =
           case type_ of
-            PFloat _ ->  [cType "number"]
+            PNum _ ->  [cType "number"]
             PInteger _ ->  [cType "integer"]
             PString _ ->  [cType "string"]
             PBoolean _ ->  [cType "boolean"]
@@ -633,7 +633,7 @@ cLiteral :: Literal -> Js.JsTree
 cLiteral =
   fix \self -> case _ of
     LInteger _ i -> Js.int i
-    LFloat _ f -> Js.float f
+    LNum _ f -> Js.float f
     LString _ s -> Js.string s
     LBoolean _ b -> Js.boolean b
     LArray _ a -> Js.array (L.toUnfoldable $ map self a)
