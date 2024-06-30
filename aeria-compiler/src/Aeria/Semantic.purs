@@ -405,7 +405,7 @@ sConstProperty = sAttributes'
     sAttributes' property' = sAttributes property' literalAttributes M.empty
     literalAttributes =
       M.fromFoldable
-        [ "value" /\ sType [TBoolean, TNum, TInteger, TString]
+        [ "value" /\ sType [TBoolean, TNum, TInteger, TString, TUndefined, TNull]
         ]
 
 sBooleanProperty :: Property -> SemanticM Unit
@@ -566,8 +566,12 @@ typeOf (LString _ _) = TString
 typeOf (LBoolean _ _) = TBoolean
 typeOf (LArray _ _) = TArray
 typeOf (LProperty _ _) = TProperty
+typeOf (LUndefined _) = TUndefined
+typeOf (LNull _) = TNull
 
 literalPos :: Literal -> Span
+literalPos (LUndefined span) = span
+literalPos (LNull span) = span
 literalPos (LInteger span _) = span
 literalPos (LNum span _) = span
 literalPos (LString span _) = span

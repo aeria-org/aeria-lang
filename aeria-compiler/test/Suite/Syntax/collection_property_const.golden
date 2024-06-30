@@ -1,0 +1,168 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "properties": [
+        {
+          "type": {
+            "kind": "PConst"
+          },
+          "name": {
+            "value": "constStr",
+            "kind": "PropertyName"
+          },
+          "kind": "Property",
+          "attributes": [
+            {
+              "kind": "Attribute",
+              "attributeValue": {
+                "literal": {
+                  "value": "test",
+                  "kind": "LString"
+                },
+                "kind": "ALiteral"
+              },
+              "attributeName": {
+                "value": "value",
+                "kind": "AttributeName"
+              }
+            }
+          ]
+        },
+        {
+          "type": {
+            "kind": "PConst"
+          },
+          "name": {
+            "value": "constNum",
+            "kind": "PropertyName"
+          },
+          "kind": "Property",
+          "attributes": [
+            {
+              "kind": "Attribute",
+              "attributeValue": {
+                "literal": {
+                  "value": 1.1,
+                  "kind": "LNum"
+                },
+                "kind": "ALiteral"
+              },
+              "attributeName": {
+                "value": "value",
+                "kind": "AttributeName"
+              }
+            }
+          ]
+        },
+        {
+          "type": {
+            "kind": "PConst"
+          },
+          "name": {
+            "value": "constInt",
+            "kind": "PropertyName"
+          },
+          "kind": "Property",
+          "attributes": [
+            {
+              "kind": "Attribute",
+              "attributeValue": {
+                "literal": {
+                  "value": 1,
+                  "kind": "LInteger"
+                },
+                "kind": "ALiteral"
+              },
+              "attributeName": {
+                "value": "value",
+                "kind": "AttributeName"
+              }
+            }
+          ]
+        },
+        {
+          "type": {
+            "kind": "PConst"
+          },
+          "name": {
+            "value": "constBool",
+            "kind": "PropertyName"
+          },
+          "kind": "Property",
+          "attributes": [
+            {
+              "kind": "Attribute",
+              "attributeValue": {
+                "literal": {
+                  "value": false,
+                  "kind": "LBoolean"
+                },
+                "kind": "ALiteral"
+              },
+              "attributeName": {
+                "value": "value",
+                "kind": "AttributeName"
+              }
+            }
+          ]
+        },
+        {
+          "type": {
+            "kind": "PConst"
+          },
+          "name": {
+            "value": "constUndefined",
+            "kind": "PropertyName"
+          },
+          "kind": "Property",
+          "attributes": [
+            {
+              "kind": "Attribute",
+              "attributeValue": {
+                "literal": {
+                  "kind": "LUndefined"
+                },
+                "kind": "ALiteral"
+              },
+              "attributeName": {
+                "value": "value",
+                "kind": "AttributeName"
+              }
+            }
+          ]
+        },
+        {
+          "type": {
+            "kind": "PConst"
+          },
+          "name": {
+            "value": "constNull",
+            "kind": "PropertyName"
+          },
+          "kind": "Property",
+          "attributes": [
+            {
+              "kind": "Attribute",
+              "attributeValue": {
+                "literal": {
+                  "kind": "LNull"
+                },
+                "kind": "ALiteral"
+              },
+              "attributeName": {
+                "value": "value",
+                "kind": "AttributeName"
+              }
+            }
+          ]
+        }
+      ],
+      "name": {
+        "value": "constproperty",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection"
+    }
+  ]
+}

@@ -57,6 +57,8 @@ ppLiteral =
   case _ of
     TSTypeLitString value -> "\"" <> value <> "\""
     TSTypeLitBoolean value -> show value
+    TSTypeLitUndefined -> "undefined"
+    TSTypeLitNull -> "null"
     TSTypeLitNumber value -> show value
     TSTypeLitArray value -> "[" <> concatWith value ppType <> "]"
     TSTypeLitObject value -> "{" <>

@@ -632,6 +632,8 @@ cCollectionProperties properties getters = Js.object $ union (cProperties proper
 cLiteral :: Literal -> Js.JsTree
 cLiteral =
   fix \self -> case _ of
+    LUndefined _ -> Js.undefined
+    LNull _ -> Js.null
     LInteger _ i -> Js.int i
     LNum _ f -> Js.float f
     LString _ s -> Js.string s

@@ -101,6 +101,8 @@ instance WriteForeign AttributeName
 data Typ
   = TInteger
   | TNum
+  | TUndefined
+  | TNull
   | TString
   | TBoolean
   | TProperty
@@ -116,6 +118,14 @@ instance eqTyp :: Eq Typ where
 
 instance WriteForeign Typ
   where
+  writeImpl TUndefined =
+    writeImpl
+      { kind: "TUndefined"
+      }
+  writeImpl TNull =
+    writeImpl
+      { kind: "TNull"
+      }
   writeImpl TInteger =
     writeImpl
       { kind: "TInteger"
@@ -142,7 +152,9 @@ instance WriteForeign Typ
       }
 
 data Literal
-  = LInteger Span Int
+  = LNull Span
+  | LUndefined Span
+  | LInteger Span Int
   | LNum Span Number
   | LString Span String
   | LBoolean Span Boolean
@@ -159,6 +171,14 @@ instance eqLiteral :: Eq Literal where
 
 instance WriteForeign Literal
   where
+  writeImpl (LNull _) =
+    writeImpl
+    { kind: "LNull"
+    }
+  writeImpl (LUndefined _) =
+    writeImpl
+    { kind: "LUndefined"
+    }
   writeImpl (LInteger _ x) =
     writeImpl
     { kind: "LInteger"

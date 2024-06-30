@@ -4,7 +4,7 @@ import Prelude
 
 import Aeria.Codegen (Codegen(..))
 import Aeria.Codegen.Javascript.Pretty (ppJavascript)
-import Aeria.Codegen.Javascript.Tree (Output(..))
+import Aeria.Codegen.Javascript.Tree (Module(..))
 import Aeria.Codegen.Typescript.Pretty (ppTypescript)
 import Aeria.Diagnostic.Message (ppDiagnostic)
 import Aeria.Driver (compile'')
@@ -33,15 +33,15 @@ syntaxTest testName schema golden = do
         let json = writeJSON program'
         compareJSON json golden `shouldEqual` true
 
-codegenJsTest :: forall m52. Monad m52 => Output -> String -> String -> String -> SpecT Aff Unit m52 Unit
-codegenJsTest output testName schema golden = do
+codegenJsTest :: forall m52. Monad m52 => Module -> String -> String -> String -> SpecT Aff Unit m52 Unit
+codegenJsTest module_ testName schema golden = do
   it testName do
     let codegen = compile'' "<stdin>" schema
     case codegen of
       Left err -> fail (ppDiagnostic err)
       Right codegen' -> do
         for_ codegen' (\(Codegen _ jsStatments _) -> do
-          let code = ppJavascript output jsStatments
+          let code = ppJavascript module_ jsStatments
           code' <- formatJavascript code
           golden' <- formatJavascript golden
           code' `shouldEqual` golden')

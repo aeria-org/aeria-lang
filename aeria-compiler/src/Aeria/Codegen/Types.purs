@@ -21,6 +21,8 @@ codegenType =
 codegenLiteral :: JsLiteral -> Ts.TsType
 codegenLiteral literal = Ts.typeLiteral $
   case literal of
+    JSNull -> Ts.typeLitNull
+    JSUndefined -> Ts.typeLitUndefined
     JSString value -> Ts.typeLitString value
     JSNumber value -> Ts.typeLitNumber value
     JSBoolean value -> Ts.typeLitBoolean value

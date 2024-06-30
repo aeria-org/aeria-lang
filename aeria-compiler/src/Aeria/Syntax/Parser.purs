@@ -129,7 +129,9 @@ pBoolean = pTrue <|> pFalse <?> "Expected a boolean ('true' or 'false')"
 
 pLiteral :: ParserM Literal
 pLiteral = fix \self -> choice
-  [ try pNum
+  [ try pUndefined
+  , try pNull
+  , try pNum
   , try pInteger
   , try pString
   , try pBoolean'
@@ -142,6 +144,18 @@ pLiteral = fix \self -> choice
     pBoolean' = pLiteralValue LBoolean pBoolean
     pString = pLiteralValue LString lang.stringLiteral
     pProp = pLiteralValue LProperty pPropertyName
+
+    pUndefined = do
+      begin <- sourcePos
+      lang.reserved "undefined"
+      end <- sourcePos
+      pure $ LUndefined (Span begin end)
+
+    pNull = do
+      begin <- sourcePos
+      lang.reserved "null"
+      end <- sourcePos
+      pure $ LNull (Span begin end)
 
     pLiteralValue :: forall a. (Span -> a -> Literal) -> ParserM a -> ParserM Literal
     pLiteralValue constructor parser = do

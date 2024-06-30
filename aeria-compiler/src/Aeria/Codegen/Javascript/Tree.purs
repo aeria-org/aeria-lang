@@ -7,12 +7,14 @@ import Data.Generic.Rep (class Generic)
 import Data.Int (toNumber)
 import Data.Maybe (Maybe(..))
 
-data Output
+data Module
   = CommonJs
   | EsNext
 
 data JsLiteral
   = JSString String
+  | JSUndefined
+  | JSNull
   | JSNumber Number
   | JSBoolean Boolean
   | JSArray (Array JsTree)
@@ -101,6 +103,12 @@ float f = JSLiteral (JSNumber f)
 
 int :: Int -> JsTree
 int i = JSLiteral (JSNumber (toNumber i))
+
+undefined :: JsTree
+undefined = JSLiteral JSUndefined
+
+null :: JsTree
+null = JSLiteral JSNull
 
 identifier :: String -> JsTree
 identifier s = JSIdentifier s

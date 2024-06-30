@@ -1,0 +1,10 @@
+collection ConstProperty {
+  properties {
+    constStr        const @value("test")
+    constNum        const @value(1.1)
+    constInt        const @value(1)
+    constBool       const @value(false)
+    constUndefined  const @value(undefined)
+    constNull       const @value(null)
+  }
+}

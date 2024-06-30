@@ -2,30 +2,30 @@ module Aeria.Codegen.Javascript.Pretty where
 
 import Prelude
 
-import Aeria.Codegen.Javascript.Tree (JsImportSpecifier(..), JsLiteral(..), JsObjectProperty(..), JsSpecifiers(..), JsStatement(..), JsStatements(..), JsTree(..), Output(..))
+import Aeria.Codegen.Javascript.Tree (JsImportSpecifier(..), JsLiteral(..), JsObjectProperty(..), JsSpecifiers(..), JsStatement(..), JsStatements(..), JsTree(..), Module(..))
 import Data.List as L
 import Data.Maybe (Maybe(..))
 import Data.String.Utils (concatWith)
 
-ppJavascript :: Output -> JsStatements -> String
-ppJavascript output (JsStatements stmts) =
-  L.foldr (\s r -> ppStatement output s <> "\n" <> r) "" stmts
+ppJavascript :: Module -> JsStatements -> String
+ppJavascript module_ (JsStatements stmts) =
+  L.foldr (\s r -> ppStatement module_ s <> "\n" <> r) "" stmts
 
-ppStatement :: Output -> JsStatement -> String
-ppStatement output =
+ppStatement :: Module -> JsStatement -> String
+ppStatement module_ =
   case _ of
     JSImportDeclaration specifiers ident ->
-      case output of
-        EsNext -> "import { " <> ppSpecifiers output specifiers <> " } from \"" <> ppTree ident <> "\""
-        CommonJs -> "const {" <> ppSpecifiers output specifiers <> " } = require(\"" <> ppTree ident <> "\")"
+      case module_ of
+        EsNext -> "import { " <> ppSpecifiers module_ specifiers <> " } from \"" <> ppTree ident <> "\""
+        CommonJs -> "const {" <> ppSpecifiers module_ specifiers <> " } = require(\"" <> ppTree ident <> "\")"
     JSVariableDeclaration ident body ->
-      case output of
+      case module_ of
         EsNext -> "const " <> ppTree ident <> " = " <> ppTree body
         CommonJs -> ppTree ident <> " = " <> ppTree body
     JSExportNamedDeclaration statement ->
-      case output of
-        EsNext -> "export " <> ppStatement output statement
-        CommonJs -> "exports." <> ppStatement output statement
+      case module_ of
+        EsNext -> "export " <> ppStatement module_ statement
+        CommonJs -> "exports." <> ppStatement module_ statement
 
 ppTree :: JsTree -> String
 ppTree =
@@ -40,6 +40,8 @@ ppLiteral :: JsLiteral -> String
 ppLiteral =
   case _ of
     JSString value -> "\"" <> value <> "\""
+    JSUndefined -> "undefined"
+    JSNull -> "null"
     JSNumber value -> show value
     JSBoolean value -> show value
     JSArray value -> "[" <> concatWith value ppTree <> "]"
@@ -49,14 +51,14 @@ ppLiteral =
           (JsObjectProperty2 k v) -> ppTree k <> ": " <> ppTree v
           (JsObjectProperty1 k) -> ppTree k) <> "}"
 
-ppSpecifiers :: Output -> JsSpecifiers -> String
-ppSpecifiers output (JsSpecifiers specifiers) = concatWith specifiers (ppImportSpecifier output)
+ppSpecifiers :: Module -> JsSpecifiers -> String
+ppSpecifiers module_ (JsSpecifiers specifiers) = concatWith specifiers (ppImportSpecifier module_)
 
-ppImportSpecifier :: Output -> JsImportSpecifier -> String
-ppImportSpecifier output (JsImportSpecifier importSpecifier alias) =
+ppImportSpecifier :: Module -> JsImportSpecifier -> String
+ppImportSpecifier module_ (JsImportSpecifier importSpecifier alias) =
   case alias of
     Just alias' -> ppTree importSpecifier <>
-      (case output of
+      (case module_ of
         CommonJs -> " : "
         EsNext -> " as ")
       <> ppTree alias'
