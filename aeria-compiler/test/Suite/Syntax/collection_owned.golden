@@ -1,0 +1,16 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "name": {
+        "value": "collectionownedtest",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection",
+      "owned": {
+        "owned": true,
+        "kind": "CollectionOwned"
+      }
+    }
+  ]
+}

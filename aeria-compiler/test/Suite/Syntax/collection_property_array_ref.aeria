@@ -1,0 +1,11 @@
+collection CollectionPropertyArrayRefTest2 {
+  properties {
+    name str
+  }
+}
+
+collection CollectionPropertyArrayRefTest {
+  properties {
+    prop []CollectionPropertyArrayRefTest2
+  }
+}

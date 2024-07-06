@@ -7,7 +7,7 @@ import Data.Generic.Rep (class Generic)
 import Data.Int (toNumber)
 import Data.Maybe (Maybe(..))
 
-data Module
+data TargetModule
   = CommonJs
   | EsNext
 

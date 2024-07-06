@@ -3,7 +3,7 @@
   "collections": [
     {
       "name": {
-        "value": "profile",
+        "value": "collectionpropertyreftest2",
         "kind": "CollectionName"
       },
       "kind": "Collection"
@@ -12,17 +12,22 @@
       "properties": [
         {
           "type": {
+            "ref": {
+              "value": "collectionpropertyreftest2",
+              "kind": "CollectionName"
+            },
             "kind": "PRef"
           },
           "name": {
-            "value": "profile",
+            "value": "prop",
             "kind": "PropertyName"
           },
-          "kind": "Property"
+          "kind": "Property",
+          "attributes": []
         }
       ],
       "name": {
-        "value": "user",
+        "value": "collectionpropertyreftest",
         "kind": "CollectionName"
       },
       "kind": "Collection"

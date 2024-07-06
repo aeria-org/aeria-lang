@@ -1,5 +1,5 @@
-collection Animal {
+collection CollectionPropertyEnumTest {
   properties {
-    type enum @values(["cat", "dog"])
+    prop enum @values(["value1", "value2", "value3"])
   }
 }

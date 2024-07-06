@@ -4,7 +4,7 @@ import Prelude
 
 import Aeria.Codegen (Codegen(..), codegen)
 import Aeria.Codegen.Javascript.Pretty (ppJavascript)
-import Aeria.Codegen.Javascript.Tree (Module(..))
+import Aeria.Codegen.Javascript.Tree (TargetModule(..))
 import Aeria.Codegen.Typescript.Pretty (ppTypescript)
 import Aeria.Diagnostic.Message (Diagnostic, ppDiagnostic)
 import Aeria.Semantic (runSemantic)
@@ -15,13 +15,12 @@ import Data.List as L
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Aff as Aff
-import Effect.Class.Console (logShow)
 import Effect.Console (log)
 import Node.Buffer (fromString, toString)
 import Node.Encoding (Encoding(..))
 import Node.FS.Aff (mkdir, writeFile)
 import Node.FS.Sync (readFile)
-import Prettier.Format (formatJavascript, formatTypescript)
+import Prettier (formatJS, formatTS)
 
 type FilePath = String
 
@@ -36,34 +35,25 @@ readSource filePath = do
   content <- readFile filePath
   toString UTF8 content
 
-makeJsFileName :: String -> Module -> String
-makeJsFileName name module_ = name <> case module_ of
+makeJsFileName :: String -> TargetModule -> String
+makeJsFileName name targetModule = name <> case targetModule of
   CommonJs -> ".js"
   EsNext -> ".mjs"
 
-emitCode :: String -> String -> String -> FilePath -> Module -> Effect Unit
-emitCode name js ts outputPath module_ = do
-  Aff.runAff_ (
-    case _ of
-      Right code -> writeOutput outputPath (makeJsFileName name module_) code
-      Left err -> logShow err
-  ) (formatJavascript js)
-
-  Aff.runAff_ (
-    case _ of
-      Right code -> writeOutput outputPath (name <> ".d.ts") code
-      Left err -> logShow err
-  ) (formatTypescript ts)
+emitCode :: String -> String -> String -> FilePath -> TargetModule -> Effect Unit
+emitCode name jsCode tsCode outputPath targetModule = do
+  writeOutput outputPath (makeJsFileName name targetModule) (formatJS jsCode)
+  writeOutput outputPath (name <> ".d.ts") (formatTS tsCode)
 
 compile :: FilePath -> String -> String -> Either Diagnostic (Array (Array String))
-compile filepath source module_ = do
-  case parseModule module_ of
-    Just module_' ->
+compile filepath source targetModule = do
+  case parseModule targetModule of
+    Just targetModule' ->
       case compile'' filepath source of
         Right result ->
           pure $
             result
-              # map (\(Codegen name js ts) -> ["collection", name, ppJavascript module_' js, ppTypescript ts])
+              # map (\(Codegen name js ts) -> ["collection", name, ppJavascript targetModule' js, ppTypescript ts])
               # L.toUnfoldable
         Left err -> Left err
     Nothing -> Right []
@@ -95,7 +85,7 @@ compile'' filepath source = do
         Left err -> Left err
     Left err -> Left err
 
-parseModule :: String -> Maybe Module
+parseModule :: String -> Maybe TargetModule
 parseModule "commonjs" = Just CommonJs
 parseModule "esnext" = Just EsNext
 parseModule _ = Nothing

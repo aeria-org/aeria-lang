@@ -1,12 +1,12 @@
-collection User {
-  properties {
-    first_name  str
-    last_name   str
-  }
-
+collection CollectionGettersExample {
   getters {
-    full_name @js (doc) => {
-      return `${doc.first_name} ${doc.last_name}`
+    foo @js (doc) => {
+      return "foo"
+    }
+    @end
+    bar @js (doc) => {
+      if (){}
+      return "bar"
     }
     @end
   }

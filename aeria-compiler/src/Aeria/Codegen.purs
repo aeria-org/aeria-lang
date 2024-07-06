@@ -60,7 +60,7 @@ codegen (Program { collections }) = map go collections
                     [Ts.typeObjectProperty
                       (Ts.identifier "item")
                       (Ts.typeReference
-                        [ Ts.typeParameter (Ts.typeReference [] (Ts.identifier (collectionName <> "Collection['description']")))
+                        [ Ts.typeParameter (Ts.typeReference [] (Ts.identifier (collectionName <> "Collection[\"description\"]")))
                         ]
                         (Ts.identifier "SchemaWithId"))]))))
 

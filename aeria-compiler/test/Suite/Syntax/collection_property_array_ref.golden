@@ -11,11 +11,12 @@
             "value": "name",
             "kind": "PropertyName"
           },
-          "kind": "Property"
+          "kind": "Property",
+          "attributes": []
         }
       ],
       "name": {
-        "value": "category",
+        "value": "collectionpropertyarrayreftest2",
         "kind": "CollectionName"
       },
       "kind": "Collection"
@@ -25,19 +26,24 @@
         {
           "type": {
             "type": {
+              "ref": {
+                "value": "collectionpropertyarrayreftest2",
+                "kind": "CollectionName"
+              },
               "kind": "PRef"
             },
             "kind": "PArray"
           },
           "name": {
-            "value": "categories",
+            "value": "prop",
             "kind": "PropertyName"
           },
-          "kind": "Property"
+          "kind": "Property",
+          "attributes": []
         }
       ],
       "name": {
-        "value": "product",
+        "value": "collectionpropertyarrayreftest",
         "kind": "CollectionName"
       },
       "kind": "Collection"

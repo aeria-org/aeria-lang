@@ -1,0 +1,13 @@
+collection CollectionSecutiryTest {
+  security {
+    func1 {
+      logging {
+        strategy "tenant"
+      }
+      rateLimiting {
+        strategy "ip"
+        scale 10
+      }
+    }
+  }
+}

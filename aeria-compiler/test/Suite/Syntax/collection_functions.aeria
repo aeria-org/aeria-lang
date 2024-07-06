@@ -1,0 +1,9 @@
+collection CollectionFunctionsTest {
+  functions {
+    customFunc1?
+    customFunc2? @expose
+    get @expose("unauthenticated")
+    insert @expose(["root"])
+    delete
+  }
+}

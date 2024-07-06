@@ -1,0 +1,5 @@
+collection CollectionPropertyIntTest {
+  properties {
+    prop  int
+  }
+}

@@ -2,30 +2,30 @@ module Aeria.Codegen.Javascript.Pretty where
 
 import Prelude
 
-import Aeria.Codegen.Javascript.Tree (JsImportSpecifier(..), JsLiteral(..), JsObjectProperty(..), JsSpecifiers(..), JsStatement(..), JsStatements(..), JsTree(..), Module(..))
+import Aeria.Codegen.Javascript.Tree (JsImportSpecifier(..), JsLiteral(..), JsObjectProperty(..), JsSpecifiers(..), JsStatement(..), JsStatements(..), JsTree(..), TargetModule(..))
 import Data.List as L
 import Data.Maybe (Maybe(..))
 import Data.String.Utils (concatWith)
 
-ppJavascript :: Module -> JsStatements -> String
-ppJavascript module_ (JsStatements stmts) =
-  L.foldr (\s r -> ppStatement module_ s <> "\n" <> r) "" stmts
+ppJavascript :: TargetModule -> JsStatements -> String
+ppJavascript targetModule (JsStatements stmts) =
+  L.foldr (\s r -> ppStatement targetModule s <> "\n" <> r) "" stmts
 
-ppStatement :: Module -> JsStatement -> String
-ppStatement module_ =
+ppStatement :: TargetModule -> JsStatement -> String
+ppStatement targetModule =
   case _ of
     JSImportDeclaration specifiers ident ->
-      case module_ of
-        EsNext -> "import { " <> ppSpecifiers module_ specifiers <> " } from \"" <> ppTree ident <> "\""
-        CommonJs -> "const {" <> ppSpecifiers module_ specifiers <> " } = require(\"" <> ppTree ident <> "\")"
+      case targetModule of
+        EsNext -> "import { " <> ppSpecifiers targetModule specifiers <> " } from \"" <> ppTree ident <> "\""
+        CommonJs -> "const {" <> ppSpecifiers targetModule specifiers <> " } = require(\"" <> ppTree ident <> "\")"
     JSVariableDeclaration ident body ->
-      case module_ of
+      case targetModule of
         EsNext -> "const " <> ppTree ident <> " = " <> ppTree body
         CommonJs -> ppTree ident <> " = " <> ppTree body
     JSExportNamedDeclaration statement ->
-      case module_ of
-        EsNext -> "export " <> ppStatement module_ statement
-        CommonJs -> "exports." <> ppStatement module_ statement
+      case targetModule of
+        EsNext -> "export " <> ppStatement targetModule statement
+        CommonJs -> "exports." <> ppStatement targetModule statement
 
 ppTree :: JsTree -> String
 ppTree =
@@ -51,14 +51,14 @@ ppLiteral =
           (JsObjectProperty2 k v) -> ppTree k <> ": " <> ppTree v
           (JsObjectProperty1 k) -> ppTree k) <> "}"
 
-ppSpecifiers :: Module -> JsSpecifiers -> String
-ppSpecifiers module_ (JsSpecifiers specifiers) = concatWith specifiers (ppImportSpecifier module_)
+ppSpecifiers :: TargetModule -> JsSpecifiers -> String
+ppSpecifiers targetModule (JsSpecifiers specifiers) = concatWith specifiers (ppImportSpecifier targetModule)
 
-ppImportSpecifier :: Module -> JsImportSpecifier -> String
-ppImportSpecifier module_ (JsImportSpecifier importSpecifier alias) =
+ppImportSpecifier :: TargetModule -> JsImportSpecifier -> String
+ppImportSpecifier targetModule (JsImportSpecifier importSpecifier alias) =
   case alias of
     Just alias' -> ppTree importSpecifier <>
-      (case module_ of
+      (case targetModule of
         CommonJs -> " : "
         EsNext -> " as ")
       <> ppTree alias'

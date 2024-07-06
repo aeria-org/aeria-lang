@@ -40,7 +40,7 @@
         }
       ],
       "name": {
-        "value": "user",
+        "value": "collectionpropertyarrayenumtest",
         "kind": "CollectionName"
       },
       "kind": "Collection"

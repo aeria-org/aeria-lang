@@ -5,17 +5,17 @@
       "properties": [
         {
           "type": {
-            "kind": "PInteger"
+            "kind": "PString"
           },
           "name": {
-            "value": "quantity",
+            "value": "prop",
             "kind": "PropertyName"
           },
           "kind": "Property"
         }
       ],
       "name": {
-        "value": "product",
+        "value": "collectionpropertystrtest",
         "kind": "CollectionName"
       },
       "kind": "Collection"

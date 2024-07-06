@@ -5,21 +5,21 @@
       "required": [
         {
           "name": {
-            "value": "first_name",
+            "value": "prop1",
             "kind": "PropertyName"
           },
           "kind": "Required"
         },
         {
           "name": {
-            "value": "last_name",
+            "value": "prop2",
             "kind": "PropertyName"
           },
           "kind": "Required"
         },
         {
           "name": {
-            "value": "active",
+            "value": "prop3",
             "kind": "PropertyName"
           },
           "kind": "Required",
@@ -37,7 +37,7 @@
                 "kind": "ELiteral",
                 "expr": {
                   "value": {
-                    "value": "active",
+                    "value": "prop1",
                     "kind": "PropertyName"
                   },
                   "kind": "LProperty"
@@ -48,40 +48,8 @@
           }
         }
       ],
-      "properties": [
-        {
-          "type": {
-            "kind": "PString"
-          },
-          "name": {
-            "value": "first_name",
-            "kind": "PropertyName"
-          },
-          "kind": "Property"
-        },
-        {
-          "type": {
-            "kind": "PString"
-          },
-          "name": {
-            "value": "last_name",
-            "kind": "PropertyName"
-          },
-          "kind": "Property"
-        },
-        {
-          "type": {
-            "kind": "PBoolean"
-          },
-          "name": {
-            "value": "active",
-            "kind": "PropertyName"
-          },
-          "kind": "Property"
-        }
-      ],
       "name": {
-        "value": "user",
+        "value": "collectionrequiredtest",
         "kind": "CollectionName"
       },
       "kind": "Collection"

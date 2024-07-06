@@ -1,12 +1,6 @@
-collection User {
+collection CollectionTableTest {
   table {
-    name
-    email
-  }
-
-  properties {
-    name      str
-    email     str
-    password  str
+    prop1
+    prop2
   }
 }

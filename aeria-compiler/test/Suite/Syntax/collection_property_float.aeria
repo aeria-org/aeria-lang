@@ -1,5 +1,0 @@
-collection Product {
-  properties {
-    price num
-  }
-}

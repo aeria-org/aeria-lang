@@ -5,17 +5,17 @@
       "properties": [
         {
           "type": {
-            "kind": "PNum"
+            "kind": "PBoolean"
           },
           "name": {
-            "value": "price",
+            "value": "prop",
             "kind": "PropertyName"
           },
           "kind": "Property"
         }
       ],
       "name": {
-        "value": "product",
+        "value": "collectionpropertybooltest",
         "kind": "CollectionName"
       },
       "kind": "Collection"

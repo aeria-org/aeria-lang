@@ -1,4 +1,4 @@
-collection User {
+collection CollectionPropertyArrayEnumTest {
   properties {
     roles enum @values([
       "admin",

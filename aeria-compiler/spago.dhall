@@ -33,7 +33,6 @@ to generate this file without the comments in this block.
   , "transformers"
   , "tuples"
   , "unicode"
-  , "aff-promise"
   , "unsafe-coerce"
   , "yoga-json"
   ]

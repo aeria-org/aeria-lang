@@ -2,34 +2,34 @@
   "kind": "Program",
   "collections": [
     {
-      "tableMeta": [
+      "name": {
+        "value": "collectionwritabletest",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection",
+      "writable": [
         {
           "propertyName": {
             "value": "prop1",
             "kind": "PropertyName"
           },
-          "kind": "TableMetaItem"
+          "kind": "WritableItem"
         },
         {
           "propertyName": {
             "value": "prop2",
             "kind": "PropertyName"
           },
-          "kind": "TableMetaItem"
+          "kind": "WritableItem"
         },
         {
           "propertyName": {
             "value": "prop3",
             "kind": "PropertyName"
           },
-          "kind": "TableMetaItem"
+          "kind": "WritableItem"
         }
-      ],
-      "name": {
-        "value": "collectiontablemetatest",
-        "kind": "CollectionName"
-      },
-      "kind": "Collection"
+      ]
     }
   ]
 }

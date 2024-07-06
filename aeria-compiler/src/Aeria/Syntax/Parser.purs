@@ -17,10 +17,11 @@ import Data.String.CodeUnits (fromCharArray)
 import Data.Tuple.Nested (type (/\), (/\))
 import Parsing (ParseError(..), Parser, Position(..), fail, position, runParser)
 import Parsing.Combinators (choice, many, manyTill, optionMaybe, sepBy, try, (<?>), (<|>))
+import Parsing.Combinators.Array (many1)
 import Parsing.Expr (Assoc(..), Operator(..), buildExprParser)
 import Parsing.Language (emptyDef)
-import Parsing.String (anyChar, eof, string)
-import Parsing.String.Basic (alphaNum, letter, oneOf, skipSpaces)
+import Parsing.String (anyChar, char, eof, satisfy, string)
+import Parsing.String.Basic (alphaNum, letter, noneOf, oneOf, skipSpaces)
 import Parsing.Token as P
 import Unsafe.Coerce (unsafeCoerce)
 

@@ -351,9 +351,10 @@ instance WriteForeign PropertyType
     writeImpl
     { kind: "PBoolean"
     }
-  writeImpl (PRef _ _) =
+  writeImpl (PRef _ ref) =
     writeImpl
-    { kind: "PRef"
+    { kind: "PRef",
+      ref
     }
   writeImpl (PArray _ arr) =
     writeImpl

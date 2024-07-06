@@ -1,0 +1,6 @@
+collection CollectionPresetsTest {
+  presets {
+    crud
+    view
+  }
+}

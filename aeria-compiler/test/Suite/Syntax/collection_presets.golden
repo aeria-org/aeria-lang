@@ -1,0 +1,28 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "kind": "Collection",
+      "name": {
+        "value": "collectionpresetstest",
+        "kind": "CollectionName"
+      },
+      "presets": [
+        {
+          "propertyName": {
+            "value": "crud",
+            "kind": "PropertyName"
+          },
+          "kind": "PresetItem"
+        },
+        {
+          "propertyName": {
+            "value": "view",
+            "kind": "PropertyName"
+          },
+          "kind": "PresetItem"
+        }
+      ]
+    }
+  ]
+}

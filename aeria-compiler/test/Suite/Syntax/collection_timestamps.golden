@@ -1,0 +1,16 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "name": {
+        "value": "collectiontimestampstest",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection",
+      "timestamps": {
+        "timestamps": true,
+        "kind": "CollectionTimestamps"
+      }
+    }
+  ]
+}

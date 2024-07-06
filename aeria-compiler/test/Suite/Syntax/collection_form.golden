@@ -2,27 +2,27 @@
   "kind": "Program",
   "collections": [
     {
-      "table": [
+      "name": {
+        "value": "collectionformtest",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection",
+      "form": [
         {
           "propertyName": {
             "value": "prop1",
             "kind": "PropertyName"
           },
-          "kind": "TableItem"
+          "kind": "FormItem"
         },
         {
           "propertyName": {
             "value": "prop2",
             "kind": "PropertyName"
           },
-          "kind": "TableItem"
+          "kind": "FormItem"
         }
-      ],
-      "name": {
-        "value": "collectiontabletest",
-        "kind": "CollectionName"
-      },
-      "kind": "Collection"
+      ]
     }
   ]
 }

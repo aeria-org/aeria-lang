@@ -1,0 +1,30 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "security": [
+        {
+          "rateLimiting": {
+            "strategy": "ip",
+            "scale": 10,
+            "kind": "SecurityRateLimiting"
+          },
+          "logging": {
+            "strategy": "tenant",
+            "kind": "SecurityLogging"
+          },
+          "kind": "SecurityItem",
+          "functionName": {
+            "value": "func1",
+            "kind": "FunctionName"
+          }
+        }
+      ],
+      "name": {
+        "value": "collectionsecutirytest",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection"
+    }
+  ]
+}

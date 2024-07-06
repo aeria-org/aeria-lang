@@ -1,0 +1,16 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "kind": "Collection",
+      "name": {
+        "value": "collectionimmutabletest",
+        "kind": "CollectionName"
+      },
+      "immutable": {
+        "kind": "CollectionImmutableBool",
+        "immutable": true
+      }
+    }
+  ]
+}

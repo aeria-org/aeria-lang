@@ -1,5 +1,0 @@
-collection User {
-  properties {
-    active bool
-  }
-}

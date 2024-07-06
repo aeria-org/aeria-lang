@@ -20,5 +20,5 @@ main :: Effect Unit
 main = do
   args <- argv
   case slice 0 3 (reverse args) of
-    [output, outputPath, schema] -> compile' schema outputPath output
+    [targetModule, outputPath, schema] -> compile' schema outputPath targetModule
     _ -> log "Usage: aeria-lang <filepath> <output> <commonjs|esnext>"

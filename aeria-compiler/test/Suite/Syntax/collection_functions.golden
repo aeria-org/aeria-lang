@@ -1,0 +1,101 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "name": {
+        "value": "collectionfunctionstest",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection",
+      "functions": [
+        {
+          "kind": "FunctionItem",
+          "functioName": {
+            "value": "customFunc1",
+            "kind": "FunctionName"
+          },
+          "custom": true
+        },
+        {
+          "kind": "FunctionItem",
+          "functioName": {
+            "value": "customFunc2",
+            "kind": "FunctionName"
+          },
+          "expose": {
+            "kind": "Attribute",
+            "attributeValue": {
+              "literal": {
+                "value": true,
+                "kind": "LBoolean"
+              },
+              "kind": "ALiteral"
+            },
+            "attributeName": {
+              "value": "expose",
+              "kind": "AttributeName"
+            }
+          },
+          "custom": true
+        },
+        {
+          "kind": "FunctionItem",
+          "functioName": {
+            "value": "get",
+            "kind": "FunctionName"
+          },
+          "expose": {
+            "kind": "Attribute",
+            "attributeValue": {
+              "literal": {
+                "value": "unauthenticated",
+                "kind": "LString"
+              },
+              "kind": "ALiteral"
+            },
+            "attributeName": {
+              "value": "expose",
+              "kind": "AttributeName"
+            }
+          },
+          "custom": false
+        },
+        {
+          "kind": "FunctionItem",
+          "functioName": {
+            "value": "insert",
+            "kind": "FunctionName"
+          },
+          "expose": {
+            "kind": "Attribute",
+            "attributeValue": {
+              "literal": {
+                "value": [
+                  {
+                    "value": "root",
+                    "kind": "LString"
+                  }
+                ],
+                "kind": "LArray"
+              },
+              "kind": "ALiteral"
+            },
+            "attributeName": {
+              "value": "expose",
+              "kind": "AttributeName"
+            }
+          },
+          "custom": false
+        },
+        {
+          "kind": "FunctionItem",
+          "functioName": {
+            "value": "delete",
+            "kind": "FunctionName"
+          },
+          "custom": false
+        }
+      ]
+    }
+  ]
+}

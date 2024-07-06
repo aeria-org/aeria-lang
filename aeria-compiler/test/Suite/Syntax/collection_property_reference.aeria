@@ -1,8 +1,0 @@
-collection Profile {
-}
-
-collection User {
-  properties {
-    profile   Profile
-  }
-}

@@ -1,0 +1,20 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "kind": "Collection",
+      "name": {
+        "value": "collectiontemporarytest",
+        "kind": "CollectionName"
+      },
+      "temporary": {
+        "kind": "CollectionTemporary",
+        "index": {
+          "value": "prop1",
+          "kind": "PropertyName"
+        },
+        "expireAfterSeconds": 2
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+collection CollectionFormTest {
+  form {
+    prop1
+    prop2
+  }
+}

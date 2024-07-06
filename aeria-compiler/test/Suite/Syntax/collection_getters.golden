@@ -2,41 +2,30 @@
   "kind": "Program",
   "collections": [
     {
-      "properties": [
-        {
-          "type": {
-            "kind": "PString"
-          },
-          "name": {
-            "value": "first_name",
-            "kind": "PropertyName"
-          },
-          "kind": "Property"
-        },
-        {
-          "type": {
-            "kind": "PString"
-          },
-          "name": {
-            "value": "last_name",
-            "kind": "PropertyName"
-          },
-          "kind": "Property"
-        }
-      ],
       "name": {
-        "value": "user",
+        "value": "collectiongettersexample",
         "kind": "CollectionName"
       },
       "kind": "Collection",
       "getters": [
         {
           "name": {
-            "value": "full_name",
+            "value": "foo",
             "kind": "PropertyName"
           },
           "macro": {
-            "macro": "{\n      return `${doc.first_name} ${doc.last_name}`\n    }\n    ",
+            "macro": "{\n      return \"foo\"\n    }\n    ",
+            "kind": "Macro"
+          },
+          "kind": "Getter"
+        },
+        {
+          "name": {
+            "value": "bar",
+            "kind": "PropertyName"
+          },
+          "macro": {
+            "macro": "{\n      if (){}\n      return \"bar\"\n    }\n    ",
             "kind": "Macro"
           },
           "kind": "Getter"

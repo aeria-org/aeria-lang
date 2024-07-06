@@ -1,17 +1,7 @@
-collection User {
-  properties {
-    first_name  str
-    last_name   str
-  }
-
-  getters {
-    full_name @js (doc) => {
-      return `${doc.first_name} ${doc.last_name}`
-    }
-    @end
-  }
-
+collection CollectionTableMetaTest {
   tableMeta {
-    full_name
+    prop1
+    prop2
+    prop3
   }
 }

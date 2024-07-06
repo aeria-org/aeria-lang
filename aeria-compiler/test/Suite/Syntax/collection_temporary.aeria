@@ -1,0 +1,6 @@
+collection CollectionTemporaryTest {
+  temporary {
+    index prop1
+    expireAfterSeconds 2
+  }
+}

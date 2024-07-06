@@ -1,0 +1,8 @@
+collection CollectionPropertyRefTest2 {
+}
+
+collection CollectionPropertyRefTest {
+  properties {
+    prop   CollectionPropertyRefTest2
+  }
+}

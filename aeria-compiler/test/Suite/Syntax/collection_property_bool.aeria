@@ -1,0 +1,5 @@
+collection CollectionPropertyBoolTest {
+  properties {
+    prop bool
+  }
+}

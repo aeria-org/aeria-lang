@@ -1,0 +1,7 @@
+collection CollectionWritableTest {
+  writable {
+    prop1
+    prop2
+    prop3
+  }
+}

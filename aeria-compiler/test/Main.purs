@@ -3,8 +3,8 @@ module Test.Main where
 import Prelude
 
 import Aeria.Codegen (Codegen(..))
+import Aeria.Codegen.Javascript.Tree (TargetModule(..))
 import Aeria.Codegen.Javascript.Pretty (ppJavascript)
-import Aeria.Codegen.Javascript.Tree (Module(..))
 import Aeria.Codegen.Typescript.Pretty (ppTypescript)
 import Aeria.Diagnostic.Message (ppDiagnostic)
 import Aeria.Driver (compile'')
@@ -14,7 +14,7 @@ import Data.Either (Either(..))
 import Data.Traversable (for_)
 import Effect (Effect)
 import Effect.Aff (Aff, Error, launchAff_)
-import Prettier.Format (formatJavascript, formatTypescript)
+import Prettier (formatJS, formatTS)
 import Test.Resolver (Program(..), readPrograms)
 import Test.Spec (SpecT, describe, it)
 import Test.Spec.Assertions (fail, shouldEqual)
@@ -33,18 +33,16 @@ syntaxTest testName schema golden = do
         let json = writeJSON program'
         compareJSON json golden `shouldEqual` true
 
-codegenJsTest :: forall m52. Monad m52 => Module -> String -> String -> String -> SpecT Aff Unit m52 Unit
-codegenJsTest module_ testName schema golden = do
+codegenJsTest :: forall m52. Monad m52 => TargetModule -> String -> String -> String -> SpecT Aff Unit m52 Unit
+codegenJsTest targetModule testName schema golden = do
   it testName do
     let codegen = compile'' "<stdin>" schema
     case codegen of
       Left err -> fail (ppDiagnostic err)
       Right codegen' -> do
         for_ codegen' (\(Codegen _ jsStatments _) -> do
-          let code = ppJavascript module_ jsStatments
-          code' <- formatJavascript code
-          golden' <- formatJavascript golden
-          code' `shouldEqual` golden')
+          let code = ppJavascript targetModule jsStatments
+          formatJS code `shouldEqual` formatJS golden)
 
 codegenTsTest ∷ ∀ (m23 ∷ Type -> Type). Monad m23 ⇒ String → String → String → SpecT Aff Unit m23 Unit
 codegenTsTest testName schema golden = do
@@ -55,16 +53,15 @@ codegenTsTest testName schema golden = do
       Right codegen' -> do
         for_ codegen' (\(Codegen _ _ ts) -> do
           let code = ppTypescript ts
-          code' <- formatTypescript code
-          golden' <- formatTypescript golden
-          code' `shouldEqual` golden')
+          formatTS code `shouldEqual` formatTS golden)
 
 main :: Effect Unit
 main = do
   syntax <- readPrograms "./test/Suite/Syntax" ".golden"
-  commonJs <- readPrograms "./test/Suite/Codegen/Javascript/CommonJs" ".js"
-  esnext <- readPrograms "./test/Suite/Codegen/Javascript/EsNext" ".mjs"
-  -- typescript <- readPrograms "./test/Suite/Codegen/Typescript" ".d.ts"
+  commonJs <- readPrograms "./test/Suite/Codegen" ".js"
+  esnext <- readPrograms "./test/Suite/Codegen" ".mjs"
+  typescript <- readPrograms "./test/Suite/Codegen" ".d.ts"
+
   launchAff_ $ runSpec [consoleReporter] do
     describe "Syntax" do
       for_ syntax (\(Program { name, schema, golden }) ->
@@ -79,6 +76,6 @@ main = do
         for_ esnext (\(Program { name, schema, golden }) ->
           codegenJsTest EsNext name schema golden)
 
-      -- describe "Typescript" do
-      --   for_ typescript (\(Program { name, schema, golden }) ->
-      --     codegenTsTest name schema golden)
+      describe "Typescript" do
+        for_ typescript (\(Program { name, schema, golden }) ->
+          codegenTsTest name schema golden)
