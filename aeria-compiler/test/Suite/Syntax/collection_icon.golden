@@ -4,7 +4,7 @@
     {
       "kind": "Collection",
       "name": {
-        "value": "collectionicontest",
+        "value": "CollectionIconTest",
         "kind": "CollectionName"
       },
       "icon": {

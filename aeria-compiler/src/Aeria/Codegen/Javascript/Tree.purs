@@ -52,6 +52,7 @@ data JsStatement
   = JSImportDeclaration JsSpecifiers JsTree
   | JSVariableDeclaration JsTree JsTree
   | JSExportNamedDeclaration JsStatement
+  | JSEmptyStatement
 
 derive instance genericJsStatement :: Generic JsStatement _
 
@@ -122,14 +123,17 @@ arrowFunction = JSArrowFunctionExpression
 call :: JsTree -> Array JsTree -> JsTree
 call = JSCallExpression
 
-import_ ∷ JsSpecifiers → JsTree → JsStatement
+import_ ∷ JsSpecifiers -> JsTree -> JsStatement
 import_ = JSImportDeclaration
 
-variable ∷ JsTree → JsTree → JsStatement
+variable ∷ JsTree -> JsTree -> JsStatement
 variable = JSVariableDeclaration
 
-exportNamed ∷ JsStatement → JsStatement
+exportNamed ∷ JsStatement -> JsStatement
 exportNamed = JSExportNamedDeclaration
+
+emptyStatement ∷ JsStatement
+emptyStatement = JSEmptyStatement
 
 specifiers :: Array JsImportSpecifier -> JsSpecifiers
 specifiers = JsSpecifiers
@@ -140,5 +144,5 @@ importSpecifier1 x = JsImportSpecifier x Nothing
 importSpecifier2 :: JsTree -> JsTree -> JsImportSpecifier
 importSpecifier2 x y = JsImportSpecifier x (Just y)
 
-statements ∷ Array JsStatement → JsStatements
+statements ∷ Array JsStatement -> JsStatements
 statements = JsStatements

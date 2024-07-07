@@ -3,15 +3,15 @@ module Data.String.Utils where
 import Prelude
 
 import Data.Array (intercalate)
-import Data.CodePoint.Unicode (toUpper)
+import Data.CodePoint.Unicode (toLower)
 import Data.Maybe (Maybe(..))
 import Data.String (Pattern(..), fromCodePointArray, split, uncons)
 
-ucfirst :: String -> String
-ucfirst "" = ""
-ucfirst str =
+ucLower :: String -> String
+ucLower "" = ""
+ucLower str =
   case uncons str of
-    Just { head, tail } -> fromCodePointArray (toUpper head) <> tail
+    Just { head, tail } -> fromCodePointArray (toLower head) <> tail
     Nothing -> ""
 
 concatWith :: forall a. Array a  ->  (a -> String)-> String

@@ -1,4 +1,4 @@
-collection CollectionGettersExample {
+collection CollectionGettersTest {
   getters {
     foo @js (doc) => {
       return "foo"

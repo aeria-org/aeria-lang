@@ -1,27 +1,25 @@
 module Aeria.Syntax.Parser
-  ( runProgram
+  ( runParserProgram
   ) where
 
 import Prelude hiding (between)
 
 import Aeria.Diagnostic.Message (Diagnostic(..))
 import Aeria.Diagnostic.Position (SourcePos(..), Span(..))
-import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionIndividualActions, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPreferred, CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PreferredItem(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), WritableItem(..))
+import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionIndividualActions, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPreferred, CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), ExtendsName(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), Ident, ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PreferredItem(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), WritableItem(..))
 import Control.Lazy (fix)
 import Data.Array as A
 import Data.Either (Either(..))
 import Data.List as L
 import Data.Maybe (Maybe(..), fromMaybe, isJust)
-import Data.String (toLower)
 import Data.String.CodeUnits (fromCharArray)
 import Data.Tuple.Nested (type (/\), (/\))
 import Parsing (ParseError(..), Parser, Position(..), fail, position, runParser)
 import Parsing.Combinators (choice, many, manyTill, optionMaybe, sepBy, try, (<?>), (<|>))
-import Parsing.Combinators.Array (many1)
 import Parsing.Expr (Assoc(..), Operator(..), buildExprParser)
 import Parsing.Language (emptyDef)
-import Parsing.String (anyChar, char, eof, satisfy, string)
-import Parsing.String.Basic (alphaNum, letter, noneOf, oneOf, skipSpaces)
+import Parsing.String (anyChar, char, eof, string)
+import Parsing.String.Basic (alphaNum, letter, oneOf, skipSpaces)
 import Parsing.Token as P
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -65,9 +63,14 @@ pAttributeName :: ParserM AttributeName
 pAttributeName = pName AttributeName
 
 pCollectionName :: ParserM CollectionName
-pCollectionName = do
-  CollectionName span name <- pName CollectionName
-  pure (CollectionName span (toLower name))
+pCollectionName = pName CollectionName
+
+pExtendsName :: ParserM ExtendsName
+pExtendsName = do
+  package <- lang.identifier
+  _ <- char '.'
+  collection <- lang.identifier
+  pure $ ExtendsName package collection
 
 pPropertyType :: ParserM CollectionProperties -> ParserM PropertyType
 pPropertyType p = fix \self -> choice
@@ -247,8 +250,8 @@ pCond = do
 pProperty :: ParserM CollectionProperties -> ParserM Property
 pProperty p = do
   begin <- sourcePos
-  name <- pPropertyName <?> "Expected property name"
-  type_ <- pPropertyType p <?> "Expected property type"
+  name <- pPropertyName
+  type_ <- pPropertyType p
   attributes <- many pAttribute
   end <- sourcePos
   pure
@@ -755,10 +758,13 @@ pCollection = go
   go = do
     lang.reserved "collection"
     name <- pCollectionName
-    lang.braces (pCollection' name)
+    extends' <- optionMaybe $ do
+      lang.reserved "extends"
+      pExtendsName
+    lang.braces (pCollection' name extends')
 
-  pCollection' :: CollectionName -> ParserM Collection
-  pCollection' name = do
+  pCollection' :: CollectionName -> Maybe ExtendsName -> ParserM Collection
+  pCollection' name extends = do
     begin <- sourcePos
     results <- runParsers allParsers
     let properties = unsafeCoerce $ getParserValue "properties" results
@@ -791,6 +797,7 @@ pCollection = go
       $ Collection
           { span: (Span begin end)
           , name
+          , extends
           , icon
           , owned
           , timestamps
@@ -911,8 +918,8 @@ pProgram = do
 contents :: forall a. ParserM a -> ParserM a
 contents p = lang.whiteSpace *> lang.lexeme p <* eof
 
-runProgram :: String -> String -> Either Diagnostic Program
-runProgram filepath source =
+runParserProgram :: String -> String -> Either Diagnostic Program
+runParserProgram filepath source =
   case runParser source (contents pProgram) of
     Left (ParseError syntaxError (Position {index, line, column})) ->
       Left $ Diagnostic

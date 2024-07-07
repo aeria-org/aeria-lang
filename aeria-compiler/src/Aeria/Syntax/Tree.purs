@@ -98,6 +98,26 @@ instance WriteForeign AttributeName
     , value: writeImpl attributeName
     }
 
+data ExtendsName
+  = ExtendsName Ident Ident
+
+derive instance genericExtendsName :: Generic ExtendsName _
+
+instance showExtendsName :: Show ExtendsName where
+  show = genericShow
+
+instance eqExtendsName :: Eq ExtendsName where
+  eq = genericEq
+
+instance WriteForeign ExtendsName
+  where
+  writeImpl (ExtendsName package collection) =
+    writeImpl
+    { kind: "ExtendsName"
+    , package: writeImpl package
+    , collection: writeImpl collection
+    }
+
 data Typ
   = TInteger
   | TNum
@@ -1155,6 +1175,7 @@ data Collection
   = Collection
     { span :: Span
     , name :: CollectionName
+    , extends :: Maybe ExtendsName
     , icon :: Maybe CollectionIcon
     , owned :: Maybe CollectionOwned
     , timestamps :: Maybe CollectionTimestamps

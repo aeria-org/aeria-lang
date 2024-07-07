@@ -4,7 +4,7 @@
     {
       "kind": "Collection",
       "name": {
-        "value": "collectionimmutabletest",
+        "value": "CollectionImmutableTest",
         "kind": "CollectionName"
       },
       "immutable": {

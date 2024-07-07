@@ -8,7 +8,7 @@ import Aeria.Codegen.Javascript.Pretty (ppJavascript)
 import Aeria.Codegen.Typescript.Pretty (ppTypescript)
 import Aeria.Diagnostic.Message (ppDiagnostic)
 import Aeria.Driver (compile'')
-import Aeria.Syntax.Parser (runProgram)
+import Aeria.Syntax.Parser (runParserProgram)
 import Control.Monad.Error.Class (class MonadThrow)
 import Data.Either (Either(..))
 import Data.Traversable (for_)
@@ -26,7 +26,7 @@ import Yoga.JSON (writeJSON)
 syntaxTest ∷ ∀ (m4 ∷ Type -> Type) (g7 ∷ Type -> Type). Monad m4 ⇒ MonadThrow Error g7 ⇒ String → String → String → SpecT g7 Unit m4 Unit
 syntaxTest testName schema golden = do
   it testName do
-    let program = runProgram testName schema
+    let program = runParserProgram testName schema
     case program of
       Left err -> fail (ppDiagnostic err)
       Right program' -> do

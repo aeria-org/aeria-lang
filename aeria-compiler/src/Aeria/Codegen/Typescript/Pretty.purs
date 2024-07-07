@@ -5,6 +5,7 @@ import Prelude
 import Aeria.Codegen.Typescript.Tree (TsIdentifier(..), TsImportSpecifier(..), TsParameter(..), TsSpecifiers(..), TsStatement(..), TsStatementSyntax(..), TsStatements(..), TsType(..), TsTypeLiteral(..), TsTypeObjectProperty(..), TsTypeParameter(..))
 import Data.Array (length)
 import Data.List as L
+import Data.Maybe (Maybe(..))
 import Data.String.Utils (concatWith)
 
 ppTypescript :: TsStatements -> String
@@ -20,6 +21,7 @@ ppStatement =
        (L.foldr (\s r -> ppStatementSyntax s <> " " <> r) "" statementSyntax) <> ppIdentifier ident <> ": " <> ppType type_
     TSTypeAliasDeclaration ident type_ -> "declare type " <> ppIdentifier ident <> " = " <> ppType type_
     TSExportNamedDeclaration statement -> "export " <> ppStatement statement
+    TSEmptyStatement -> ""
 
 ppStatementSyntax :: TsStatementSyntax -> String
 ppStatementSyntax =
@@ -69,8 +71,8 @@ ppSpecifiers :: TsSpecifiers -> String
 ppSpecifiers (TsSpecifiers specifiers) = concatWith specifiers ppImportSpecifier
 
 ppImportSpecifier :: TsImportSpecifier -> String
-ppImportSpecifier (TsImportSpecifier importSpecifier) =
-  ppIdentifier importSpecifier
+ppImportSpecifier (TsImportSpecifier importSpecifier Nothing) = ppIdentifier importSpecifier
+ppImportSpecifier (TsImportSpecifier importSpecifier (Just alias)) = ppIdentifier importSpecifier <> " as " <> ppIdentifier alias
 
 ppIdentifier :: TsIdentifier -> String
 ppIdentifier (TsIdentifier ident) = ident

@@ -1,5 +1,7 @@
 module Aeria.Codegen.Typescript.Tree where
 
+import Data.Maybe (Maybe(..))
+
 data TsTypeObjectProperty = TsTypeObjectProperty TsIdentifier TsType
 
 data TsTypeLiteral
@@ -32,7 +34,7 @@ data TsType
   | TSTypeReference (Array TsTypeParameter) TsIdentifier
   | TSFunctionType (Array TsTypeParameter) (Array TsParameter) TsType
 
-data TsImportSpecifier = TsImportSpecifier TsIdentifier
+data TsImportSpecifier = TsImportSpecifier TsIdentifier (Maybe TsIdentifier)
 
 data TsSpecifiers
   = TsSpecifiers (Array TsImportSpecifier)
@@ -42,6 +44,7 @@ data TsStatement
   | TSVariableDeclaration (Array TsStatementSyntax) TsIdentifier TsType
   | TSTypeAliasDeclaration TsIdentifier TsType
   | TSExportNamedDeclaration TsStatement
+  | TSEmptyStatement
 
 data TsStatements
   = TsStatements (Array TsStatement)
@@ -65,10 +68,14 @@ specifiers ∷ Array TsImportSpecifier -> TsSpecifiers
 specifiers = TsSpecifiers
 
 importSpecifier ∷ TsIdentifier -> TsImportSpecifier
-importSpecifier = TsImportSpecifier
+importSpecifier x = TsImportSpecifier x Nothing
+
+importSpecifier2 ∷ TsIdentifier -> TsIdentifier -> TsImportSpecifier
+importSpecifier2 x y = TsImportSpecifier x (Just y)
 
 typeAny ∷ TsType
 typeAny = TSTypeAny
+
 typeString ∷ TsType
 typeString = TSTypeString
 
@@ -107,6 +114,9 @@ constKeyword = TsConstKeyword
 
 identifier ∷ String -> TsIdentifier
 identifier = TsIdentifier
+
+emptyStatement ∷ TsStatement
+emptyStatement = TSEmptyStatement
 
 typeLitString ∷ String -> TsTypeLiteral
 typeLitString = TSTypeLitString

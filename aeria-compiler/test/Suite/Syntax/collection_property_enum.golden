@@ -45,7 +45,7 @@
         }
       ],
       "name": {
-        "value": "collectionpropertyenumtest",
+        "value": "CollectionPropertyEnumTest",
         "kind": "CollectionName"
       },
       "kind": "Collection"

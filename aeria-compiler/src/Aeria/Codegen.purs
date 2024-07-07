@@ -5,13 +5,13 @@ import Prelude
 import Aeria.Codegen.Javascript.Tree as Js
 import Aeria.Codegen.Type (codegenType)
 import Aeria.Codegen.Typescript.Tree as Ts
-import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Attributes, Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPreferred, CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PreferredItem(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), WritableItem(..))
+import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Attributes, Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPreferred, CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), ExtendsName(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PreferredItem(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), WritableItem(..))
 import Control.Lazy (fix)
 import Data.Array (concat, elem, head, union)
 import Data.Either (Either(..))
 import Data.List as L
 import Data.Maybe (Maybe(..), isJust, isNothing)
-import Data.String.Utils (ucfirst)
+import Data.String.Utils (ucLower)
 
 data Codegen
   = Codegen String Js.JsStatements Ts.TsStatements
@@ -19,15 +19,20 @@ data Codegen
 codegen :: Program -> L.List Codegen
 codegen (Program { collections }) = map go collections
   where
-  go collection@(Collection { name: (CollectionName _ collectionName), functions }) =
-    Codegen collectionName jsFile tsFile
+  go collection@(Collection { name: c@(CollectionName _ collectionName), functions, extends }) =
+    Codegen collectionName' jsFile tsFile
     where
-    collection' = cCollection collection
-
-    functionNames = L.toUnfoldable $
-      functions
+    collectionName' = getCollectionName c
+    functions' = L.toUnfoldable
+      $ functions
         # L.filter (\(FunctionItem { custom }) -> not custom)
         # map (\(FunctionItem { functionName }) -> getFunctionName functionName)
+
+    tsImportsFunctions = map (Ts.importSpecifier <<< Ts.identifier) functions'
+    jsImportsFunctions = map (Js.importSpecifier1 <<< Js.identifier) functions'
+
+    collection' = cCollection collection
+    collectionType = codegenType collection'
 
     tsFile =
       Ts.statements
@@ -38,37 +43,51 @@ codegen (Program { collections }) = map go collections
                   , Ts.importSpecifier (Ts.identifier "SchemaWithId")
                   , Ts.importSpecifier (Ts.identifier "ExtendCollection")
                   ]
-                , map (Ts.importSpecifier <<< Ts.identifier) functionNames
+                , tsImportsFunctions
                 ]
               )
             (Ts.identifier "aeria")
 
+        , (case extends of
+          Just (ExtendsName package collection'') ->
+            Ts.import_
+              (Ts.specifiers
+                [ Ts.importSpecifier2 (Ts.identifier $ ucLower collection'') (Ts.identifier "original")
+                ])
+              (Ts.identifier package)
+          Nothing -> Ts.emptyStatement)
+
         , Ts.exportNamed
             (Ts.typeAlias
-              -- [Ts.declareKeyword, Ts.constKeyword]
-              (Ts.identifier (collectionName <> "Collection"))
-              (codegenType collection'))
+              (Ts.identifier (collectionName' <> "Collection"))
+              (if isJust extends then
+                (Ts.typeReference
+                        [ Ts.typeParameter $ Ts.typeQuery (Ts.identifier "original")
+                        , Ts.typeParameter collectionType
+                        ]
+                        (Ts.identifier "ExtendCollection"))
+                else collectionType))
 
         , Ts.exportNamed
             (Ts.variable
               [Ts.declareKeyword, Ts.constKeyword]
-              (Ts.identifier collectionName)
+              (Ts.identifier collectionName')
               (Ts.intersectionType
-                (Ts.typeReference [] (Ts.identifier (collectionName <> "Collection")))
+                (Ts.typeReference [] (Ts.identifier (collectionName' <> "Collection")))
                 (Ts.typeLiteral
                   (Ts.typeLitObject
                     [Ts.typeObjectProperty
                       (Ts.identifier "item")
                       (Ts.typeReference
-                        [ Ts.typeParameter (Ts.typeReference [] (Ts.identifier (collectionName <> "Collection[\"description\"]")))
+                        [ Ts.typeParameter (Ts.typeReference [] (Ts.identifier (collectionName' <> "Collection[\"description\"]")))
                         ]
                         (Ts.identifier "SchemaWithId"))]))))
 
         , Ts.exportNamed
           (Ts.typeAlias
-            (Ts.identifier (ucfirst collectionName))
+            (Ts.identifier collectionName)
             ( Ts.typeReference
-              [Ts.typeParameter $ Ts.typeQuery (Ts.identifier (collectionName <> ".description"))]
+              [Ts.typeParameter $ Ts.typeQuery (Ts.identifier (collectionName' <> ".description"))]
               (Ts.identifier "SchemaWithId")
             )
           )
@@ -76,7 +95,7 @@ codegen (Program { collections }) = map go collections
         , Ts.exportNamed
             (Ts.variable
               [Ts.declareKeyword, Ts.constKeyword]
-              (Ts.identifier $ "extend" <> (ucfirst collectionName) <> "Collection")
+              (Ts.identifier $ "extend" <> collectionName <> "Collection")
               (Ts.functionType
                 [ Ts.typeParameter
                     (Ts.typeExtends
@@ -86,7 +105,7 @@ codegen (Program { collections }) = map go collections
                   (Ts.identifier "collection")
                   (Ts.typeReference [] (Ts.identifier "TCollection")) ]
                   (Ts.typeReference
-                    [ Ts.typeParameter $ Ts.typeQuery (Ts.identifier collectionName)
+                    [ Ts.typeParameter $ Ts.typeQuery (Ts.identifier collectionName')
                     , Ts.typeParameter $ Ts.typeReference [] (Ts.identifier "TCollection")
                     ]
                     (Ts.identifier "ExtendCollection"))))]
@@ -99,22 +118,39 @@ codegen (Program { collections }) = map go collections
                 [ [ Js.importSpecifier1 (Js.identifier "extendCollection")
                   , Js.importSpecifier1 (Js.identifier "defineCollection")
                   ]
-                , map (Js.importSpecifier1 <<< Js.identifier) functionNames
+                , jsImportsFunctions
                 ])
             (Js.identifier "aeria")
+
+        , (case extends of
+          Just (ExtendsName package collection'') ->
+            Js.import_
+              (Js.specifiers
+                [ Js.importSpecifier2 (Js.identifier $ ucLower collection'') (Js.identifier "original")
+                ])
+              (Js.identifier package)
+          Nothing -> Js.emptyStatement)
+
         , Js.exportNamed
           (Js.variable
-            (Js.identifier collectionName)
-            (Js.call
-              (Js.identifier "defineCollection")
-              [collection']))
+            (Js.identifier collectionName')
+
+            if isJust extends then
+              (Js.call
+                  (Js.identifier "extendCollection")
+                  [Js.identifier "original", collection'])
+              else
+                (Js.call
+                  (Js.identifier "defineCollection")
+                  [collection']))
+
         , Js.exportNamed
             (Js.variable
-              (Js.identifier $ "extend" <> (ucfirst collectionName) <> "Collection")
+              (Js.identifier $ "extend" <> collectionName <> "Collection")
               (Js.arrowFunction
                 [Js.identifier "collection"]
                 (Js.call (Js.identifier "extendCollection")
-                  [Js.identifier collectionName, Js.identifier "collection"]
+                  [Js.identifier collectionName', Js.identifier "collection"]
                 )))]
 
 cCollection :: Collection -> Js.JsTree
@@ -657,7 +693,7 @@ getFunctionName ∷ FunctionName -> String
 getFunctionName (FunctionName _ functionName) = functionName
 
 getCollectionName :: CollectionName -> String
-getCollectionName (CollectionName _ collectionName) = collectionName
+getCollectionName (CollectionName _ collectionName) = ucLower collectionName
 
 getPropertyName :: PropertyName -> String
 getPropertyName (PropertyName _ propertyName) = propertyName

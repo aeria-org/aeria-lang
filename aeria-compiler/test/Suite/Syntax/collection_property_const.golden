@@ -159,7 +159,7 @@
         }
       ],
       "name": {
-        "value": "collectionpropertyconsttest",
+        "value": "CollectionPropertyConstTest",
         "kind": "CollectionName"
       },
       "kind": "Collection"

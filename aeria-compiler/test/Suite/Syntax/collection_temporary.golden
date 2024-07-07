@@ -4,7 +4,7 @@
     {
       "kind": "Collection",
       "name": {
-        "value": "collectiontemporarytest",
+        "value": "CollectionTemporaryTest",
         "kind": "CollectionName"
       },
       "temporary": {

@@ -8,7 +8,7 @@ import Aeria.Codegen.Javascript.Tree (TargetModule(..))
 import Aeria.Codegen.Typescript.Pretty (ppTypescript)
 import Aeria.Diagnostic.Message (Diagnostic, ppDiagnostic)
 import Aeria.Semantic (runSemantic)
-import Aeria.Syntax.Parser (runProgram)
+import Aeria.Syntax.Parser (runParserProgram)
 import Data.Either (Either(..))
 import Data.Foldable (for_)
 import Data.List as L
@@ -60,7 +60,7 @@ compile filepath source targetModule = do
 
 checker :: FilePath -> String -> Either Diagnostic Unit
 checker filepath source = do
-  case runProgram filepath source of
+  case runParserProgram filepath source of
     Right program' -> runSemantic filepath source program'
     Left err -> Left err
 
@@ -78,7 +78,7 @@ compile' filepath outputPath output = do
 
 compile'' :: FilePath -> String -> Either Diagnostic (L.List Codegen)
 compile'' filepath source = do
-  case runProgram filepath source of
+  case runParserProgram filepath source of
     Right program' ->
       case runSemantic filepath source program' of
         Right _ -> Right $ codegen program'

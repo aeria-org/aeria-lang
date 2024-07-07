@@ -1,4 +1,3 @@
-// TODO: Testar outras forma de imutable
 collection CollectionImmutableTest {
   immutable true
 }

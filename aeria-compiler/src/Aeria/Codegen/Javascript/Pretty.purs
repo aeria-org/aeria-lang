@@ -26,6 +26,7 @@ ppStatement targetModule =
       case targetModule of
         EsNext -> "export " <> ppStatement targetModule statement
         CommonJs -> "exports." <> ppStatement targetModule statement
+    JSEmptyStatement -> ""
 
 ppTree :: JsTree -> String
 ppTree =

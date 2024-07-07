@@ -3,7 +3,7 @@
   "collections": [
     {
       "name": {
-        "value": "collectiongettersexample",
+        "value": "CollectionGettersTest",
         "kind": "CollectionName"
       },
       "kind": "Collection",

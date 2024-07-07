@@ -115,7 +115,7 @@ throwDiagnostic span semanticError = do
   throwError diagnostic
 
 sExpr :: Context -> CollectionName -> Expr -> Either String Unit
-sExpr context collectionName expr =
+sExpr context collectionName@(CollectionName _ collectName) expr =
   case expr of
     EIn lft rgt   -> sBinaryExpr lft rgt
     EEq lft rgt   -> sBinaryExpr lft rgt
@@ -147,7 +147,7 @@ sExpr context collectionName expr =
     isStrictProperty :: PropertyName -> Either String Unit
     isStrictProperty propertyName@(PropertyName _ name) =
       when (isNothing (lookupProperty context collectionName propertyName))
-        (Left $ "Property \"" <> name  <> "\" is not defined")
+        (Left $ "Property \"" <> name <> "\" does not exist on collection \"" <> collectName <> "\"")
 
 sCollection :: Collection -> SemanticM Context
 sCollection (Collection
@@ -287,30 +287,28 @@ sSecurity functions = traverse_ go
   sFunctionName span (FunctionName _ functionName) =
     case L.find (\(FunctionItem { functionName: (FunctionName _ function) }) -> function == functionName) functions of
       Just _ -> pure unit
-      Nothing -> throwDiagnostic span ("Function \"" <> functionName <> "\" is not defined")
+      Nothing -> throwDiagnostic span
+        ("Cannot find function \"" <> functionName <> "\"")
 
-  sRateLimiting (Just (SecurityRateLimiting {span, strategy})) =
-    case strategy of
-      Just strategy' ->
-        if strategy' `elem` ["tenant", "ip"]
-        then pure unit
-        else throwDiagnostic span "Invalid rate limiting strategy"
-      Nothing -> pure unit
+  sRateLimiting (Just (SecurityRateLimiting {span, strategy: (Just strategy)})) =
+      if strategy `elem` ["tenant", "ip"]
+      then pure unit
+      else throwDiagnostic span $ "Value \""<> strategy <> "\" is not assignable to strategy."
   sRateLimiting _ = pure unit
 
   sLogging (Just (SecurityLogging { span, strategy: (Just strategy) })) =
     if strategy `elem` ["tenant", "ip"]
       then pure unit
-      else throwDiagnostic span "Invalid logging strategy"
+      else throwDiagnostic span $ "Value \""<> strategy <> "\" is not assignable to strategy."
   sLogging _ = pure unit
 
 sRequired :: CollectionName -> CollectionRequired -> SemanticM Unit
-sRequired collectionName = traverse_ go
+sRequired collectionName@(CollectionName _ collectName) = traverse_ go
   where
     go (Required _ propertyName@(PropertyName span name) cond) = do
       context <- ask
       when (isNothing (lookupProperty context collectionName propertyName))
-        (throwDiagnostic span $ "Property \""<> name <>"\" is not defined")
+        (throwDiagnostic span $ "Property \"" <> name <> "\" does not exist on collection \"" <> collectName <> "\"")
       sCond context cond
 
     sCond context (Just (Cond span expr)) =
@@ -370,11 +368,11 @@ sImmutable collectionName (Just (CollectionImmutableList immutable)) =
     in sCheckIfPropertiesIsValid collectionName properties
 
 sCheckIfPropertiesIsValid :: CollectionName -> L.List PropertyName -> SemanticM Unit
-sCheckIfPropertiesIsValid collectionName = traverse_ \propertyName@(PropertyName span _) -> do
+sCheckIfPropertiesIsValid collectionName@(CollectionName _ collectName) = traverse_ \propertyName@(PropertyName span propName) -> do
   context <- ask
   case collectionHasProperty context collectionName propertyName of
     Just _  -> pure unit
-    Nothing -> throwDiagnostic span ""
+    Nothing -> throwDiagnostic span $ "Property \"" <> propName <> "\" does not exist on collection \"" <> collectName <> "\""
 
 sGetters :: CollectionName -> CollectionGetters -> SemanticM Unit
 sGetters collectionName = traverse_ \(Getter { name: propertyName@(PropertyName span name) }) -> do
@@ -396,7 +394,7 @@ sProperty collectionName property@(Property { type_ }) =
     PNum _ -> sNumberProperty property
     PConst _ -> sConstProperty property
     PInteger _ -> sNumberProperty property
-    PRef _ (CollectionName _ "file") -> sFileProperty property
+    PRef _ (CollectionName _ "File") -> sFileProperty property
     PRef _ ref -> sRefProperty ref property
 
 sConstProperty :: Property -> SemanticM Unit
@@ -459,13 +457,13 @@ sObjectProperty (CollectionName _ collectionName) = sAttributes' 0
             sRequired objectName required
             traverse_ (sProperty objectName) properties
         _ ->
-          throwDiagnostic span ("Expected object, but received " <> show type_)
+          throwDiagnostic span ("Object type mismatch")
 
 sRefProperty :: CollectionName -> Property -> SemanticM Unit
 sRefProperty collectionName@(CollectionName span collectionName') property = do
   context <- ask
   when (isNothing (lookupCollection context collectionName))
-    (throwDiagnostic span ("Collection \"" <> collectionName' <> "\" is not defined"))
+    (throwDiagnostic span ("Cannot find collection \"" <> collectionName' <> "\""))
   sAttributes' property
   where
     sAttributes' property' = sAttributes property' literalAttributes exprAttributes
@@ -486,7 +484,7 @@ sRefProperty collectionName@(CollectionName span collectionName') property = do
       sArrayType TProperty property' literal
       traverse_ collectionHasProperty' values
     sArrayType' _ literal =
-      throwDiagnostic (literalPos literal) ("Expected list of properties, but received " <> show (typeOf literal))
+      throwDiagnostic (literalPos literal) ("Attribute \"indexes\" must be an array of property names")
 
     collectionHasProperty' (LProperty span' propertyName) = do
       context <- ask
@@ -495,7 +493,7 @@ sRefProperty collectionName@(CollectionName span collectionName') property = do
           throwDiagnostic span' ""
         Just _ -> pure unit
     collectionHasProperty' literal =
-      throwDiagnostic (literalPos literal) ("Expected property, but received " <> show (typeOf literal))
+      throwDiagnostic (literalPos literal) "Expected property name"
 
     sConstraints _property' expr = do
       context <- ask
@@ -596,22 +594,22 @@ sStringProperty property = sAttributes property literalAttributes M.empty
   checkFormat :: Property -> Literal -> SemanticM Unit
   checkFormat _ (LString span value)
     | elem value formatOptions = pure unit
-    | otherwise = throwDiagnostic span "Atribute must be one of: date, date-time"
+    | otherwise = throwDiagnostic span "Atribute \"format\" must be one of: \"date\" or \"date-time\""
   checkFormat _ literal =
-    throwDiagnostic (literalPos literal) ("Expected string but received " <> show (typeOf literal))
+    throwDiagnostic (literalPos literal) ("Atribute \"format\" must be a string")
 
   checkType :: Property -> Literal -> SemanticM Unit
   checkType _ (LString span value)
     | elem value typeOptions = pure unit
-    | otherwise = throwDiagnostic span "Attribute must be one of: text, email, password, search, time, month"
+    | otherwise = throwDiagnostic span "Attribute \"type\" must be one of: \"text\", \"email\", \"password\", \"search\", \"time\" or \"month\""
   checkType _ literal =
-    throwDiagnostic (literalPos literal) ("Expected string but received " <> show (typeOf literal))
+    throwDiagnostic (literalPos literal) ("Atribute \"type\" must be a string")
 
   checkMask :: Property -> Literal -> SemanticM Unit
   checkMask property' array@(LArray _ _) = sArrayType TString property' array
   checkMask _ (LString _ _) = pure unit
   checkMask _ literal =
-    throwDiagnostic (literalPos literal) ("Expected string or array of strings but received " <> show (typeOf literal))
+    throwDiagnostic (literalPos literal) ("Attribute \"mask\" must be a string or an array of strings")
 
   typeOptions :: Array String
   typeOptions = [ "text", "email", "password", "search", "time", "month" ]
@@ -629,11 +627,11 @@ sAttributes property@(Property { attributes }) fl fe = traverse_ go attributes
   go (Attribute _ (AttributeName span attributeName) (ALiteral _ value)) =
     case M.lookup attributeName fl of
       Just f -> f property value
-      Nothing -> throwDiagnostic span $ "\"" <> attributeName <> "\" attribute is not valid"
+      Nothing -> throwDiagnostic span $ "Attribute \""<> attributeName <> "\" does not exist."
   go (Attribute _ (AttributeName span attributeName) (AExpr _ value)) =
     case M.lookup attributeName fe of
       Just f -> f property value
-      Nothing -> throwDiagnostic span $ "\"" <> attributeName <> "\" attribute is not valid"
+      Nothing -> throwDiagnostic span $ "Attribute \""<> attributeName <> "\" does not exist."
 
 sProgram :: Program -> SemanticM Unit
 sProgram (Program { collections }) = do

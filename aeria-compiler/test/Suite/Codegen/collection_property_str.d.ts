@@ -1,20 +1,18 @@
 import { Collection, SchemaWithId, ExtendCollection } from "aeria";
-export declare type collectionpropertystrtestCollection = {
-  description: {
-    $id: "collectionpropertystrtest";
-    properties: { prop1: { type: "string" } };
-  };
+export declare type collectionPropertyStrTestCollection = {
+    description: {
+        $id: "collectionPropertyStrTest";
+        properties: {
+            prop1: {
+                type: "string";
+            };
+        };
+    };
 };
-export declare const collectionpropertystrtest: collectionpropertystrtestCollection & {
-  item: SchemaWithId<collectionpropertystrtestCollection["description"]>;
+export declare const collectionPropertyStrTest: collectionPropertyStrTestCollection & {
+    item: SchemaWithId<collectionPropertyStrTestCollection["description"]>;
 };
-export declare type Collectionpropertystrtest = SchemaWithId<
-  typeof collectionpropertystrtest.description
->;
-export declare const extendCollectionpropertystrtestCollection: <
-  const TCollection extends {
+export declare type CollectionPropertyStrTest = SchemaWithId<typeof collectionPropertyStrTest.description>;
+export declare const extendCollectionPropertyStrTestCollection: <const TCollection extends {
     [P in keyof Collection]?: Partial<Collection[P]>;
-  },
->(
-  collection: TCollection,
-) => ExtendCollection<typeof collectionpropertystrtest, TCollection>;
+}>(collection: TCollection) => ExtendCollection<typeof collectionPropertyStrTest, TCollection>;

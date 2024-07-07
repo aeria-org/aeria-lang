@@ -21,7 +21,7 @@
         }
       ],
       "name": {
-        "value": "collectionsecutirytest",
+        "value": "CollectionSecutiryTest",
         "kind": "CollectionName"
       },
       "kind": "Collection"
