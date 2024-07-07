@@ -20,7 +20,6 @@ import Node.Buffer (fromString, toString)
 import Node.Encoding (Encoding(..))
 import Node.FS.Aff (mkdir, writeFile)
 import Node.FS.Sync (readFile)
-import Prettier (formatJS, formatTS)
 
 type FilePath = String
 
@@ -42,8 +41,8 @@ makeJsFileName name targetModule = name <> case targetModule of
 
 emitCode :: String -> String -> String -> FilePath -> TargetModule -> Effect Unit
 emitCode name jsCode tsCode outputPath targetModule = do
-  writeOutput outputPath (makeJsFileName name targetModule) (formatJS jsCode)
-  writeOutput outputPath (name <> ".d.ts") (formatTS tsCode)
+  writeOutput outputPath (makeJsFileName name targetModule) jsCode
+  writeOutput outputPath (name <> ".d.ts") tsCode
 
 compile :: FilePath -> String -> String -> Either Diagnostic (Array (Array String))
 compile filepath source targetModule = do

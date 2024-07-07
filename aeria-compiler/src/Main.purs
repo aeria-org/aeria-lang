@@ -1,16 +1,9 @@
-module Main
-  ( main
-  , module Data.Either
-  , module Aeria
-  )
-where
+module Main (main) where
 
 import Prelude
 
-import Aeria (checker, compile, ppDiagnostic)
 import Aeria.Driver (compile')
 import Data.Array (reverse, slice)
-import Data.Either (Either(..))
 import Effect (Effect)
 import Effect.Console (log)
 import Node.Process (argv)
