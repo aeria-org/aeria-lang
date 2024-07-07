@@ -85,6 +85,7 @@ export const generateRootIndexDts = (declarations: Declaration[], options: Build
     ${declarations.map((decl) => {
     return `
         export { ${`extend${capitalize(decl.name)}Collection`} } from '${addJsExtension(`./collections/${decl.name}`, options)}'
+        export { ${capitalize(decl.name)} } from '${addJsExtension(`./collections/${decl.name}`, options)}'
       `
   }).join('\n')}
   `)

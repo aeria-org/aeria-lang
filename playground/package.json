@@ -8,10 +8,24 @@
     "dev": "aeria -w",
     "build": "aeria -ci"
   },
+  "aeriaSdk": {
+    "publicUrl": {
+      "development": "http://localhost:3000/api"
+    },
+    "storage": {
+      "strategy": "localStorage",
+      "namespace": "aeria"
+    },
+    "mirrorPaths": [
+      ".aeria"
+    ]
+  },
   "dependencies": {
-    "@aeriajs/cli": "latest",
-    "aeria": "latest",
-    "typescript": "^5.4.5",
-    "playground": "link:"
+    "@aeria-lang/build": "file:../aeria-build",
+    "@aeria-lang/compiler": "file:../aeria-compiler",
+    "aeria": "^0.0.138",
+    "aeria-lang": "latest",
+    "aeria-sdk": "^0.0.109",
+    "typescript": "^5.5.3"
   }
 }

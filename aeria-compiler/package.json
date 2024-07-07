@@ -10,8 +10,7 @@
   ],
   "scripts": {
     "test": "spago test",
-    "build": "spago build",
-    "bundle": "spago bundle-module --platform=node --to=dist/index.mjs",
+    "build": "spago bundle-module --platform=node --to=dist/index.mjs",
     "prepublishOnly": "pnpm build && pnpm bundle"
   },
   "devDependencies": {

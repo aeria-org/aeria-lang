@@ -2,5 +2,4 @@ packages:
   - 'aeria-lang'
   - 'aeria-compiler'
   - 'aeria-build'
-  - 'playground'
 

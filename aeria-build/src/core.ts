@@ -5,13 +5,20 @@ export const compileSource = (target: CompilationTarget) => {
   return compiler.compile(target.filename)(target.source)(target.module)
 }
 
-export const getDeclarations = (result: compiler.CompilationResult): Declaration[] => {
-  return result.map(([decltype, name, sourcejs, sourcets]) => ({
-    name,
-    type: decltype,
-    js: sourcejs,
-    ts: sourcets,
-  }))
+export const getDeclarations = (result: compiler.CompilationResult) => {
+  const declarations: Map<string, Declaration> = new Map()
+
+  for( const [decltype, name, sourcejs, sourcets] of result ) {
+    const key = `${decltype}.${name}`
+    declarations.set(key, {
+      name,
+      type: decltype,
+      js: sourcejs,
+      ts: sourcets,
+    })
+  }
+
+  return Array.from(declarations.values())
 }
 
 export const isLeft = <L>(obj: compiler.Either<L, unknown>): obj is compiler.Left<L> => {

@@ -1,17 +1,10 @@
 import { init, createRouter } from 'aeria'
-export * from 'aeria-runtime/collections/pet'
-import { person } from 'aeria-runtime/collections/person'
-import { pet } from 'aeria-runtime/collections/pet'
+export * from './collections.js'
 
 export const router = createRouter()
 
-export const collections = {
-  person,
-  pet,
-}
-
 router.GET('/test', async (context) => {
-  const person = await context.collections.person.functions.get({
+  const { result: person } = await context.collections.person.functions.get({
     filters: {}
   })
 

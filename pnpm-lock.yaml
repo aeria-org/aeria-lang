@@ -10,49 +10,52 @@ importers:
     devDependencies:
       '@changesets/cli':
         specifier: ^2.27.5
-        version: 2.27.5
+        version: 2.27.7
       '@commitlint/cli':
         specifier: ^19.3.0
-        version: 19.3.0(@types/node@20.14.2)(typescript@5.4.5)
+        version: 19.3.0(@types/node@20.14.10)(typescript@5.5.3)
       '@commitlint/config-conventional':
         specifier: ^19.2.2
         version: 19.2.2
       '@types/mocha':
         specifier: ^10.0.6
-        version: 10.0.6
+        version: 10.0.7
       '@types/node':
         specifier: ^20.14.2
-        version: 20.14.2
+        version: 20.14.10
       '@typescript-eslint/parser':
         specifier: ^7.12.0
-        version: 7.13.0(eslint@9.5.0)(typescript@5.4.5)
+        version: 7.15.0(eslint@9.6.0)(typescript@5.5.3)
+      aeria:
+        specifier: ^0.0.138
+        version: 0.0.138(@aeriajs/builtins@0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(encoding@0.1.13))(@aeriajs/cli@0.0.69(@aeria-lang/build@0.0.11(@aeria-lang/compiler@0.0.6))(@aeria-lang/compiler@0.0.6)(@aeriajs/builtins@0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(encoding@0.1.13))(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129(@aeriajs/builtins@0.0.129)(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/security@0.0.129)(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(socks@2.8.3))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68))(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129(@aeriajs/builtins@0.0.129)(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/security@0.0.129)(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(socks@2.8.3))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/node-http@0.0.91(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))))(@aeriajs/security@0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/types@0.0.68)(mongodb@6.8.0(socks@2.8.3)))(@aeriajs/server@0.0.131(@aeriajs/builtins@0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(encoding@0.1.13))(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129(@aeriajs/builtins@0.0.129)(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/security@0.0.129)(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(socks@2.8.3))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/node-http@0.0.91(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))))(@aeriajs/types@0.0.68)(mongodb@6.8.0(socks@2.8.3)))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))
       eslint:
         specifier: ^9.4.0
-        version: 9.5.0
+        version: 9.6.0
       eslint-config-aeria:
         specifier: ^0.0.30
-        version: 0.0.30(@stylistic/eslint-plugin@2.2.0(eslint@9.5.0)(typescript@5.4.5))(@typescript-eslint/eslint-plugin@7.13.0(@typescript-eslint/parser@7.13.0(eslint@9.5.0)(typescript@5.4.5))(eslint@9.5.0)(typescript@5.4.5))(@typescript-eslint/parser@7.13.0(eslint@9.5.0)(typescript@5.4.5))
+        version: 0.0.30(@stylistic/eslint-plugin@2.3.0(eslint@9.6.0)(typescript@5.5.3))(@typescript-eslint/eslint-plugin@7.15.0(@typescript-eslint/parser@7.15.0(eslint@9.6.0)(typescript@5.5.3))(eslint@9.6.0)(typescript@5.5.3))(@typescript-eslint/parser@7.15.0(eslint@9.6.0)(typescript@5.5.3))
       glob:
         specifier: ^10.4.1
-        version: 10.4.1
+        version: 10.4.3
       husky:
         specifier: ^9.0.11
         version: 9.0.11
       mocha:
         specifier: ^10.4.0
-        version: 10.4.0
+        version: 10.6.0
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@20.14.2)(typescript@5.4.5)
+        version: 10.9.2(@types/node@20.14.10)(typescript@5.5.3)
       typescript:
         specifier: ^5.4.5
-        version: 5.4.5
+        version: 5.5.3
 
   aeria-build:
     dependencies:
       glob:
         specifier: ^10.4.1
-        version: 10.4.1
+        version: 10.4.3
     devDependencies:
       '@aeria-lang/compiler':
         specifier: link:../aeria-compiler
@@ -89,116 +92,100 @@ importers:
         specifier: link:../aeria-compiler
         version: link:../aeria-compiler
 
-  playground:
-    dependencies:
-      '@aeriajs/cli':
-        specifier: latest
-        version: 0.0.49(@aeriajs/builtins@0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(encoding@0.1.13))(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110(@aeriajs/builtins@0.0.110)(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/security@0.0.110)(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(socks@2.8.3))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)
-      aeria:
-        specifier: latest
-        version: 0.0.118(@aeriajs/builtins@0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(encoding@0.1.13))(@aeriajs/cli@0.0.49(@aeriajs/builtins@0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(encoding@0.1.13))(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110(@aeriajs/builtins@0.0.110)(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/security@0.0.110)(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(socks@2.8.3))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61))(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110(@aeriajs/builtins@0.0.110)(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/security@0.0.110)(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(socks@2.8.3))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/node-http@0.0.80(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))))(@aeriajs/security@0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/types@0.0.61)(mongodb@6.7.0(socks@2.8.3)))(@aeriajs/server@0.0.112(@aeriajs/builtins@0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(encoding@0.1.13))(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110(@aeriajs/builtins@0.0.110)(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/security@0.0.110)(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(socks@2.8.3))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/node-http@0.0.80(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))))(@aeriajs/types@0.0.61)(mongodb@6.7.0(socks@2.8.3)))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))
-      playground:
-        specifier: 'link:'
-        version: 'link:'
-      typescript:
-        specifier: ^5.4.5
-        version: 5.4.5
-
 packages:
 
-  '@aeria-lang/build@0.0.9':
-    resolution: {integrity: sha512-9Sy/jJffYLYJzoheE6act877+WEILmkJQaiwdkkqPSx9FeTtjQSrfhaMsK+DARdYmE0qitV6ooMMo+lYt4POjQ==}
-
-  '@aeria-lang/compiler@0.0.3':
-    resolution: {integrity: sha512-7b8eSDV1EczFPcZZVAMoPUcjkM/6Q+nlyknDgYQG/kQbsRiUM9GUmqfFDvDbSK+3j/rMFu5KF5etXdyzfKJXFQ==}
-
-  '@aeria-lang/compiler@0.0.4':
-    resolution: {integrity: sha512-0EUwmRNMBFeRcnhya0Jn0ecrHbqU1Mp5nrAHd9siT1Lov+c0tA9HoiKjfDQh/AUkK0GBYFU4PmsWTPHEM1AkQw==}
-
-  '@aeriajs/builtins@0.0.110':
-    resolution: {integrity: sha512-upoTDa7TEgq4BoWZ7ClQQ5ew+Z/96hAzMgFql7vhDhNSeYyHr99mUiIFca42W0OpcCXsNqj+EfAMAvZzHsN0JQ==}
+  '@aeria-lang/build@0.0.11':
+    resolution: {integrity: sha512-73KTrDQbjAh4xkuHDu/mSn+Neu9fxe9GixwIq/hhU0QpybM4LKwl/3cjaN8aOlaSON0sh8u3dveYjESf0iBQDg==}
     peerDependencies:
-      '@aeriajs/common': ^0.0.69
-      '@aeriajs/core': ^0.0.110
-      '@aeriajs/entrypoint': ^0.0.71
-      '@aeriajs/types': ^0.0.61
-      '@aeriajs/validation': ^0.0.72
+      '@aeria-lang/compiler': ^0.0.6
 
-  '@aeriajs/cli@0.0.49':
-    resolution: {integrity: sha512-w+BJEbq+NTTFJsO074n2w/BijQg4QK9cZV6uUNgCQ1TKjQnn6UIpUjBSwigPsAsNL7uVeUw1Vi7QkJjfVju0yg==}
+  '@aeria-lang/compiler@0.0.6':
+    resolution: {integrity: sha512-q5aqu5e3/dGN2M2hPK0Qs8wzAKTJVt7Z8FA6Jkdx5d1Hb13gM39d2cht+26gzUFP44laB6zcY0oyU4fBg6dULA==}
+
+  '@aeriajs/builtins@0.0.129':
+    resolution: {integrity: sha512-x3AyYkZlJQXypI/6i6tc9PRbn5PZpRzjJgYsRJyIAFp4VRc4xQPgADxYkqrbodqexolgs6R5094tPZSeas/e1w==}
+    peerDependencies:
+      '@aeriajs/common': ^0.0.80
+      '@aeriajs/core': ^0.0.129
+      '@aeriajs/entrypoint': ^0.0.82
+      '@aeriajs/types': ^0.0.68
+      '@aeriajs/validation': ^0.0.83
+
+  '@aeriajs/cli@0.0.69':
+    resolution: {integrity: sha512-sqATfV0DfxQAoK+XwUpi1/XXQIKPe7Lpr8jyB++hwTCm0NDPhmenDrFKdhXeDbM84As5Q6xZV4/TKPbnrMwDDg==}
     hasBin: true
     peerDependencies:
-      '@aeriajs/builtins': ^0.0.110
-      '@aeriajs/common': ^0.0.69
-      '@aeriajs/core': ^0.0.110
-      '@aeriajs/entrypoint': ^0.0.71
-      '@aeriajs/types': ^0.0.61
+      '@aeriajs/builtins': ^0.0.129
+      '@aeriajs/common': ^0.0.80
+      '@aeriajs/core': ^0.0.129
+      '@aeriajs/entrypoint': ^0.0.82
+      '@aeriajs/types': ^0.0.68
 
-  '@aeriajs/common@0.0.69':
-    resolution: {integrity: sha512-bOsWi4UmKCErO0u0H7glB1cw7+VQIzoeoHNsVSkuzOS1rHAeoCnooiLZhDZaBu20UYswWyBY16sHtiFeweUpaQ==}
+  '@aeriajs/common@0.0.80':
+    resolution: {integrity: sha512-gi/B+6llQrUzMCtvKaDVNgDHoRcvmIn3hbQDi+Q+ZdxJk1KibQDVYgtahZ/WAT3KEFuLdN79t5QsEiIn9kg6Cw==}
     peerDependencies:
-      '@aeriajs/types': ^0.0.61
+      '@aeriajs/types': ^0.0.68
       bson: ^6.5.0
 
-  '@aeriajs/core@0.0.110':
-    resolution: {integrity: sha512-pNLoPJu6+EqKI0ckwOr3wQw+039IKbe//qRg28IYpgA/r9Bj8F7KxJhXvgQsF17JsKbl8h6VNqQR1ISk/w9Hig==}
+  '@aeriajs/core@0.0.129':
+    resolution: {integrity: sha512-Q5h0yTz32JsmRd9GNuHGsyCU2YEHUGHDD5zi0KLC0AJMKW5uxkegM7V2YizJQVyEAkgD5GevX+FeGVsKBM/Vfw==}
     peerDependencies:
-      '@aeriajs/builtins': ^0.0.110
-      '@aeriajs/common': ^0.0.69
-      '@aeriajs/entrypoint': ^0.0.71
-      '@aeriajs/http': ^0.0.80
-      '@aeriajs/security': ^0.0.110
-      '@aeriajs/types': ^0.0.61
-      '@aeriajs/validation': ^0.0.72
+      '@aeriajs/builtins': ^0.0.129
+      '@aeriajs/common': ^0.0.80
+      '@aeriajs/entrypoint': ^0.0.82
+      '@aeriajs/http': ^0.0.91
+      '@aeriajs/security': ^0.0.129
+      '@aeriajs/types': ^0.0.68
+      '@aeriajs/validation': ^0.0.83
 
-  '@aeriajs/entrypoint@0.0.71':
-    resolution: {integrity: sha512-xxjBCzxEwCj5z1dSxEVbNYKN+YMPUmXVA1t0zWhh96ns26lWJJ0ijJ/vR2tjWe0Pw3pc+eafyJ71uIxAR9BMwQ==}
+  '@aeriajs/entrypoint@0.0.82':
+    resolution: {integrity: sha512-cGq8+rGEQLG4pgPheGWGou5wsIvwz9N1Bau/qnR1RHaSkEW2AraNrSabuqN/MLjlELTYTgJdTOsADDkTjoyiZA==}
     peerDependencies:
-      '@aeriajs/common': ^0.0.69
-      '@aeriajs/types': ^0.0.61
+      '@aeriajs/common': ^0.0.80
+      '@aeriajs/types': ^0.0.68
 
-  '@aeriajs/http@0.0.80':
-    resolution: {integrity: sha512-y4PMvWsb1W3HmiTLCWs4Xou/egtmbKXI7Lx2KOiwxe4vAKpNK9N8oxVbzwmPZ2FxF6bcOSILr2hXLPtYT84JQg==}
+  '@aeriajs/http@0.0.91':
+    resolution: {integrity: sha512-+bm5KWkyNU0j/10lgVWIIXuIzw/hG3BG822gSOfZTH5QSvI75l9uD366J60AizXHTMzvonZACiYJwTjYJRiUJw==}
     peerDependencies:
-      '@aeriajs/common': ^0.0.69
-      '@aeriajs/entrypoint': ^0.0.71
-      '@aeriajs/types': ^0.0.61
-      '@aeriajs/validation': ^0.0.72
+      '@aeriajs/common': ^0.0.80
+      '@aeriajs/entrypoint': ^0.0.82
+      '@aeriajs/types': ^0.0.68
+      '@aeriajs/validation': ^0.0.83
 
-  '@aeriajs/node-http@0.0.80':
-    resolution: {integrity: sha512-eFqxnxrrXOot6sq1BHdmq35tzk+XrulsY7xP0xbqpUX661gNwWD0nql67FJCGW2hYPTz+aLR1jRERfoo0LZTxw==}
+  '@aeriajs/node-http@0.0.91':
+    resolution: {integrity: sha512-i1wxB86Qz+IjGM80Zs/aV5U+X7rI7ueuiTHX3xehnYSa1WVNrESEBaTcfEskKb4s9JvzTrNR0QI31GTijx3cRw==}
     peerDependencies:
-      '@aeriajs/http': ^0.0.80
+      '@aeriajs/http': ^0.0.91
 
-  '@aeriajs/security@0.0.110':
-    resolution: {integrity: sha512-Xea45CcQsHnHb2F7NvyVeN+FgQlXSO1nFaezODeKqmo3ZDONthNcXlCynMVdnnHZ/Y3qZb8Sb1AcXQpY3gbVqQ==}
+  '@aeriajs/security@0.0.129':
+    resolution: {integrity: sha512-iepDvzosDGJpVL9V/7qV5TI5qxNCZZlJFA9qsOIz57nmb2HyzgDZ6N75AScnfJ96VLl7eOIAG9nfcDTgYndumw==}
     peerDependencies:
-      '@aeriajs/common': ^0.0.69
-      '@aeriajs/core': ^0.0.110
-      '@aeriajs/types': ^0.0.61
+      '@aeriajs/common': ^0.0.80
+      '@aeriajs/core': ^0.0.129
+      '@aeriajs/types': ^0.0.68
       mongodb: ^6.5.0
 
-  '@aeriajs/server@0.0.112':
-    resolution: {integrity: sha512-+er+Dn/ojohKDL1TT42uG1PGX3u7UdXb9rttRD+h6sE4PlhL3p+vbCNW12Q9X+6NiGfMAClYwyRYYIqU9sE0Ug==}
+  '@aeriajs/server@0.0.131':
+    resolution: {integrity: sha512-x4opHd941p9TWJkCqCqZQgcLHuXgH1zC4o3ofxR/5iD/PuEnHFxSjljDQKjYCKhZhQYneTqrykt0sGCHAfdXLA==}
     peerDependencies:
-      '@aeriajs/builtins': ^0.0.110
-      '@aeriajs/common': ^0.0.69
-      '@aeriajs/core': ^0.0.110
-      '@aeriajs/entrypoint': ^0.0.71
-      '@aeriajs/http': ^0.0.80
-      '@aeriajs/node-http': ^0.0.80
-      '@aeriajs/server': ^0.0.112
-      '@aeriajs/types': ^0.0.61
+      '@aeriajs/builtins': ^0.0.129
+      '@aeriajs/common': ^0.0.80
+      '@aeriajs/core': ^0.0.129
+      '@aeriajs/entrypoint': ^0.0.82
+      '@aeriajs/http': ^0.0.91
+      '@aeriajs/node-http': ^0.0.91
+      '@aeriajs/server': ^0.0.131
+      '@aeriajs/types': ^0.0.68
       mongodb: ^6.5.0
 
-  '@aeriajs/types@0.0.61':
-    resolution: {integrity: sha512-bNiR6+hpLiZpFhsdqCre+wvQhHqm06YLuBRNAlozNs/fBPOHODp86y8ebn8bDytq0wrmPLreo5HQfmHOjbvywQ==}
+  '@aeriajs/types@0.0.68':
+    resolution: {integrity: sha512-8ohLGVjx+zvviMN/GMlwj5CEbH/oa8t4v9jHp2w8QHshKCcUx+5bnfh1icXFc9IBlzwFfJt4VkZcpH3R9FCC9A==}
 
-  '@aeriajs/validation@0.0.72':
-    resolution: {integrity: sha512-GF8F3L9YmgfvfqhGDyHqeTzSqmZVX555Wi1ZbFWtxSPTh2RbHmVJYmAb7EAjOclsLrYKS3Og59G+yh2EHdBAmA==}
+  '@aeriajs/validation@0.0.83':
+    resolution: {integrity: sha512-iibEBpVAXvnGhOaMWlqBqL+Azq8mvXvHP6ZXXX04vik0/MKoeXuH+aCypXVC65IXwUJ/TXnHriKTXaJ89ZWslA==}
     peerDependencies:
-      '@aeriajs/common': ^0.0.69
-      '@aeriajs/types': ^0.0.61
+      '@aeriajs/common': ^0.0.80
+      '@aeriajs/types': ^0.0.68
 
   '@babel/code-frame@7.24.7':
     resolution: {integrity: sha512-BcYH1CVJBO9tvyIZ2jVeXgSIMvGZ2FDRvDdOIVQyuklNKSsx+eppDEBq/g47Ayw+RqNFE+URvOShmf+f/qwAlA==}
@@ -216,30 +203,30 @@ packages:
     resolution: {integrity: sha512-UwgBRMjJP+xv857DCngvqXI3Iq6J4v0wXmwc6sapg+zyhbwmQX67LUEFrkK5tbyJ30jGuG3ZvWpBiB9LCy1kWw==}
     engines: {node: '>=6.9.0'}
 
-  '@changesets/apply-release-plan@7.0.3':
-    resolution: {integrity: sha512-klL6LCdmfbEe9oyfLxnidIf/stFXmrbFO/3gT5LU5pcyoZytzJe4gWpTBx3BPmyNPl16dZ1xrkcW7b98e3tYkA==}
+  '@changesets/apply-release-plan@7.0.4':
+    resolution: {integrity: sha512-HLFwhKWayKinWAul0Vj+76jVx1Pc2v55MGPVjZ924Y/ROeSsBMFutv9heHmCUj48lJyRfOTJG5+ar+29FUky/A==}
 
-  '@changesets/assemble-release-plan@6.0.2':
-    resolution: {integrity: sha512-n9/Tdq+ze+iUtjmq0mZO3pEhJTKkku9hUxtUadW30jlN7kONqJG3O6ALeXrmc6gsi/nvoCuKjqEJ68Hk8RbMTQ==}
+  '@changesets/assemble-release-plan@6.0.3':
+    resolution: {integrity: sha512-bLNh9/Lgl1VwkjWZTq8JmRqH+hj7/Yzfz0jsQ/zJJ+FTmVqmqPj3szeKOri8O/hEM8JmHW019vh2gTO9iq5Cuw==}
 
   '@changesets/changelog-git@0.2.0':
     resolution: {integrity: sha512-bHOx97iFI4OClIT35Lok3sJAwM31VbUM++gnMBV16fdbtBhgYu4dxsphBF/0AZZsyAHMrnM0yFcj5gZM1py6uQ==}
 
-  '@changesets/cli@2.27.5':
-    resolution: {integrity: sha512-UVppOvzCjjylBenFcwcZNG5IaZ8jsIaEVraV/pbXgukYNb0Oqa0d8UWb0LkYzA1Bf1HmUrOfccFcRLheRuA7pA==}
+  '@changesets/cli@2.27.7':
+    resolution: {integrity: sha512-6lr8JltiiXPIjDeYg4iM2MeePP6VN/JkmqBsVA5XRiy01hGS3y629LtSDvKcycj/w/5Eur1rEwby/MjcYS+e2A==}
     hasBin: true
 
-  '@changesets/config@3.0.1':
-    resolution: {integrity: sha512-nCr8pOemUjvGJ8aUu8TYVjqnUL+++bFOQHBVmtNbLvKzIDkN/uiP/Z4RKmr7NNaiujIURHySDEGFPftR4GbTUA==}
+  '@changesets/config@3.0.2':
+    resolution: {integrity: sha512-cdEhS4t8woKCX2M8AotcV2BOWnBp09sqICxKapgLHf9m5KdENpWjyrFNMjkLqGJtUys9U+w93OxWT0czorVDfw==}
 
   '@changesets/errors@0.2.0':
     resolution: {integrity: sha512-6BLOQUscTpZeGljvyQXlWOItQyU71kCdGz7Pi8H8zdw6BI0g3m43iL4xKUVPWtG+qrrL9DTjpdn8eYuCQSRpow==}
 
-  '@changesets/get-dependents-graph@2.1.0':
-    resolution: {integrity: sha512-QOt6pQq9RVXKGHPVvyKimJDYJumx7p4DO5MO9AhRJYgAPgv0emhNqAqqysSVKHBm4sxKlGN4S1zXOIb5yCFuhQ==}
+  '@changesets/get-dependents-graph@2.1.1':
+    resolution: {integrity: sha512-LRFjjvigBSzfnPU2n/AhFsuWR5DK++1x47aq6qZ8dzYsPtS/I5mNhIGAS68IAxh1xjO9BTtz55FwefhANZ+FCA==}
 
-  '@changesets/get-release-plan@4.0.2':
-    resolution: {integrity: sha512-rOalz7nMuMV2vyeP7KBeAhqEB7FM2GFPO5RQSoOoUKKH9L6wW3QyPA2K+/rG9kBrWl2HckPVES73/AuwPvbH3w==}
+  '@changesets/get-release-plan@4.0.3':
+    resolution: {integrity: sha512-6PLgvOIwTSdJPTtpdcr3sLtGatT+Jr22+cQwEBJBy6wP0rjB4yJ9lv583J9fVpn1bfQlBkDa8JxbS2g/n9lIyA==}
 
   '@changesets/get-version-range-type@0.4.0':
     resolution: {integrity: sha512-hwawtob9DryoGTpixy1D3ZXbGgJu1Rhr+ySH2PvTLHvkZuQ7sRT4oQwMh0hbqZH1weAooedEjRsbrWcGLCeyVQ==}
@@ -626,20 +613,20 @@ packages:
     peerDependencies:
       eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
 
-  '@eslint-community/regexpp@4.10.1':
-    resolution: {integrity: sha512-Zm2NGpWELsQAD1xsJzGQpYfvICSsFkEpU0jxBjfdC6uNEWXcHnfs9hScFWtXVDVl+rBQJGrl4g1vcKIejpH9dA==}
+  '@eslint-community/regexpp@4.11.0':
+    resolution: {integrity: sha512-G/M/tIiMrTAxEWRfLfQJMmGNX28IxBg4PBz8XqQhqUHLFI6TL2htpIB1iQCj144V5ee/JaKyT9/WZ0MGZWfA7A==}
     engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
 
-  '@eslint/config-array@0.16.0':
-    resolution: {integrity: sha512-/jmuSd74i4Czf1XXn7wGRWZCuyaUZ330NH1Bek0Pplatt4Sy1S5haN21SCLLdbeKslQ+S0wEJ+++v5YibSi+Lg==}
+  '@eslint/config-array@0.17.0':
+    resolution: {integrity: sha512-A68TBu6/1mHHuc5YJL0U0VVeGNiklLAL6rRmhTCP2B5XjWLMnrX+HkO+IAXyHvks5cyyY1jjK5ITPQ1HGS2EVA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@eslint/eslintrc@3.1.0':
     resolution: {integrity: sha512-4Bfj15dVJdoy3RfZmmo86RK1Fwzn6SstsvK9JS+BaVKqC6QQQQyXekNaC+g+LKNgkQ+2VhGAzm6hO40AhMR3zQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@eslint/js@9.5.0':
-    resolution: {integrity: sha512-A7+AOT2ICkodvtsWnxZP4Xxk3NbZ3VMHd8oihydLRGrJgqqdEz1qSeEgXYyT/Cu8h1TWWsQRejIx48mtjZ5y1w==}
+  '@eslint/js@9.6.0':
+    resolution: {integrity: sha512-D9B0/3vNg44ZeWbYMpBoXqNP4j6eQD5vNwIlGAuFRRzK/WtT/jvDQW3Bi9kkf3PMDMlM7Yi+73VLUsn5bJcl8A==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@eslint/object-schema@2.1.4':
@@ -713,31 +700,31 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
-  '@stylistic/eslint-plugin-js@2.2.0':
-    resolution: {integrity: sha512-pdkNeVORubs+k7jmhHivYXggoFvw1ykAyGBQomodOYO8MhO8/IM798XVyjadC6EeTeBiXlEWYRy/4QV34hDz+A==}
+  '@stylistic/eslint-plugin-js@2.3.0':
+    resolution: {integrity: sha512-lQwoiYb0Fs6Yc5QS3uT8+T9CPKK2Eoxc3H8EnYJgM26v/DgtW+1lvy2WNgyBflU+ThShZaHm3a6CdD9QeKx23w==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: '>=8.40.0'
 
-  '@stylistic/eslint-plugin-jsx@2.2.0':
-    resolution: {integrity: sha512-1aHeR68inrbEFGJZ80rOMHK8gIzTboF4DgmF0eR5KJ+wgxkhlEasZKhsuDrrgXn4xaUIgbMzCeHg9Rw0AtqR9w==}
+  '@stylistic/eslint-plugin-jsx@2.3.0':
+    resolution: {integrity: sha512-tsQ0IEKB195H6X9A4iUSgLLLKBc8gUBWkBIU8tp1/3g2l8stu+PtMQVV/VmK1+3bem5FJCyvfcZIQ/WF1fsizA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: '>=8.40.0'
 
-  '@stylistic/eslint-plugin-plus@2.2.0':
-    resolution: {integrity: sha512-BVgtMc+oepdEuDkhsCX8ZLD32AIWC2cyhxmz/ku9WJjrfB4eF2qNb/chr7x2SyN+nlJIz/Vl5aSIa3aKAWylBA==}
+  '@stylistic/eslint-plugin-plus@2.3.0':
+    resolution: {integrity: sha512-xboPWGUU5yaPlR+WR57GwXEuY4PSlPqA0C3IdNA/+1o2MuBi95XgDJcZiJ9N+aXsqBXAPIpFFb+WQ7QEHo4f7g==}
     peerDependencies:
       eslint: '*'
 
-  '@stylistic/eslint-plugin-ts@2.2.0':
-    resolution: {integrity: sha512-34KDq7G1+PpFH9BT3DQyRjy82K1A1Fb/ywr1v4xjs77r/kRIMduadkwHoyj4fCMFTqkW3ML7qZ0jNV2OjdoR8g==}
+  '@stylistic/eslint-plugin-ts@2.3.0':
+    resolution: {integrity: sha512-wqOR38/uz/0XPnHX68ftp8sNMSAqnYGjovOTN7w00xnjS6Lxr3Sk7q6AaxWWqbMvOj7V2fQiMC5HWAbTruJsCg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: '>=8.40.0'
 
-  '@stylistic/eslint-plugin@2.2.0':
-    resolution: {integrity: sha512-qJfzH3M83vpFssPkeS559uj6PbAn8Z54C1zTrKOaH1ooSH54bmPvJ2v3Zh+PRWJ0YscLz43TxQhgmlPD53ZJ9w==}
+  '@stylistic/eslint-plugin@2.3.0':
+    resolution: {integrity: sha512-rtiz6u5gRyyEZp36FcF1/gHJbsbT3qAgXZ1qkad6Nr/xJ9wrSJkiSFFQhpYVTIZ7FJNRJurEcumZDCwN9dEI4g==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: '>=8.40.0'
@@ -770,20 +757,14 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
-  '@types/minimist@1.2.5':
-    resolution: {integrity: sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==}
-
-  '@types/mocha@10.0.6':
-    resolution: {integrity: sha512-dJvrYWxP/UcXm36Qn36fxhUKu8A/xMRXVT2cliFF1Z7UA9liG5Psj3ezNSZw+5puH2czDXRLcXQxf8JbJt0ejg==}
+  '@types/mocha@10.0.7':
+    resolution: {integrity: sha512-GN8yJ1mNTcFcah/wKEFIJckJx9iJLoMSzWcfRRuxz/Jk+U6KQNnml+etbtxFK8lPjzOw3zp4Ha/kjSst9fsHYw==}
 
   '@types/node@12.20.55':
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
 
-  '@types/node@20.14.2':
-    resolution: {integrity: sha512-xyu6WAMVwv6AKFLB+e/7ySZVr/0zLCzOa7rSpq6jNwpqOrUbcACDWC+53d4n2QHOnDou0fbIsg8wZu/sxrnI4Q==}
-
-  '@types/normalize-package-data@2.4.4':
-    resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
+  '@types/node@20.14.10':
+    resolution: {integrity: sha512-MdiXf+nDuMvY0gJKxyfZ7/6UFsETO7mGKF54MVD/ekJS6HdFtpZFBgrh6Pseu64XTb2MLyFPlbW6hj8HYRQNOQ==}
 
   '@types/semver@7.5.8':
     resolution: {integrity: sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==}
@@ -797,8 +778,8 @@ packages:
   '@types/whatwg-url@8.2.2':
     resolution: {integrity: sha512-FtQu10RWgn3D9U4aazdwIE2yzphmTJREDqNdODHrbrZmmMqI0vMheC/6NE/J1Yveaj8H+ela+YwWTjq5PGmuhA==}
 
-  '@typescript-eslint/eslint-plugin@7.13.0':
-    resolution: {integrity: sha512-FX1X6AF0w8MdVFLSdqwqN/me2hyhuQg4ykN6ZpVhh1ij/80pTvDKclX1sZB9iqex8SjQfVhwMKs3JtnnMLzG9w==}
+  '@typescript-eslint/eslint-plugin@7.15.0':
+    resolution: {integrity: sha512-uiNHpyjZtFrLwLDpHnzaDlP3Tt6sGMqTCiqmxaN4n4RP0EfYZDODJyddiFDF44Hjwxr5xAcaYxVKm9QKQFJFLA==}
     engines: {node: ^18.18.0 || >=20.0.0}
     peerDependencies:
       '@typescript-eslint/parser': ^7.0.0
@@ -808,8 +789,8 @@ packages:
       typescript:
         optional: true
 
-  '@typescript-eslint/parser@7.13.0':
-    resolution: {integrity: sha512-EjMfl69KOS9awXXe83iRN7oIEXy9yYdqWfqdrFAYAAr6syP8eLEFI7ZE4939antx2mNgPRW/o1ybm2SFYkbTVA==}
+  '@typescript-eslint/parser@7.15.0':
+    resolution: {integrity: sha512-k9fYuQNnypLFcqORNClRykkGOMOj+pV6V91R4GO/l1FDGwpqmSwoOQrOHo3cGaH63e+D3ZiCAOsuS/D2c99j/A==}
     engines: {node: ^18.18.0 || >=20.0.0}
     peerDependencies:
       eslint: ^8.56.0
@@ -818,12 +799,12 @@ packages:
       typescript:
         optional: true
 
-  '@typescript-eslint/scope-manager@7.13.0':
-    resolution: {integrity: sha512-ZrMCe1R6a01T94ilV13egvcnvVJ1pxShkE0+NDjDzH4nvG1wXpwsVI5bZCvE7AEDH1mXEx5tJSVR68bLgG7Dng==}
+  '@typescript-eslint/scope-manager@7.15.0':
+    resolution: {integrity: sha512-Q/1yrF/XbxOTvttNVPihxh1b9fxamjEoz2Os/Pe38OHwxC24CyCqXxGTOdpb4lt6HYtqw9HetA/Rf6gDGaMPlw==}
     engines: {node: ^18.18.0 || >=20.0.0}
 
-  '@typescript-eslint/type-utils@7.13.0':
-    resolution: {integrity: sha512-xMEtMzxq9eRkZy48XuxlBFzpVMDurUAfDu5Rz16GouAtXm0TaAoTFzqWUFPPuQYXI/CDaH/Bgx/fk/84t/Bc9A==}
+  '@typescript-eslint/type-utils@7.15.0':
+    resolution: {integrity: sha512-SkgriaeV6PDvpA6253PDVep0qCqgbO1IOBiycjnXsszNTVQe5flN5wR5jiczoEoDEnAqYFSFFc9al9BSGVltkg==}
     engines: {node: ^18.18.0 || >=20.0.0}
     peerDependencies:
       eslint: ^8.56.0
@@ -832,12 +813,12 @@ packages:
       typescript:
         optional: true
 
-  '@typescript-eslint/types@7.13.0':
-    resolution: {integrity: sha512-QWuwm9wcGMAuTsxP+qz6LBBd3Uq8I5Nv8xb0mk54jmNoCyDspnMvVsOxI6IsMmway5d1S9Su2+sCKv1st2l6eA==}
+  '@typescript-eslint/types@7.15.0':
+    resolution: {integrity: sha512-aV1+B1+ySXbQH0pLK0rx66I3IkiZNidYobyfn0WFsdGhSXw+P3YOqeTq5GED458SfB24tg+ux3S+9g118hjlTw==}
     engines: {node: ^18.18.0 || >=20.0.0}
 
-  '@typescript-eslint/typescript-estree@7.13.0':
-    resolution: {integrity: sha512-cAvBvUoobaoIcoqox1YatXOnSl3gx92rCZoMRPzMNisDiM12siGilSM4+dJAekuuHTibI2hVC2fYK79iSFvWjw==}
+  '@typescript-eslint/typescript-estree@7.15.0':
+    resolution: {integrity: sha512-gjyB/rHAopL/XxfmYThQbXbzRMGhZzGw6KpcMbfe8Q3nNQKStpxnUKeXb0KiN/fFDR42Z43szs6rY7eHk0zdGQ==}
     engines: {node: ^18.18.0 || >=20.0.0}
     peerDependencies:
       typescript: '*'
@@ -845,14 +826,14 @@ packages:
       typescript:
         optional: true
 
-  '@typescript-eslint/utils@7.13.0':
-    resolution: {integrity: sha512-jceD8RgdKORVnB4Y6BqasfIkFhl4pajB1wVxrF4akxD2QPM8GNYjgGwEzYS+437ewlqqrg7Dw+6dhdpjMpeBFQ==}
+  '@typescript-eslint/utils@7.15.0':
+    resolution: {integrity: sha512-hfDMDqaqOqsUVGiEPSMLR/AjTSCsmJwjpKkYQRo1FNbmW4tBwBspYDwO9eh7sKSTwMQgBw9/T4DHudPaqshRWA==}
     engines: {node: ^18.18.0 || >=20.0.0}
     peerDependencies:
       eslint: ^8.56.0
 
-  '@typescript-eslint/visitor-keys@7.13.0':
-    resolution: {integrity: sha512-nxn+dozQx+MK61nn/JP+M4eCkHDSxSLDpgE3WcQo0+fkjEolnaB5jswvIKC4K56By8MMgIho7f1PVxERHEo8rw==}
+  '@typescript-eslint/visitor-keys@7.15.0':
+    resolution: {integrity: sha512-Hqgy/ETgpt2L5xueA/zHHIl4fJI2O4XUE9l4+OIfbJIRSnTJb/QscncdqqZzofQegIJugRIF57OJea1khw2SDw==}
     engines: {node: ^18.18.0 || >=20.0.0}
 
   JSONStream@1.3.5:
@@ -871,28 +852,31 @@ packages:
     resolution: {integrity: sha512-MxXdReSRhGO7VlFe1bRG/oI7/mdLV9B9JJT0N8vZOhF7gFRR5l3M8W9G8JxmKV+JC5mGqJ0QvqfSOLsCPa4nUw==}
     engines: {node: '>=0.4.0'}
 
-  acorn@8.12.0:
-    resolution: {integrity: sha512-RTvkC4w+KNXrM39/lWCUaG0IbRkWdCv7W/IOW9oU6SawyxulvkQy5HQPVTKxEjczcUvapcrw3cFx/60VN/NRNw==}
+  acorn@8.12.1:
+    resolution: {integrity: sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  aeria-lang@0.0.4:
-    resolution: {integrity: sha512-TRNx7o6b0iu1YgcaXHvjPnrcl6cHUWvWEQEaSVU2vArSaJs8yD2AW4SYo7ejMpoz7bkI+NDUJKgwdJlx7nRxuw==}
-
-  aeria@0.0.118:
-    resolution: {integrity: sha512-XdzTxuR12upOARS3kHiFhZ3KAm8h8HVTpfgT0MH92Aq7ebFz2c8NFg18DhR8LW6V03h4P3JRDk48DqCPwwAgZg==}
+  aeria-lang@0.0.8:
+    resolution: {integrity: sha512-xsHUgS9LyYsGeamjpfgZWA3GLPX3uJXN6C7RshrkIK1Dzvi71EqHBjZpZ6mHuEwWZS+V4DNDM/F9YxiHXuOGRA==}
     peerDependencies:
-      '@aeriajs/builtins': ^0.0.110
-      '@aeriajs/cli': ^0.0.49
-      '@aeriajs/common': ^0.0.69
-      '@aeriajs/core': ^0.0.110
-      '@aeriajs/entrypoint': ^0.0.71
-      '@aeriajs/http': ^0.0.80
-      '@aeriajs/node-http': ^0.0.80
-      '@aeriajs/security': ^0.0.110
-      '@aeriajs/server': ^0.0.112
-      '@aeriajs/types': ^0.0.61
-      '@aeriajs/validation': ^0.0.72
+      '@aeria-lang/build': ^0.0.11
+      '@aeria-lang/compiler': ^0.0.6
+
+  aeria@0.0.138:
+    resolution: {integrity: sha512-LBdqTO7tqT0HnP0EsrNdHY4QyVoJD5Ee2exiHEODWmesm7t0Eigz/sUaz3fcnp264cRARWcd62N4is/KJ2BncQ==}
+    peerDependencies:
+      '@aeriajs/builtins': ^0.0.129
+      '@aeriajs/cli': ^0.0.69
+      '@aeriajs/common': ^0.0.80
+      '@aeriajs/core': ^0.0.129
+      '@aeriajs/entrypoint': ^0.0.82
+      '@aeriajs/http': ^0.0.91
+      '@aeriajs/node-http': ^0.0.91
+      '@aeriajs/security': ^0.0.129
+      '@aeriajs/server': ^0.0.131
+      '@aeriajs/types': ^0.0.68
+      '@aeriajs/validation': ^0.0.83
 
   agent-base@6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
@@ -915,10 +899,6 @@ packages:
 
   ajv@8.16.0:
     resolution: {integrity: sha512-F0twR8U1ZU67JIEtekUcLkXkoO5mMMmgGD8sK/xUFzJ805jxHQl92hImFAqqXMyMYjSPOyUPAwHYhB72g5sTXw==}
-
-  ansi-colors@4.1.1:
-    resolution: {integrity: sha512-JoX0apGbHaUJBNl6yF+p6JAFYZ666/hhCGKN5t9QFjbJQKUU/g8MNbFDbvfrgKXvI1QpZplPOnwIo99lX/AAmA==}
-    engines: {node: '>=6'}
 
   ansi-colors@4.1.3:
     resolution: {integrity: sha512-/6w/C21Pm1A7aZitlI5Ni/2J6FFQN8i1Cvz3kHABAAbw93v/NlvKdVOqz7CCWz/3iv/JplRSEEZ83XION15ovw==}
@@ -972,10 +952,6 @@ packages:
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
 
-  array-buffer-byte-length@1.0.1:
-    resolution: {integrity: sha512-ahC5W1xgou+KTXix4sAO8Ki12Q+jf4i0+tmk3sC+zgcynshkHxzpXdImBehiUYKKKDwvfFiJl1tZt6ewscS1Mg==}
-    engines: {node: '>= 0.4'}
-
   array-ify@1.0.0:
     resolution: {integrity: sha512-c5AMf34bKdvPhQ7tBGhqkgKNUzMr4WUs+WDtC2ZUGOUncbxKMTvqxYctiseW3+L4bA8ec+GcZ6/A/FW4m8ukng==}
 
@@ -983,28 +959,12 @@ packages:
     resolution: {integrity: sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==}
     engines: {node: '>=8'}
 
-  array.prototype.flat@1.3.2:
-    resolution: {integrity: sha512-djYB+Zx2vLewY8RWlNCUdHjDXs2XOgm602S9E7P/UpHgfeHL00cRiIF+IN/G/aUJ7kGPb6yO/ErDI5V2s8iycA==}
-    engines: {node: '>= 0.4'}
-
-  arraybuffer.prototype.slice@1.0.3:
-    resolution: {integrity: sha512-bMxMKAjg13EBSVscxTaYA4mRc5t1UAXa2kXiGTNfZ079HIWXEkKmkgFrh/nJqamaLSrXO5H4WFFkPEaLJWbs3A==}
-    engines: {node: '>= 0.4'}
-
-  arrify@1.0.1:
-    resolution: {integrity: sha512-3CYzex9M9FGQjCGMGyi6/31c8GJbgb0qGyrx5HWxPd0aCwh4cB2YjMb2Xf9UuoogrMrlO9cTqnB5rI5GHZTcUA==}
-    engines: {node: '>=0.10.0'}
-
   astral-regex@2.0.0:
     resolution: {integrity: sha512-Z7tMw1ytTXt5jqMcOP+OQteU1VuNK9Y02uuJtKQ1Sv69jXQKKg5cibLwGJow8yzZP+eAc18EmLGPal0bp36rvQ==}
     engines: {node: '>=8'}
 
   async-mutex@0.4.1:
     resolution: {integrity: sha512-WfoBo4E/TbCX1G95XTjbWTE3X2XLG0m1Xbv2cwOtuPdyH9CZvnaA5nCt1ucjaKEgW2A5IF71hxrRhr83Je5xjA==}
-
-  available-typed-arrays@1.0.7:
-    resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
-    engines: {node: '>= 0.4'}
 
   b4a@1.6.6:
     resolution: {integrity: sha512-5Tk1HLk6b6ctmjIkAcU/Ujv/1WqiDl0F0JdRCR80VsOcUlHcu7pWeWRlOqQLHfDEsVx9YH/aif5AG4ehoCtTmg==}
@@ -1040,9 +1000,6 @@ packages:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
     engines: {node: '>=8'}
 
-  breakword@1.0.6:
-    resolution: {integrity: sha512-yjxDAYyK/pBvws9H4xKYpLDpYKEH6CzrBPAuXq3x18I+c/2MkVtT3qAr7Oloi6Dss9qNhPVueAAVU1CSeNDIXw==}
-
   browser-stdout@1.3.1:
     resolution: {integrity: sha512-qhAVI1+Av2X7qelOfAIYwXONood6XlZE/fXaBSmW/T5SzLAmCgzi+eiWE7fUvbHaeNBQH13UftjpXxsfLkMpgw==}
 
@@ -1050,8 +1007,8 @@ packages:
     resolution: {integrity: sha512-ix0EwukN2EpC0SRWIj/7B5+A6uQMQy6KMREI9qQqvgpkV2frH63T0UDVd1SYedL6dNCmDBYB3QtXi4ISk9YT+g==}
     engines: {node: '>=14.20.1'}
 
-  bson@6.7.0:
-    resolution: {integrity: sha512-w2IquM5mYzYZv6rs3uN2DZTOBe2a0zXLj53TGDqwF4l6Sz/XsISrisXOJihArF9+BZ6Cq/GjVht7Sjfmri7ytQ==}
+  bson@6.8.0:
+    resolution: {integrity: sha512-iOJg8pr7wq2tg/zSlCCHMi3hMm5JTOxLTagf3zxhcenHsFp+c6uOs6K7W5UE7A4QIJGtqh/ZovFNMP4mOPJynQ==}
     engines: {node: '>=16.20.1'}
 
   buffer-crc32@0.2.13:
@@ -1078,20 +1035,8 @@ packages:
     resolution: {integrity: sha512-/aJwG2l3ZMJ1xNAnqbMpA40of9dj/pIH3QfiuQSqjfPJF747VR0J/bHn+/KdNnHKc6XQcWt/AfRSBft82W1d2A==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  call-bind@1.0.7:
-    resolution: {integrity: sha512-GHTSNSYICQ7scH7sZ+M2rFopRoLh8t2bLSW6BbgrtLsahOIB5iyAVJf9GjWK3cYTDaMj4XdBpM1cA6pIS0Kv2w==}
-    engines: {node: '>= 0.4'}
-
   callsites@3.1.0:
     resolution: {integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==}
-    engines: {node: '>=6'}
-
-  camelcase-keys@6.2.2:
-    resolution: {integrity: sha512-YrwaA0vEKazPBkn0ipTiMpSajYDSe+KjQfrjhcBMxJt/znbvlHd8Pw/Vamaz5EB4Wfhs3SUR3Z9mwRu/P3s3Yg==}
-    engines: {node: '>=8'}
-
-  camelcase@5.3.1:
-    resolution: {integrity: sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==}
     engines: {node: '>=6'}
 
   camelcase@6.3.0:
@@ -1112,10 +1057,6 @@ packages:
 
   chardet@0.7.0:
     resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}
-
-  chokidar@3.5.3:
-    resolution: {integrity: sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==}
-    engines: {node: '>= 8.10.0'}
 
   chokidar@3.6.0:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
@@ -1140,19 +1081,12 @@ packages:
     resolution: {integrity: sha512-I/zHAwsKf9FqGoXM4WWRACob9+SNukZTd94DWF57E4toouRulbCxcUh6RKUEOQlYTHJnzkPMySvPNaaSLNfLZw==}
     engines: {node: '>=8'}
 
-  cliui@6.0.0:
-    resolution: {integrity: sha512-t6wbgtoCXvAzst7QgXxJYqPt0usEfbgQdftEPbLL/cvv6HPE5VgvqCuAIDR0NgU52ds6rFwqrgakNLrHEjCbrQ==}
-
   cliui@7.0.4:
     resolution: {integrity: sha512-OcRE68cOsVMXp1Yvonl/fzkQOyjLSu/8bhPDfQt0e0/Eb283TKP20Fs2MqoPsr9SwA595rRCA+QMzYc9nBP+JQ==}
 
   cliui@8.0.1:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
     engines: {node: '>=12'}
-
-  clone@1.0.4:
-    resolution: {integrity: sha512-JQHZ2QMW6l3aH/j6xCqQThY/9OH4D/9ls34cgkUBiEeocRTU04tHfKPBsUK1PqZCUQM7GiA0IIXJSuXHI64Kbg==}
-    engines: {node: '>=0.8'}
 
   color-convert@1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
@@ -1234,46 +1168,12 @@ packages:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
     engines: {node: '>= 8'}
 
-  csv-generate@3.4.3:
-    resolution: {integrity: sha512-w/T+rqR0vwvHqWs/1ZyMDWtHHSJaN06klRqJXBEpDJaM/+dZkso0OKh1VcuuYvK3XM53KysVNq8Ko/epCK8wOw==}
-
-  csv-parse@4.16.3:
-    resolution: {integrity: sha512-cO1I/zmz4w2dcKHVvpCr7JVRu8/FymG5OEpmvsZYlccYolPBLoVGKUHgNoc4ZGkFeFlWGEDmMyBM+TTqRdW/wg==}
-
-  csv-stringify@5.6.5:
-    resolution: {integrity: sha512-PjiQ659aQ+fUTQqSrd1XEDnOr52jh30RBurfzkscaE2tPaFsDH5wOAHJiw8XAHphRknCwMUE9KRayc4K/NbO8A==}
-
-  csv@5.5.3:
-    resolution: {integrity: sha512-QTaY0XjjhTQOdguARF0lGKm5/mEq9PD9/VhZZegHDIBq2tQwgNpHc3dneD4mGo2iJs+fTKv5Bp0fZ+BRuY3Z0g==}
-    engines: {node: '>= 0.1.90'}
-
   cyclist@1.0.2:
     resolution: {integrity: sha512-0sVXIohTfLqVIW3kb/0n6IiWF3Ifj5nm2XaSrLq2DI6fKIGa2fYAZdk917rUneaeLVpYfFcyXE2ft0fe3remsA==}
 
   dargs@8.1.0:
     resolution: {integrity: sha512-wAV9QHOsNbwnWdNW2FYvE1P56wtgSbM+3SZcdGiWQILwVjACCXDCI3Ai8QlCjMDB8YK5zySiXZYBiwGmNY3lnw==}
     engines: {node: '>=12'}
-
-  data-view-buffer@1.0.1:
-    resolution: {integrity: sha512-0lht7OugA5x3iJLOWFhWK/5ehONdprk0ISXqVFn/NFrDu+cuc8iADFrGQz5BnRK7LLU3JmkbXSxaqX+/mXYtUA==}
-    engines: {node: '>= 0.4'}
-
-  data-view-byte-length@1.0.1:
-    resolution: {integrity: sha512-4J7wRJD3ABAzr8wP+OcIcqq2dlUKp4DVflx++hs5h5ZKydWMI6/D/fAot+yh6g2tHh8fLFTvNOaVN357NvSrOQ==}
-    engines: {node: '>= 0.4'}
-
-  data-view-byte-offset@1.0.0:
-    resolution: {integrity: sha512-t/Ygsytq+R995EJ5PZlD4Cu56sWa8InXySaViRzw9apusqsOO2bQP+SbYzAhR0pFKoB+43lYy8rWban9JSuXnA==}
-    engines: {node: '>= 0.4'}
-
-  debug@4.3.4:
-    resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
-    engines: {node: '>=6.0'}
-    peerDependencies:
-      supports-color: '*'
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
 
   debug@4.3.5:
     resolution: {integrity: sha512-pt0bNEmneDIvdL1Xsd9oDQ/wrQRkXDT4AUWlNZNPKvW5x/jyO9VFXkJUP07vQ2upmw5PlaITaPKc31jK13V+jg==}
@@ -1284,31 +1184,12 @@ packages:
       supports-color:
         optional: true
 
-  decamelize-keys@1.1.1:
-    resolution: {integrity: sha512-WiPxgEirIV0/eIOMcnFBA3/IJZAZqKnwAwWyvvdi4lsr1WCN22nhdf/3db3DoZcUjTV2SqfzIwNyp6y2xs3nmg==}
-    engines: {node: '>=0.10.0'}
-
-  decamelize@1.2.0:
-    resolution: {integrity: sha512-z2S+W9X73hAUUki+N+9Za2lBlun89zigOyGrsax+KUQ6wKW4ZoWpEYBkGhQjwAjjDCkWxhY0VKEhk8wzY7F5cA==}
-    engines: {node: '>=0.10.0'}
-
   decamelize@4.0.0:
     resolution: {integrity: sha512-9iE1PgSik9HeIIw2JO94IidnE3eBoQrFJ3w7sFuzSX4DpmZ3v5sZpUiV5Swcf6mQEF+Y0ru8Neo+p+nyh2J+hQ==}
     engines: {node: '>=10'}
 
   deep-is@0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
-
-  defaults@1.0.4:
-    resolution: {integrity: sha512-eFuaLoy/Rxalv2kr+lqMlUnrDWV+3j4pljOIJgLIhI058IQfWJ7vXhyEIHu+HtC738klGALYxOKDO0bQP3tg8A==}
-
-  define-data-property@1.1.4:
-    resolution: {integrity: sha512-rBMvIzlpA8v6E+SJZoo++HAYqsLrkg7MSfIinMPFhmkorw7X+dOXVJQs+QT69zGkzMyfDnIMN2Wid1+NbL3T+A==}
-    engines: {node: '>= 0.4'}
-
-  define-properties@1.2.1:
-    resolution: {integrity: sha512-8QmQKqEASLd5nx0U1B1okLElbUuuttJ/AnYmRXbbbGDWh6uS208EjD4Xqq/I9wK7u0v6O08XhTWnt5XtEbR6Dg==}
-    engines: {node: '>= 0.4'}
 
   delegates@1.0.0:
     resolution: {integrity: sha512-bd2L678uiWATM6m5Z1VzNCErI3jiGzt6HGY8OVICs40JQq/HALfbyNJmp0UDakEY4pMMaN0Ly5om/B1VI/+xfQ==}
@@ -1325,8 +1206,8 @@ packages:
     resolution: {integrity: sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==}
     engines: {node: '>=0.3.1'}
 
-  diff@5.0.0:
-    resolution: {integrity: sha512-/VTCrvm5Z0JGty/BWHljh+BAiw3IK+2j87NGMu8Nwc/f48WoDAC395uomO9ZD117ZOBaHmkX1oyLvkVM/aIT3w==}
+  diff@5.2.0:
+    resolution: {integrity: sha512-uIFDxqpRZGZ6ThOk84hEfqWoHx2devRFvpTZcTHur85vImfaxUbTW9Ryh4CpCuDnToOP1CEtXKIgytHBPVff5A==}
     engines: {node: '>=0.3.1'}
 
   dir-glob@3.0.1:
@@ -1376,33 +1257,6 @@ packages:
   error-ex@1.3.2:
     resolution: {integrity: sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==}
 
-  es-abstract@1.23.3:
-    resolution: {integrity: sha512-e+HfNH61Bj1X9/jLc5v1owaLYuHdeHHSQlkhCBiTK8rBvKaULl/beGMxwrMXjpYrv4pz22BlY570vVePA2ho4A==}
-    engines: {node: '>= 0.4'}
-
-  es-define-property@1.0.0:
-    resolution: {integrity: sha512-jxayLKShrEqqzJ0eumQbVhTYQM27CfT1T35+gCgDFoL82JLsXqTJ76zv6A0YLOgEnLUMvLzsDsGIrl8NFpT2gQ==}
-    engines: {node: '>= 0.4'}
-
-  es-errors@1.3.0:
-    resolution: {integrity: sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==}
-    engines: {node: '>= 0.4'}
-
-  es-object-atoms@1.0.0:
-    resolution: {integrity: sha512-MZ4iQ6JwHOBQjahnjwaC1ZtIBH+2ohjamzAO3oaHcXYup7qxjF2fixyH+Q71voWHeOkI2q/TnJao/KfXYIZWbw==}
-    engines: {node: '>= 0.4'}
-
-  es-set-tostringtag@2.0.3:
-    resolution: {integrity: sha512-3T8uNMC3OQTHkFUsFq8r/BwAXLHvU/9O9mE0fBc/MY5iq/8H7ncvO947LmYA6ldWw9Uh8Yhf25zu6n7nML5QWQ==}
-    engines: {node: '>= 0.4'}
-
-  es-shim-unscopables@1.0.2:
-    resolution: {integrity: sha512-J3yBRXCzDu4ULnQwxyToo/OjdMx6akgVC7K6few0a7F/0wLtmKKN7I73AH5T2836UuXRqN7Qg+IIUw/+YJksRw==}
-
-  es-to-primitive@1.2.1:
-    resolution: {integrity: sha512-QCOllgZJtaUo9miYBcLChTUaHNjJF3PYs1VidD7AwiEj1kYxKeQTctLAezAOH5ZKRH0g2IgPn6KwB4IT8iRpvA==}
-    engines: {node: '>= 0.4'}
-
   esbuild@0.20.2:
     resolution: {integrity: sha512-WdOOppmUNU+IbZ0PaDiTst80zjnrOkyJNHoKupIcVyU8Lvla3Ugx94VzkQ32Ijqd7UhHJy75gNWDMUekcrSJ6g==}
     engines: {node: '>=12'}
@@ -1449,13 +1303,13 @@ packages:
     resolution: {integrity: sha512-OtIRv/2GyiF6o/d8K7MYKKbXrOUBIK6SfkIRM4Z0dY3w+LiQ0vy3F57m0Z71bjbyeiWFiHJ8brqnmE6H6/jEuw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  eslint@9.5.0:
-    resolution: {integrity: sha512-+NAOZFrW/jFTS3dASCGBxX1pkFD0/fsO+hfAkJ4TyYKwgsXZbqzrw+seCYFCcPCYXvnD67tAnglU7GQTz6kcVw==}
+  eslint@9.6.0:
+    resolution: {integrity: sha512-ElQkdLMEEqQNM9Njff+2Y4q2afHk7JpkPvrd7Xh7xefwgQynqPxwf55J7di9+MEibWUGdNjFF9ITG9Pck5M84w==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     hasBin: true
 
-  espree@10.0.1:
-    resolution: {integrity: sha512-MWkrWZbJsL2UwnjxTX3gG8FneachS/Mwg7tdGXce011sJd5b0JG54vat5KHnfSBODZ3Wvzd2WnjxyzsRoVv+ww==}
+  espree@10.1.0:
+    resolution: {integrity: sha512-M1M6CpiE6ffoigIOWYO9UDP8TMUw9kqb21tf+08IgDYjCsOvCuDt4jQcZmoYxx+w7zlKw9/N0KXfto+I8/FrXA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   esprima@4.0.1:
@@ -1571,9 +1425,6 @@ packages:
       debug:
         optional: true
 
-  for-each@0.3.3:
-    resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
-
   foreground-child@3.2.1:
     resolution: {integrity: sha512-PXUUyLqrR2XCWICfv6ukppP96sdFwWbNEnfEMt7jNsISjMsvaLNinAHNDYyvkyU+SZG2BTSbT5NjG+vZslfGTA==}
     engines: {node: '>=14'}
@@ -1609,16 +1460,6 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
-  function-bind@1.1.2:
-    resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
-
-  function.prototype.name@1.1.6:
-    resolution: {integrity: sha512-Z5kx79swU5P27WEayXM1tBi5Ze/lbIyiNgU3qyXUOf9b2rgXYyF9Dy9Cx+IQv/Lc8WCG6L82zwUPpSS9hGehIg==}
-    engines: {node: '>= 0.4'}
-
-  functions-have-names@1.2.3:
-    resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
-
   gauge@3.0.2:
     resolution: {integrity: sha512-+5J6MS/5XksCuXq++uFRsnUd7Ovu1XenbeuIuNRJxYWjgQbPuFhT14lAvsWfqfAmnwluf1OwMjz39HjfLPci0Q==}
     engines: {node: '>=10'}
@@ -1628,10 +1469,6 @@ packages:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
     engines: {node: 6.* || 8.* || >= 10.*}
 
-  get-intrinsic@1.2.4:
-    resolution: {integrity: sha512-5uYhsJH8VJBTv7oslg4BznJYhDoRI6waYCxMmCdnTrcCrHA/fCFKoTFz2JKKE0HdDFUF7/oQuhzumXJK7paBRQ==}
-    engines: {node: '>= 0.4'}
-
   get-stream@5.2.0:
     resolution: {integrity: sha512-nBF+F1rAZVCu/p7rjzgA+Yb4lfYXrpl7a6VmJrU8wF9I1CKvP/QwPNZHnOlwbTkY6dvtFIzFMSyQXbLoTQPRpA==}
     engines: {node: '>=8'}
@@ -1639,10 +1476,6 @@ packages:
   get-stream@8.0.1:
     resolution: {integrity: sha512-VaUJspBffn/LMCJVoMvSAdmscJyS1auj5Zulnn5UoYcY531UWmdwhRWkcGKnGU93m5HSXP9LP2usOryrBtQowA==}
     engines: {node: '>=16'}
-
-  get-symbol-description@1.0.2:
-    resolution: {integrity: sha512-g0QYk1dZBxGwk+Ngc+ltRH2IBp2f7zBkBMBJZCDerh6EhlhSR6+9irMCuT/09zD6qkarHUSn529sK/yL4S27mg==}
-    engines: {node: '>= 0.4'}
 
   git-raw-commits@4.0.0:
     resolution: {integrity: sha512-ICsMM1Wk8xSGMowkOmPrzo2Fgmfo4bMHLNX6ytHjajRJUqvHOw/TFapQ+QG75c3X/tTDDhOSRPGC52dDbNM8FQ==}
@@ -1657,9 +1490,9 @@ packages:
     resolution: {integrity: sha512-XxwI8EOhVQgWp6iDL+3b0r86f4d6AX6zSU55HfB4ydCEuXLXc5FcYeOu+nnGftS4TEju/11rt4KJPTMgbfmv4A==}
     engines: {node: '>=10.13.0'}
 
-  glob@10.4.1:
-    resolution: {integrity: sha512-2jelhlq3E4ho74ZyVLN03oKdAZVUa6UDZzFLVH1H7dnoax+y9qyaq8zBkfDIggjniU19z0wU18y16jMB2eyVIw==}
-    engines: {node: '>=16 || 14 >=14.18'}
+  glob@10.4.3:
+    resolution: {integrity: sha512-Q38SGlYRpVtDBPSWEylRyctn7uDeTp4NQERTLiCT1FqA9JXPYWqAVmQU6qh4r/zMM5ehxTcbaO8EjhWnvEhmyg==}
+    engines: {node: '>=18'}
     hasBin: true
 
   glob@7.2.3:
@@ -1679,32 +1512,15 @@ packages:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
     engines: {node: '>=18'}
 
-  globalthis@1.0.4:
-    resolution: {integrity: sha512-DpLKbNU4WylpxJykQujfCcwYWiV/Jhm50Goo0wrVILAv5jOr9d+H+UR3PhSCD2rCCEIg0uc+G+muBTwD54JhDQ==}
-    engines: {node: '>= 0.4'}
-
   globby@11.1.0:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
     engines: {node: '>=10'}
 
-  gopd@1.0.1:
-    resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
-
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  grapheme-splitter@1.0.4:
-    resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
-
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
-
-  hard-rejection@2.1.0:
-    resolution: {integrity: sha512-VIZB+ibDhx7ObhAe7OVtoEbuP4h/MuOTHJ+J8h/eBXotJYl0fBgR72xDFCKgIh22OJZIOVNxBMWuhAr10r8HdA==}
-    engines: {node: '>=6'}
-
-  has-bigints@1.0.2:
-    resolution: {integrity: sha512-tSvCKtBr9lkF0Ex0aQiP9N+OpV4zi2r/Nee5VkRDbaqv35RLYMzbwQfFSZZH0kR+Rd6302UJZ2p/bJCEoR3VoQ==}
 
   has-flag@3.0.0:
     resolution: {integrity: sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw==}
@@ -1714,34 +1530,12 @@ packages:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
 
-  has-property-descriptors@1.0.2:
-    resolution: {integrity: sha512-55JNKuIW+vq4Ke1BjOTjM2YctQIvCT7GFzHwmfZPGo5wnrgkid0YQtnAleFSqumZm4az3n2BS+erby5ipJdgrg==}
-
-  has-proto@1.0.3:
-    resolution: {integrity: sha512-SJ1amZAJUiZS+PhsVLf5tGydlaVB8EdFpaSO4gmiUKUOxk8qzn5AIy4ZeJUmh22znIdk/uMAUT2pl3FxzVUH+Q==}
-    engines: {node: '>= 0.4'}
-
-  has-symbols@1.0.3:
-    resolution: {integrity: sha512-l3LCuF6MgDNwTDKkdYGEihYjt5pRPbEg46rtlmnSPlUbgmB8LOIrKJbYYFBSbnPaJexMKtiPO8hmeRjRz2Td+A==}
-    engines: {node: '>= 0.4'}
-
-  has-tostringtag@1.0.2:
-    resolution: {integrity: sha512-NqADB8VjPFLM2V0VvHUewwwsw0ZWBaIdgo+ieHtK3hasLz4qeCRjYcqfB6AQrBggRKppKF8L52/VqdVsO47Dlw==}
-    engines: {node: '>= 0.4'}
-
   has-unicode@2.0.1:
     resolution: {integrity: sha512-8Rf9Y83NBReMnx0gFzA8JImQACstCYWUplepDa9xprwwtmgEZUF0h/i5xSA625zB/I37EtrswSST6OXxwaaIJQ==}
-
-  hasown@2.0.2:
-    resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
-    engines: {node: '>= 0.4'}
 
   he@1.2.0:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
-
-  hosted-git-info@2.8.9:
-    resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
 
   http-cache-semantics@4.1.1:
     resolution: {integrity: sha512-er295DKPVsV82j5kw1Gjt+ADA/XYHsajl82cGNQG2eyoPkvgUhX+nDIyelzhIWbbsXP39EHcI6l5tYs2FYqYXQ==}
@@ -1754,8 +1548,8 @@ packages:
     resolution: {integrity: sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==}
     engines: {node: '>= 6'}
 
-  https-proxy-agent@7.0.4:
-    resolution: {integrity: sha512-wlwpilI7YdjSkWaQ/7omYBMTliDcmCN8OLihO6I9B86g06lMyAoqgoDpV0XqoaPOKj+0DIdAvnsWfyAAhmimcg==}
+  https-proxy-agent@7.0.5:
+    resolution: {integrity: sha512-1e4Wqeblerz+tMKPIq2EMGiiWW1dIjZOksyHWSUm1rmuvw/how9hBHZ38lAGj5ID4Ik6EdkOw7NmWPy6LAwalw==}
     engines: {node: '>= 14'}
 
   human-id@1.0.2:
@@ -1817,46 +1611,16 @@ packages:
     resolution: {integrity: sha512-QQnnxNyfvmHFIsj7gkPcYymR8Jdw/o7mp5ZFihxn6h8Ci6fh3Dx4E1gPjpQEpIuPo9XVNY/ZUwh4BPMjGyL01g==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  internal-slot@1.0.7:
-    resolution: {integrity: sha512-NGnrKwXzSms2qUUih/ILZ5JBqNTSa1+ZmP6flaIp6KmSElgE9qdndzS3cqjrDovwFdmwsGsLdeFgB6suw+1e9g==}
-    engines: {node: '>= 0.4'}
-
   ip-address@9.0.5:
     resolution: {integrity: sha512-zHtQzGojZXTwZTHQqra+ETKd4Sn3vgi7uBmlPoXVWZqYvuKmtI0l/VZTjqGmJY9x88GGOaZ9+G9ES8hC4T4X8g==}
     engines: {node: '>= 12'}
 
-  is-array-buffer@3.0.4:
-    resolution: {integrity: sha512-wcjaerHw0ydZwfhiKbXJWLDY8A7yV7KhjQOpb83hGgGfId/aQa4TOvwyzn2PuswW2gPCYEL/nEAiSVpdOj1lXw==}
-    engines: {node: '>= 0.4'}
-
   is-arrayish@0.2.1:
     resolution: {integrity: sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg==}
-
-  is-bigint@1.0.4:
-    resolution: {integrity: sha512-zB9CruMamjym81i2JZ3UMn54PKGsQzsJeo6xvN3HJJ4CAsQNB6iRutp2To77OfCNuoxspsIhzaPoO1zyCEhFOg==}
 
   is-binary-path@2.1.0:
     resolution: {integrity: sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==}
     engines: {node: '>=8'}
-
-  is-boolean-object@1.1.2:
-    resolution: {integrity: sha512-gDYaKHJmnj4aWxyj6YHyXVpdQawtVLHU5cb+eztPGczf6cjuTdwve5ZIEfgXqH4e57An1D1AKf8CZ3kYrQRqYA==}
-    engines: {node: '>= 0.4'}
-
-  is-callable@1.2.7:
-    resolution: {integrity: sha512-1BC0BVFhS/p0qtw6enp8e+8OD0UrK0oFLztSjNzhcKA3WDuJxxAPXzPuPtKkjEY9UUoEWlX/8fgKeu2S8i9JTA==}
-    engines: {node: '>= 0.4'}
-
-  is-core-module@2.13.1:
-    resolution: {integrity: sha512-hHrIjvZsftOsvKSn2TRYl63zvxsgE0K+0mYMoH6gD4omR5IWB2KynivBQczo3+wF1cCkjzvptnI9Q0sPU66ilw==}
-
-  is-data-view@1.0.1:
-    resolution: {integrity: sha512-AHkaJrsUVW6wq6JS8y3JnM/GJF/9cf+k20+iDzlSaJrinEo5+7vRiteOSwBhHRiAyQATN1AmY4hwzxJKPmYf+w==}
-    engines: {node: '>= 0.4'}
-
-  is-date-object@1.0.5:
-    resolution: {integrity: sha512-9YQaSxsAiSwcvS33MBk3wTCVnWK+HhF8VZR2jRxehM16QcVOdHqPn4VPHmRK4lSr38n9JriurInLcP90xsYNfQ==}
-    engines: {node: '>= 0.4'}
 
   is-extglob@2.1.1:
     resolution: {integrity: sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ==}
@@ -1873,14 +1637,6 @@ packages:
   is-lambda@1.0.1:
     resolution: {integrity: sha512-z7CMFGNrENq5iFB9Bqo64Xk6Y9sg+epq1myIcdHaGnbMTYOxvzsEtdYqQUylB7LxfkvgrrjP32T6Ywciio9UIQ==}
 
-  is-negative-zero@2.0.3:
-    resolution: {integrity: sha512-5KoIu2Ngpyek75jXodFvnafB6DJgr3u8uuK0LEZJjrU19DrMD3EVERaR8sjz8CCGgpZvxPl9SuE1GMVPFHx1mw==}
-    engines: {node: '>= 0.4'}
-
-  is-number-object@1.0.7:
-    resolution: {integrity: sha512-k1U0IRzLMo7ZlYIfzRu23Oh6MiIFasgpb9X76eqfFZAqwH44UI4KTBvBYIZ1dSL9ZzChTB9ShHfLkR4pdW5krQ==}
-    engines: {node: '>= 0.4'}
-
   is-number@7.0.0:
     resolution: {integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==}
     engines: {node: '>=0.12.0'}
@@ -1893,21 +1649,9 @@ packages:
     resolution: {integrity: sha512-Fd4gABb+ycGAmKou8eMftCupSir5lRxqf4aD/vd0cD2qc4HL07OjCeuHMr8Ro4CoMaeCKDB0/ECBOVWjTwUvPQ==}
     engines: {node: '>=8'}
 
-  is-plain-obj@1.1.0:
-    resolution: {integrity: sha512-yvkRyxmFKEOQ4pNXCmJG5AEQNlXJS5LaONXo5/cLdTZdWvsZ1ioJEonLGAosKlMWE8lwUy/bJzMjcw8az73+Fg==}
-    engines: {node: '>=0.10.0'}
-
   is-plain-obj@2.1.0:
     resolution: {integrity: sha512-YWnfyRwxL/+SsrWYfOpUtz5b3YD+nyfkHvjbcanzk8zgyO4ASD67uVMRt8k5bM4lLMDnXfriRhOpemw+NfT1eA==}
     engines: {node: '>=8'}
-
-  is-regex@1.1.4:
-    resolution: {integrity: sha512-kvRdxDsxZjhzUX07ZnLydzS1TU/TJlTUHHY4YLL87e37oUA49DfkLqgy+VjFocowy29cKvcSiu+kIv728jTTVg==}
-    engines: {node: '>= 0.4'}
-
-  is-shared-array-buffer@1.0.3:
-    resolution: {integrity: sha512-nA2hv5XIhLR3uVzDDfCIknerhx8XUKnstuOERPNNIinXG7v9u+ohXF67vxm4TPTEPU6lm61ZkwP3c9PCB97rhg==}
-    engines: {node: '>= 0.4'}
 
   is-stream@2.0.1:
     resolution: {integrity: sha512-hFoiJiTl63nn+kstHGBtewWSKnQLpyb155KHheA1l39uvtO9nWIop1p3udqPcUd/xbF1VLMO4n7OI6p7RbngDg==}
@@ -1917,32 +1661,17 @@ packages:
     resolution: {integrity: sha512-LnQR4bZ9IADDRSkvpqMGvt/tEJWclzklNgSw48V5EAaAeDd6qGvN8ei6k5p0tvxSR171VmGyHuTiAOfxAbr8kA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  is-string@1.0.7:
-    resolution: {integrity: sha512-tE2UXzivje6ofPW7l23cjDOMa09gb7xlAqG6jG5ej6uPV32TlWP3NKPigtaGeHNu9fohccRYvIiZMfOOnOYUtg==}
-    engines: {node: '>= 0.4'}
-
   is-subdir@1.2.0:
     resolution: {integrity: sha512-2AT6j+gXe/1ueqbW6fLZJiIw3F8iXGJtt0yDrZaBhAZEG1raiTxKWU+IPqMCzQAXOUCKdA4UDMgacKH25XG2Cw==}
     engines: {node: '>=4'}
-
-  is-symbol@1.0.4:
-    resolution: {integrity: sha512-C/CPBqKWnvdcxqIARxyOh4v1UUEOCHpgDa0WYgpKDFMszcrPcffg5uhwSgPCLD2WWxmq6isisz87tzT01tuGhg==}
-    engines: {node: '>= 0.4'}
 
   is-text-path@2.0.0:
     resolution: {integrity: sha512-+oDTluR6WEjdXEJMnC2z6A4FRwFoYuvShVVEGsS7ewc0UTi2QtAKMDJuL4BDEVt+5T7MjFo12RP8ghOM75oKJw==}
     engines: {node: '>=8'}
 
-  is-typed-array@1.1.13:
-    resolution: {integrity: sha512-uZ25/bUAlUY5fR4OKT4rZQEBrzQWYV9ZJYGGsUmEJ6thodVJ1HX64ePQ6Z0qPWP+m+Uq6e9UugrE38jeYsDSMw==}
-    engines: {node: '>= 0.4'}
-
   is-unicode-supported@0.1.0:
     resolution: {integrity: sha512-knxG2q4UC3u8stRGyAVJCOdxFmv5DZiRcdlIaAQXAbSfJya+OhopNotLQrstBhququ4ZpuKbDc/8S6mgXgPFPw==}
     engines: {node: '>=10'}
-
-  is-weakref@1.0.2:
-    resolution: {integrity: sha512-qctsuLZmIQ0+vSSMfoVvyFe2+GSEvnmZ2ezTup1SBse9+twCCeial6EEi3Nc2KFcf6+qz2FBPnjXsk8xhKSaPQ==}
 
   is-windows@1.0.2:
     resolution: {integrity: sha512-eXK1UInq2bPmjyX6e3VHIzMLobc4J94i4AWn+Hpq3OU5KkrRC96OAcR3PRJ/pGu6m8TRnBHP9dkXQVsT/COVIA==}
@@ -1951,15 +1680,12 @@ packages:
   isarray@1.0.0:
     resolution: {integrity: sha512-VLghIWNM6ELQzo7zwmcg0NmTVyWKYjvIeM83yjp0wRDTmUnrM678fQbcKBo6n2CJEF0szoG//ytg+TKla89ALQ==}
 
-  isarray@2.0.5:
-    resolution: {integrity: sha512-xHjhDr3cNBK0BzdUJSPXZntQUx/mwMS5Rw4A7lPJ90XGAO6ISP/ePDNuo0vhqOZU+UD5JoodwCAAoZQd3FeAKw==}
-
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
-  jackspeak@3.4.0:
-    resolution: {integrity: sha512-JVYhQnN59LVPFCEcVa2C3CrEKYacvjRfqIQl+h8oi91aLYQVWRYbxjPcv1bUiUy/kLmQaANrYfNMCO3kuEDHfw==}
-    engines: {node: '>=14'}
+  jackspeak@3.4.1:
+    resolution: {integrity: sha512-U23pQPDnmYybVkYjObcuYMk43VRlMLLqLI+RdZy8s8WV8WsxO9SnqSroKaluuvcNOdCAlauKszDwd+umbot5Mg==}
+    engines: {node: '>=18'}
 
   jiti@1.21.6:
     resolution: {integrity: sha512-2yTgeWTWzMWkHu6Jp9NKgePDaYHbntiwvYuuJLbbN9vl7DC9DvXKOB2BC3ZZ92D3cvV/aflH0osDfwpHepQ53w==}
@@ -2018,14 +1744,6 @@ packages:
 
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
-
-  kind-of@6.0.3:
-    resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
-    engines: {node: '>=0.10.0'}
-
-  kleur@4.1.5:
-    resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
-    engines: {node: '>=6'}
 
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
@@ -2107,9 +1825,9 @@ packages:
     resolution: {integrity: sha512-9fkkDevMefjg0mmzWFBW8YkFP91OrizzkW3diF7CpG+S2EYdy4+TVfGwz1zeF8x7hCx1ovSPTOE9Ngib74qqUg==}
     engines: {node: '>=10'}
 
-  lru-cache@10.2.2:
-    resolution: {integrity: sha512-9hp3Vp2/hFQUiIwKo8XCeFVnrg8Pk3TYNPIR7tJADKi5YfcF7vEaK7avFHTlSy3kOKYaJQaalfEo6YuXdceBOQ==}
-    engines: {node: 14 || >=16.14}
+  lru-cache@10.3.1:
+    resolution: {integrity: sha512-9/8QXrtbGeMB6LxwQd4x1tIMnsmUxMvIH/qWGsccz6bt9Uln3S+sgAaqfQNhbGA8ufzs2fHuP/yqapGgP9Hh2g==}
+    engines: {node: '>=18'}
 
   lru-cache@4.1.5:
     resolution: {integrity: sha512-sWZlbEP2OsHNkXrMl5GYk/jKk70MBng6UU4YI/qGDYbgf6YbP4EvmqISbXCoJiRKs+1bSpFHVgQxvJ17F2li5g==}
@@ -2136,24 +1854,12 @@ packages:
     resolution: {integrity: sha512-rLWS7GCSTcEujjVBs2YqG7Y4643u8ucvCJeSRqiLYhesrDuzeuFIk37xREzAsfQaqzl8b9rNCE4m6J8tvX4Q8w==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  map-obj@1.0.1:
-    resolution: {integrity: sha512-7N/q3lyZ+LVCp7PzuxrJr4KMbBE2hW7BT7YNia330OFxIf4d3r5zVpicP2650l7CPN6RM9zOJRl3NGpqSiw3Eg==}
-    engines: {node: '>=0.10.0'}
-
-  map-obj@4.3.0:
-    resolution: {integrity: sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==}
-    engines: {node: '>=8'}
-
   memory-pager@1.5.0:
     resolution: {integrity: sha512-ZS4Bp4r/Zoeq6+NLJpP+0Zzm0pR8whtGPf1XExKLJBAczGMnSi3It14OiNCStjQjM6NU1okjQGSxgEZN8eBYKg==}
 
   meow@12.1.1:
     resolution: {integrity: sha512-BhXM0Au22RwUneMPwSCnyhTOizdWoIEPU9sp0Aqa1PnDMR5Wv2FGXYDjuzJEIX+Eo2Rb8xuYe5jrnm5QowQFkw==}
     engines: {node: '>=16.10'}
-
-  meow@6.1.1:
-    resolution: {integrity: sha512-3YffViIt2QWgTy6Pale5QpopX/IvU3LPL03jOTqp6pGj3VjesdO/U8CuHMKpnQr4shCNCM5fd5XFFvIIl6JBHg==}
-    engines: {node: '>=8'}
 
   merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
@@ -2174,24 +1880,16 @@ packages:
     resolution: {integrity: sha512-vqiC06CuhBTUdZH+RYl8sFrL096vA45Ok5ISO6sE/Mr1jRbGH4Csnhi8f3wKVl7x8mO4Au7Ir9D3Oyv1VYMFJw==}
     engines: {node: '>=12'}
 
-  min-indent@1.0.1:
-    resolution: {integrity: sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==}
-    engines: {node: '>=4'}
-
   minimatch@3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
 
-  minimatch@5.0.1:
-    resolution: {integrity: sha512-nLDxIFRyhDblz3qMuq+SoRZED4+miJ/G+tdDrjkkkRnjAsBexeGpgjLEQ0blJy7rHhR2b93rhQY4SvyWu9v03g==}
+  minimatch@5.1.6:
+    resolution: {integrity: sha512-lKwV/1brpG6mBUFHtb7NUmtABCb2WZZmm2wNiOA5hAb8VdCS4B3dtMWyvcoViccwAW/COERjXLt0zP1zXUN26g==}
     engines: {node: '>=10'}
 
-  minimatch@9.0.4:
-    resolution: {integrity: sha512-KqWh+VchfxcMNRAJjj2tnsSJdNbHsVgnkBhTNrW7AjVo6OvLtxw8zfT9oLw1JSohlFzJ8jCoTgaoXvJ+kHt6fw==}
+  minimatch@9.0.5:
+    resolution: {integrity: sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==}
     engines: {node: '>=16 || 14 >=14.17'}
-
-  minimist-options@4.1.0:
-    resolution: {integrity: sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==}
-    engines: {node: '>= 6'}
 
   minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
@@ -2240,10 +1938,6 @@ packages:
     resolution: {integrity: sha512-x471SsVjUtBRtcvd4BzKE9kFC+/2TeWgKCgw0bZcw1b9l2X3QX5vCWgF+KaZaYm87Ss//rHnWryupDrgLvmSkA==}
     engines: {node: '>=4.0.0'}
 
-  mixme@0.5.10:
-    resolution: {integrity: sha512-5H76ANWinB1H3twpJ6JY8uvAtpmFvHNArpilJAjXRKXSDDLPIMoZArw5SH0q9z+lLs8IrMw7Q2VWpWimFKFT1Q==}
-    engines: {node: '>= 8.0.0'}
-
   mkdirp@0.5.6:
     resolution: {integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==}
     hasBin: true
@@ -2253,8 +1947,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  mocha@10.4.0:
-    resolution: {integrity: sha512-eqhGB8JKapEYcC4ytX/xrzKforgEc3j1pGlAXVy3eRwrtAy5/nIfT1SvgGzfN0XZZxeLq0aQWkOUAmqIJiv+bA==}
+  mocha@10.6.0:
+    resolution: {integrity: sha512-hxjt4+EEB0SA0ZDygSS015t65lJw/I2yRCS3Ae+SJ5FrbzrXgfYwJr96f0OvIXdj7h4lv/vLCrH3rkiuizFSvw==}
     engines: {node: '>= 14.0.0'}
     hasBin: true
 
@@ -2264,12 +1958,12 @@ packages:
   mongodb-connection-string-url@3.0.1:
     resolution: {integrity: sha512-XqMGwRX0Lgn05TDB4PyG2h2kKO/FfWJyCzYQbIhXUxz7ETt0I/FqHjUeqj37irJ+Dl1ZtU82uYyj14u2XsZKfg==}
 
-  mongodb-memory-server-core@9.3.0:
-    resolution: {integrity: sha512-8okAtOGWqSG37K7/TrvTfn43ORMh9LssIvd30XjHxvjWK7utmSTXr69XAhYvsDrHDwv7L23Ii6NJ4zMPpiFKuw==}
+  mongodb-memory-server-core@9.4.0:
+    resolution: {integrity: sha512-irqdj/RPHJ2M9lgtxrvhXUbqFv/DfmUG+wvcAqtgtBJ8qVq1VGBD5rkKkLP5b3g8OoadP3OzsXTGCi1P2dDBQQ==}
     engines: {node: '>=14.20.1'}
 
-  mongodb-memory-server@9.3.0:
-    resolution: {integrity: sha512-ag1vbjsm1A2C/1arRlfCLRapY7L2JKsQgASvaFyTXFyfqf6wjVSfO3PhJ/KfkyntmwlMXe3sUjMkZKeD89qu8Q==}
+  mongodb-memory-server@9.4.0:
+    resolution: {integrity: sha512-O6n7TxWvcLSSDP3IrXsLsdG0iouljlqdZ7sH3ZaqEyymzZglMroV3CwMj1lvMNks7fRVj8HMrza0gnwF3MyFGA==}
     engines: {node: '>=14.20.1'}
 
   mongodb@5.9.2:
@@ -2293,8 +1987,8 @@ packages:
       snappy:
         optional: true
 
-  mongodb@6.7.0:
-    resolution: {integrity: sha512-TMKyHdtMcO0fYBNORiYdmM25ijsHs+Njs963r4Tro4OQZzqYigAzYQouwWRg4OIaiLRUEGUh/1UAcH5lxdSLIA==}
+  mongodb@6.8.0:
+    resolution: {integrity: sha512-HGQ9NWDle5WvwMnrvUxsFYPd3JEbqD3RgABHBQRuoCEND0qzhsd0iH5ypHsf1eJ+sXmvmyKpP+FLOKY8Il7jMw==}
     engines: {node: '>=16.20.1'}
     peerDependencies:
       '@aws-sdk/credential-providers': ^3.188.0
@@ -2323,6 +2017,10 @@ packages:
   move-concurrently@1.0.1:
     resolution: {integrity: sha512-hdrFxZOycD/g6A6SoI2bB5NA/5NEqD0569+S47WZhPvm46sD50ZHdYaFmnua5lndde9rCHGjmfK7Z8BuCt/PcQ==}
     deprecated: This package is no longer supported.
+
+  mri@1.2.0:
+    resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
+    engines: {node: '>=4'}
 
   ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
@@ -2358,9 +2056,6 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
-  normalize-package-data@2.5.0:
-    resolution: {integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==}
-
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
@@ -2380,17 +2075,6 @@ packages:
   object-assign@4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
-
-  object-inspect@1.13.1:
-    resolution: {integrity: sha512-5qoj1RUiKOMsCCNLV1CBiPYE10sziTsnmNxkAI/rZhiD63CF7IqdFGC/XzjWjpSgLf0LxXX3bDFIh0E18f6UhQ==}
-
-  object-keys@1.1.1:
-    resolution: {integrity: sha512-NuAESUOUMrlIXOfHKzD6bpPu3tYt3xvjNdRIQ+FeT0lNb4K8WR70CaDxhuNguS2XG+GjkyMwOzsN5ZktImfhLA==}
-    engines: {node: '>= 0.4'}
-
-  object.assign@4.1.5:
-    resolution: {integrity: sha512-byy+U7gp+FVwmyzKPYhW2h5l3crpmGsxl7X2s8y43IgxvG4g3QZ6CffDtsNQy1WsmZpQbO+ybo0AlW7TY6DcBQ==}
-    engines: {node: '>= 0.4'}
 
   once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
@@ -2458,6 +2142,9 @@ packages:
     resolution: {integrity: sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==}
     engines: {node: '>=6'}
 
+  package-json-from-dist@1.0.0:
+    resolution: {integrity: sha512-dATvCeZN/8wQsGywez1mzHtTlP22H8OEfPrVMLNr4/eGa+ijtLn/6M5f0dY8UKNrC2O9UCU6SSoG3qRKnt7STw==}
+
   parallel-transform@1.2.0:
     resolution: {integrity: sha512-P2vSmIu38uIlvdcU7fDkyrxj33gTUy/ABO5ZUbGowxNCopBq/OoD42bP4UmMrJoPyk4Uqf0mu3mtWBhHCZD8yg==}
 
@@ -2489,9 +2176,6 @@ packages:
     resolution: {integrity: sha512-haREypq7xkM7ErfgIyA0z+Bj4AGKlMSdlQE2jvJo6huWD1EdkKYV+G/T4nq0YEF2vgTT8kqMFKo1uHn950r4SQ==}
     engines: {node: '>=12'}
 
-  path-parse@1.0.7:
-    resolution: {integrity: sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==}
-
   path-scurry@1.11.1:
     resolution: {integrity: sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA==}
     engines: {node: '>=16 || 14 >=14.18'}
@@ -2522,12 +2206,8 @@ packages:
     resolution: {integrity: sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==}
     engines: {node: '>=8'}
 
-  possible-typed-array-names@1.0.0:
-    resolution: {integrity: sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==}
-    engines: {node: '>= 0.4'}
-
-  preferred-pm@3.1.3:
-    resolution: {integrity: sha512-MkXsENfftWSRpzCzImcp4FRsCc3y1opwB73CfCNWyzMqArju2CrlMHlqB7VexKiPEOjGMbttv1r9fSCn5S610w==}
+  preferred-pm@3.1.4:
+    resolution: {integrity: sha512-lEHd+yEm22jXdCphDrkvIJQU66EuLojPPtvZkpKIkiD+l0DMThF/niqZKJSoU8Vl7iuvtmzyMhir9LdVy5WMnA==}
     engines: {node: '>=10'}
 
   prelude-ls@1.2.1:
@@ -2590,20 +2270,8 @@ packages:
   queue-tick@1.0.1:
     resolution: {integrity: sha512-kJt5qhMxoszgU/62PLP1CJytzd2NKetjSRnyuj31fDd3Rlcz3fzlFdFLD1SItunPwyqEOkca6GbV612BWfaBag==}
 
-  quick-lru@4.0.1:
-    resolution: {integrity: sha512-ARhCpm70fzdcvNQfPoy49IaanKkTlRWF2JMzqhcJbhSFRZv7nPTvZJdcY7301IPmvW+/p0RgIWnQDLJxifsQ7g==}
-    engines: {node: '>=8'}
-
   randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
-
-  read-pkg-up@7.0.1:
-    resolution: {integrity: sha512-zK0TB7Xd6JpCLmlLmufqykGE+/TlOePD6qKClNW7hHDKFh/J7/7gCWGR7joEQEW1bKq3a3yUZSObOoWLFQ4ohg==}
-    engines: {node: '>=8'}
-
-  read-pkg@5.2.0:
-    resolution: {integrity: sha512-Ug69mNOpfvKDAc2Q8DRpMjjzdtrnv9HcSMX+4VsZxD1aZ6ZzrIE7rlzXBtWTyhULSMKg076AW6WR5iZpD0JiOg==}
-    engines: {node: '>=8'}
 
   read-yaml-file@1.1.0:
     resolution: {integrity: sha512-VIMnQi/Z4HT2Fxuwg5KrY174U1VdUIASQVWXXyqtNRtxSr9IYkn1rsI6Tb6HsrHCmB7gVpNwX6JxPTHcH6IoTA==}
@@ -2620,16 +2288,8 @@ packages:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
     engines: {node: '>=8.10.0'}
 
-  redent@3.0.0:
-    resolution: {integrity: sha512-6tDA8g98We0zd0GvVeMT9arEOnTw9qM03L9cJXaCjrip1OO764RDBLBfrB4cwzNGDj5OA5ioymC9GkizgWJDUg==}
-    engines: {node: '>=8'}
-
   regenerator-runtime@0.14.1:
     resolution: {integrity: sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw==}
-
-  regexp.prototype.flags@1.5.2:
-    resolution: {integrity: sha512-NcDiDkTLuPR+++OCKB0nWafEmhg/Da8aUPLPMQbK+bxKKCm1/S5he+AqYa4PlMCVBalb4/yxIRub6qkEx5yJbw==}
-    engines: {node: '>= 0.4'}
 
   require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
@@ -2639,9 +2299,6 @@ packages:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
     engines: {node: '>=0.10.0'}
 
-  require-main-filename@2.0.0:
-    resolution: {integrity: sha512-NKN5kMDylKuldxYLSUfrbo5Tuzh4hd+2E8NPPX02mZtn1VuREQToYe/ZdlJy+J3uCpfaiGF05e7B8W0iXbQHmg==}
-
   resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
     engines: {node: '>=4'}
@@ -2649,10 +2306,6 @@ packages:
   resolve-from@5.0.0:
     resolution: {integrity: sha512-qYg9KP24dD5qka9J47d0aVky0N+b4fTU89LN9iDnjB5waksiC49rvMB0PrUJQGoTmH50XPiqOvAjDfaijGxYZw==}
     engines: {node: '>=8'}
-
-  resolve@1.22.8:
-    resolution: {integrity: sha512-oKWePCxqpd6FlLvGV1VU0x7bkPmmCNolxzjMf4NczoDnQcIWrAF+cPtZn5i6n+RfD2d9i0tzpKnG6Yk168yIyw==}
-    hasBin: true
 
   restore-cursor@3.1.0:
     resolution: {integrity: sha512-l+sSefzHpj5qimhFSE5a8nufZYAM3sBSVMAPtYkmC+4EH2anSGaEMXSD0izRQbu9nfyQ9y5JrVmp7E8oZrUjvA==}
@@ -2682,26 +2335,14 @@ packages:
   run-queue@1.0.3:
     resolution: {integrity: sha512-ntymy489o0/QQplUDnpYAYUsO50K9SBrIVaKCWDOJzYJts0f9WH9RFJkyagebkw5+y1oi00R7ynNW/d12GBumg==}
 
-  safe-array-concat@1.1.2:
-    resolution: {integrity: sha512-vj6RsCsWBCf19jIeHEfkRMw8DPiBb+DMXklQ/1SGDHOMlHdPUkZXFQ2YdplS23zESTijAcurb1aSgJA3AgMu1Q==}
-    engines: {node: '>=0.4'}
-
   safe-buffer@5.1.2:
     resolution: {integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==}
 
   safe-buffer@5.2.1:
     resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==}
 
-  safe-regex-test@1.0.3:
-    resolution: {integrity: sha512-CdASjNJPvRa7roO6Ra/gLYBTzYzzPyyBXxIMdGW3USQLyjWEls2RgW5UBTXaQVp+OrpeCK3bLem8smtmheoRuw==}
-    engines: {node: '>= 0.4'}
-
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
-
-  semver@5.7.2:
-    resolution: {integrity: sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==}
-    hasBin: true
 
   semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
@@ -2712,19 +2353,11 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  serialize-javascript@6.0.0:
-    resolution: {integrity: sha512-Qr3TosvguFt8ePWqsvRfrKyQXIiW+nGbYpy8XK24NQHE83caxWt+mIymTT19DGFbNWNLfEwsrkSmN64lVWB9ag==}
+  serialize-javascript@6.0.2:
+    resolution: {integrity: sha512-Saa1xPByTTq2gdeFZYLLo+RFE35NHZkAbqZeWNd3BpzppeVisAqpDjcp8dyf6uIvEqJRd46jemmyA4iFIeVk8g==}
 
   set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
-
-  set-function-length@1.2.2:
-    resolution: {integrity: sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==}
-    engines: {node: '>= 0.4'}
-
-  set-function-name@2.0.2:
-    resolution: {integrity: sha512-7PGFlmtwsEADb0WYyvCMa1t+yke6daIG4Wirafur5kcf+MhUnPms1UeR0CKQdTZD81yESwMHbtn+TR+dMviakQ==}
-    engines: {node: '>= 0.4'}
 
   shebang-command@1.2.0:
     resolution: {integrity: sha512-EV3L1+UQWGor21OmnvojK36mhg+TyIKDh3iFBKBohr5xeXIhNBcx8oWdgkTEEQ+BEFFYdLRuqMfd5L84N1V5Vg==}
@@ -2741,10 +2374,6 @@ packages:
   shebang-regex@3.0.0:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
-
-  side-channel@1.0.6:
-    resolution: {integrity: sha512-fDW/EZ6Q9RiO8eFG8Hj+7u/oW+XrPTIChwCOM2+th2A6OblDtYYIpve9m+KvI9Z4C9qSEXlaGR6bTEYHReuglA==}
-    engines: {node: '>= 0.4'}
 
   signal-exit@3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
@@ -2764,11 +2393,6 @@ packages:
   smart-buffer@4.2.0:
     resolution: {integrity: sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==}
     engines: {node: '>= 6.0.0', npm: '>= 3.0.0'}
-
-  smartwrap@2.0.2:
-    resolution: {integrity: sha512-vCsKNQxb7PnCNd2wY1WClWifAc2lwqsG8OaswpJkVJsvMGcnEntdTCDajZCkk93Ay1U3t/9puJmb525Rg5MZBA==}
-    engines: {node: '>=6'}
-    hasBin: true
 
   socks-proxy-agent@7.0.0:
     resolution: {integrity: sha512-Fgl0YPZ902wEsAyiQ+idGd1A7rSFx/ayC1CQVMw5P+EQx2V0SgpGtf6OKFhVjPflPUl9YMmEOnmfjCdMUsygww==}
@@ -2791,18 +2415,6 @@ packages:
 
   spawndamnit@2.0.0:
     resolution: {integrity: sha512-j4JKEcncSjFlqIwU5L/rp2N5SIPsdxaRsIv678+TZxZ0SRDJTm8JrxJMjE/XuiEZNEir3S8l0Fa3Ke339WI4qA==}
-
-  spdx-correct@3.2.0:
-    resolution: {integrity: sha512-kN9dJbvnySHULIluDHy32WHRUu3Og7B9sbY7tsFLctQkIqnMh3hErYgdMjTYuqmcXX+lK5T1lnUt3G7zNswmZA==}
-
-  spdx-exceptions@2.5.0:
-    resolution: {integrity: sha512-PiU42r+xO4UbUS1buo3LPJkjlO7430Xn5SVAhdpzzsPHsjbYVflnnFdATgabnLude+Cqu25p6N+g2lw/PFsa4w==}
-
-  spdx-expression-parse@3.0.1:
-    resolution: {integrity: sha512-cbqHunsQWnJNE6KhVSMsMeH5H/L9EpymbzqTQ3uLwNCLZ1Q481oWaofqH7nO6V07xlXwY6PhQdQ2IedWx/ZK4Q==}
-
-  spdx-license-ids@3.0.18:
-    resolution: {integrity: sha512-xxRs31BqRYHwiMzudOrpSiHtZ8i/GeionCBDSilhYRj+9gIcI8wCZTlXZKu9vZIVqViP3dcp9qE5G6AlIaD+TQ==}
 
   split2@4.2.0:
     resolution: {integrity: sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==}
@@ -2831,9 +2443,6 @@ packages:
   stream-shift@1.0.3:
     resolution: {integrity: sha512-76ORR0DO1o1hlKwTbi/DM3EXWGf3ZJYO8cXX5RJwnul2DEg2oyoZyjLNoQM8WsvZiFKCRfC1O0J7iCvie3RZmQ==}
 
-  stream-transform@2.1.3:
-    resolution: {integrity: sha512-9GHUiM5hMiCi6Y03jD2ARC1ettBXkQBoQAe7nJsPknnI0ow10aXjTnew8QtYQmLjzn974BnmWEAJgCY6ZP1DeQ==}
-
   streamx@2.18.0:
     resolution: {integrity: sha512-LLUC1TWdjVdn1weXGcSxyTR3T4+acB6tVGXT95y0nGbca4t4o/ng1wKAGTljm9VicuCVLvRlqFYXYy5GwgM7sQ==}
 
@@ -2844,17 +2453,6 @@ packages:
   string-width@5.1.2:
     resolution: {integrity: sha512-HnLOCR3vjcY8beoNLtcjZ5/nxn2afmME6lhrDrebokqMap+XbeW8n9TXpPDOqdGK5qcI3oT0GKTW6wC7EMiVqA==}
     engines: {node: '>=12'}
-
-  string.prototype.trim@1.2.9:
-    resolution: {integrity: sha512-klHuCNxiMZ8MlsOihJhJEBJAiMVqU3Z2nEXWfWnIqjN0gEFS9J9+IxKozWWtQGcgoa1WUZzLjKPTr4ZHNFTFxw==}
-    engines: {node: '>= 0.4'}
-
-  string.prototype.trimend@1.0.8:
-    resolution: {integrity: sha512-p73uL5VCHCO2BZZ6krwwQE3kCzM7NKmis8S//xEC6fQonchbum4eP6kR4DLEjQFO3Wnj3Fuo8NM0kOSjVdHjZQ==}
-
-  string.prototype.trimstart@1.0.8:
-    resolution: {integrity: sha512-UXSH262CSZY1tfu3G3Secr6uGLCFVPMhIqHjlgCUtCCcgihYc/xKs9djMTMUOb2j1mVSeU8EU6NWc/iQKU6Gfg==}
-    engines: {node: '>= 0.4'}
 
   string_decoder@1.1.1:
     resolution: {integrity: sha512-n/ShnvDi6FHbbVfviro+WojiFzv+s8MPMHBczVePfUpDJLwoLT0ht1l4YwBCbi8pJAveEEdnkHyPyTP/mzRfwg==}
@@ -2882,10 +2480,6 @@ packages:
     resolution: {integrity: sha512-dOESqjYr96iWYylGObzd39EuNTa5VJxyvVAEm5Jnh7KGo75V43Hk1odPQkNDyXNmUR6k+gEiDVXnjB8HJ3crXw==}
     engines: {node: '>=12'}
 
-  strip-indent@3.0.0:
-    resolution: {integrity: sha512-laJTa3Jb+VQpaC6DseHhF7dXVqHTfJPCRDaEbid/drOhgitgYku/letMUqOXFoWV0zIIUbjpdH2t+tYj4bQMRQ==}
-    engines: {node: '>=8'}
-
   strip-json-comments@3.1.1:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
@@ -2901,10 +2495,6 @@ packages:
   supports-color@8.1.1:
     resolution: {integrity: sha512-MpUEN2OodtUzxvKQl72cUF7RQ5EiHsGvSsVG0ia9c5RbWGL2CI4C7EpPS8UTBIplnlzZiNuV56w+FuNxy3ty2Q==}
     engines: {node: '>=10'}
-
-  supports-preserve-symlinks-flag@1.0.0:
-    resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
-    engines: {node: '>= 0.4'}
 
   tar-stream@3.1.7:
     resolution: {integrity: sha512-qJj60CXt7IU1Ffyc3NJMjh6EkuCFej46zUqJ4J7pqYlThyd9bO0XBTmcOIhSzZJVWfsLks0+nle/j538YAW9RQ==}
@@ -2952,10 +2542,6 @@ packages:
     resolution: {integrity: sha512-2lv/66T7e5yNyhAAC4NaKe5nVavzuGJQVVtRYLyQ2OI8tsJ61PMLlelehb0wi2Hx6+hT/OJUWZcw8MjlSRnxvw==}
     engines: {node: '>=14'}
 
-  trim-newlines@3.0.1:
-    resolution: {integrity: sha512-c1PTsA3tYrIsLGkJkzHF+w9F2EyxfXGo4UyJc4pFL++FMjnq0HJS69T3M7d//gKrFKwy429bouPescbjecU+Zw==}
-    engines: {node: '>=8'}
-
   ts-api-utils@1.3.0:
     resolution: {integrity: sha512-UQMIo7pb8WRomKR1/+MFVLTroIvDVtMX3K6OUir8ynLyzB8Jeriont2bTAtmNPa1ekAgN7YPDyf6V+ygrdU+eQ==}
     engines: {node: '>=16'}
@@ -2979,62 +2565,21 @@ packages:
   tslib@2.6.3:
     resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
 
-  tty-table@4.2.3:
-    resolution: {integrity: sha512-Fs15mu0vGzCrj8fmJNP7Ynxt5J7praPXqFN0leZeZBXJwkMxv9cb2D454k1ltrtUSJbZ4yH4e0CynsHLxmUfFA==}
-    engines: {node: '>=8.0.0'}
-    hasBin: true
-
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
-
-  type-fest@0.13.1:
-    resolution: {integrity: sha512-34R7HTnG0XIJcBSn5XhDd7nNFPRcXYRZrBB2O2jdKqYODldSzBAqzsWoZYYvduky73toYS/ESqxPvkDf/F0XMg==}
-    engines: {node: '>=10'}
 
   type-fest@0.21.3:
     resolution: {integrity: sha512-t0rzBq87m3fVcduHDUFhKmyyX+9eo6WQjZvf51Ea/M0Q7+T374Jp1aUiyUl0GKxp8M/OETVHSDvmkyPgvX+X2w==}
     engines: {node: '>=10'}
 
-  type-fest@0.6.0:
-    resolution: {integrity: sha512-q+MB8nYR1KDLrgr4G5yemftpMC7/QLqVndBmEEdqzmNj5dcFOO4Oo8qlwZE3ULT3+Zim1F8Kq4cBnikNhlCMlg==}
-    engines: {node: '>=8'}
-
-  type-fest@0.8.1:
-    resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==}
-    engines: {node: '>=8'}
-
-  typed-array-buffer@1.0.2:
-    resolution: {integrity: sha512-gEymJYKZtKXzzBzM4jqa9w6Q1Jjm7x2d+sh19AdsD4wqnMPDYyvwpsIc2Q/835kHuo3BEQ7CjelGhfTsoBb2MQ==}
-    engines: {node: '>= 0.4'}
-
-  typed-array-byte-length@1.0.1:
-    resolution: {integrity: sha512-3iMJ9q0ao7WE9tWcaYKIptkNBuOIcZCCT0d4MRvuuH88fEoEH62IuQe0OtraD3ebQEoTRk8XCBoknUNc1Y67pw==}
-    engines: {node: '>= 0.4'}
-
-  typed-array-byte-offset@1.0.2:
-    resolution: {integrity: sha512-Ous0vodHa56FviZucS2E63zkgtgrACj7omjwd/8lTEMEPFFyjfixMZ1ZXenpgCFBBt4EC1J2XsyVS2gkG0eTFA==}
-    engines: {node: '>= 0.4'}
-
-  typed-array-length@1.0.6:
-    resolution: {integrity: sha512-/OxDN6OtAk5KBpGb28T+HZc2M+ADtvRxXrKKbUwtsLgdoxgX13hyy7ek6bFRl5+aBs2yZzB0c4CnQfAtVypW/g==}
-    engines: {node: '>= 0.4'}
-
   typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
-
-  typescript@5.4.5:
-    resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
-    engines: {node: '>=14.17'}
-    hasBin: true
 
   typescript@5.5.3:
     resolution: {integrity: sha512-/hreyEujaB0w76zKo6717l3L0o/qEUtRgdvUBvlkhoWeOVMjMuHNHk0BRBzikzuGDqNmPQbg5ifMEqsHLiIUcQ==}
     engines: {node: '>=14.17'}
     hasBin: true
-
-  unbox-primitive@1.0.2:
-    resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
 
   undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
@@ -3078,12 +2623,6 @@ packages:
   v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
 
-  validate-npm-package-license@3.0.4:
-    resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
-
-  wcwidth@1.0.1:
-    resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
-
   webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
 
@@ -3102,19 +2641,9 @@ packages:
   whatwg-url@5.0.0:
     resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
 
-  which-boxed-primitive@1.0.2:
-    resolution: {integrity: sha512-bwZdv0AKLpplFY2KZRX6TvyuN7ojjr7lwkg6ml0roIy9YeuSr7JS372qlNW18UQYzgYK9ziGcerWqZOmEn9VNg==}
-
-  which-module@2.0.1:
-    resolution: {integrity: sha512-iBdZ57RDvnOR9AGBhML2vFZf7h8vmBjhoaZqODJBFWHVtKkDmKuHai3cx5PgVMrX5YDNp27AofYbAwctSS+vhQ==}
-
-  which-pm@2.0.0:
-    resolution: {integrity: sha512-Lhs9Pmyph0p5n5Z3mVnN0yWcbQYUAD7rbQUiMsQxOJ3T57k7RFe35SUwWMf7dsbDZks1uOmw4AecB/JMDj3v/w==}
+  which-pm@2.2.0:
+    resolution: {integrity: sha512-MOiaDbA5ZZgUjkeMWM5EkJp4loW5ZRoa5bc3/aeMox/PJelMhE6t7S/mLuiY43DBupyxH+S0U1bTui9kWUlmsw==}
     engines: {node: '>=8.15'}
-
-  which-typed-array@1.1.15:
-    resolution: {integrity: sha512-oV0jmFtUky6CXfkqehVvBP/LSWJ2sy4vWMioiENyJLePrBO/yKyV9OyJySfAKosh+RYkIl5zJCNZ8/4JncrpdA==}
-    engines: {node: '>= 0.4'}
 
   which@1.3.1:
     resolution: {integrity: sha512-HxJdYWq1MTIQbJ3nw0cqssHoTNU267KlrDuGZ1WYlxDStUtKUhOaJmh112/TZmHxxUfuJqPXSOm7tDyas0OSIQ==}
@@ -3132,8 +2661,8 @@ packages:
     resolution: {integrity: sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==}
     engines: {node: '>=0.10.0'}
 
-  workerpool@6.2.1:
-    resolution: {integrity: sha512-ILEIE97kDZvF9Wb9f6h5aXK4swSlKGUcOEGiIYb2OOu/IrDU9iwj0fD//SsA6E5ibwJxpEvhullJY4Sl4GcpAw==}
+  workerpool@6.5.1:
+    resolution: {integrity: sha512-Fs4dNYcsdpYSAfVxhnl1L5zTksjvOJxtC5hzMNl+1t9B8hTJTdKDyZ5ju7ztgPy+ft9tBFXoOlDNiOT9WUXZlA==}
 
   wrap-ansi@6.2.0:
     resolution: {integrity: sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==}
@@ -3170,12 +2699,8 @@ packages:
   yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
 
-  yargs-parser@18.1.3:
-    resolution: {integrity: sha512-o50j0JeToy/4K6OZcaQmW6lyXXKhq7csREXcDwk2omFPJEwUNOVtJKvmDr9EI1fAJZUyZcRF7kxGBWmRXudrCQ==}
-    engines: {node: '>=6'}
-
-  yargs-parser@20.2.4:
-    resolution: {integrity: sha512-WOkpgNhPTlE73h4VFAFsOnomJVaovO8VqLDzy5saChRBFQFBoMYirowyW+Q9HB4HFF4Z7VZTiG3iSzJJA29yRA==}
+  yargs-parser@20.2.9:
+    resolution: {integrity: sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==}
     engines: {node: '>=10'}
 
   yargs-parser@21.1.1:
@@ -3185,10 +2710,6 @@ packages:
   yargs-unparser@2.0.0:
     resolution: {integrity: sha512-7pRTIA9Qc1caZ0bZ6RYRGbHJthJWuakf+WmHK0rVeLkNrrGhfoabBNdue6kdINI6r4if7ocq9aD/n7xwKOdzOA==}
     engines: {node: '>=10'}
-
-  yargs@15.4.1:
-    resolution: {integrity: sha512-aePbxDmcYW++PaqBsJ+HYUFwCdv4LVvdnhBy78E57PIor8/OVvhMrADFFEDh8DHDFRv/O9i3lPhsENjO7QX0+A==}
-    engines: {node: '>=8'}
 
   yargs@16.2.0:
     resolution: {integrity: sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw==}
@@ -3210,8 +2731,8 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  yocto-queue@1.0.0:
-    resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
+  yocto-queue@1.1.1:
+    resolution: {integrity: sha512-b4JR1PFR10y1mKjhHY9LaGo6tmrgjit7hxVIeAmyMw3jegXR4dhYqLaQF5zMXZxY7tLpMyJeLjr1C4rLmkVe8g==}
     engines: {node: '>=12.20'}
 
   zen-observable@0.8.15:
@@ -3219,67 +2740,65 @@ packages:
 
 snapshots:
 
-  '@aeria-lang/build@0.0.9':
+  '@aeria-lang/build@0.0.11(@aeria-lang/compiler@0.0.6)':
     dependencies:
-      '@aeria-lang/compiler': 0.0.4
-      glob: 10.4.1
+      '@aeria-lang/compiler': 0.0.6
+      glob: 10.4.3
     optional: true
 
-  '@aeria-lang/compiler@0.0.3':
+  '@aeria-lang/compiler@0.0.6':
     dependencies:
       prettier: 3.3.2
     optional: true
 
-  '@aeria-lang/compiler@0.0.4':
+  '@aeriajs/builtins@0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(encoding@0.1.13)':
     dependencies:
-      prettier: 3.3.2
-    optional: true
-
-  '@aeriajs/builtins@0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(encoding@0.1.13)':
-    dependencies:
-      '@aeriajs/common': 0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0)
-      '@aeriajs/core': 0.0.110(@aeriajs/builtins@0.0.110)(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/security@0.0.110)(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(socks@2.8.3)
-      '@aeriajs/entrypoint': 0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)
-      '@aeriajs/types': 0.0.61
-      '@aeriajs/validation': 0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)
+      '@aeriajs/common': 0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0)
+      '@aeriajs/core': 0.0.129(@aeriajs/builtins@0.0.129)(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/security@0.0.129)(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(socks@2.8.3)
+      '@aeriajs/entrypoint': 0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)
+      '@aeriajs/types': 0.0.68
+      '@aeriajs/validation': 0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)
       bcrypt: 5.1.1(encoding@0.1.13)
     transitivePeerDependencies:
       - encoding
       - supports-color
 
-  ? '@aeriajs/cli@0.0.49(@aeriajs/builtins@0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(encoding@0.1.13))(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110(@aeriajs/builtins@0.0.110)(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/security@0.0.110)(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(socks@2.8.3))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)'
+  ? '@aeriajs/cli@0.0.69(@aeria-lang/build@0.0.11(@aeria-lang/compiler@0.0.6))(@aeria-lang/compiler@0.0.6)(@aeriajs/builtins@0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(encoding@0.1.13))(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129(@aeriajs/builtins@0.0.129)(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/security@0.0.129)(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(socks@2.8.3))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)'
   : dependencies:
-      '@aeriajs/builtins': 0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(encoding@0.1.13)
-      '@aeriajs/common': 0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0)
-      '@aeriajs/core': 0.0.110(@aeriajs/builtins@0.0.110)(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/security@0.0.110)(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(socks@2.8.3)
-      '@aeriajs/entrypoint': 0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)
-      '@aeriajs/types': 0.0.61
+      '@aeriajs/builtins': 0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(encoding@0.1.13)
+      '@aeriajs/common': 0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0)
+      '@aeriajs/core': 0.0.129(@aeriajs/builtins@0.0.129)(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/security@0.0.129)(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(socks@2.8.3)
+      '@aeriajs/entrypoint': 0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)
+      '@aeriajs/types': 0.0.68
       chokidar: 3.6.0
       dotenv: 16.4.5
       esbuild: 0.20.2
-      glob: 10.4.1
+      glob: 10.4.3
       json5: 2.2.3
     optionalDependencies:
-      aeria-lang: 0.0.4
+      aeria-lang: 0.0.8(@aeria-lang/build@0.0.11(@aeria-lang/compiler@0.0.6))(@aeria-lang/compiler@0.0.6)
+    transitivePeerDependencies:
+      - '@aeria-lang/build'
+      - '@aeria-lang/compiler'
 
-  '@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0)':
+  '@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0)':
     dependencies:
-      '@aeriajs/types': 0.0.61
-      bson: 6.7.0
+      '@aeriajs/types': 0.0.68
+      bson: 6.8.0
 
-  '@aeriajs/core@0.0.110(@aeriajs/builtins@0.0.110)(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/security@0.0.110)(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(socks@2.8.3)':
+  '@aeriajs/core@0.0.129(@aeriajs/builtins@0.0.129)(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/security@0.0.129)(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(socks@2.8.3)':
     dependencies:
-      '@aeriajs/builtins': 0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(encoding@0.1.13)
-      '@aeriajs/common': 0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0)
-      '@aeriajs/entrypoint': 0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)
-      '@aeriajs/http': 0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))
-      '@aeriajs/security': 0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/types@0.0.61)(mongodb@6.7.0(socks@2.8.3))
-      '@aeriajs/types': 0.0.61
-      '@aeriajs/validation': 0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)
+      '@aeriajs/builtins': 0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(encoding@0.1.13)
+      '@aeriajs/common': 0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0)
+      '@aeriajs/entrypoint': 0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)
+      '@aeriajs/http': 0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))
+      '@aeriajs/security': 0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/types@0.0.68)(mongodb@6.8.0(socks@2.8.3))
+      '@aeriajs/types': 0.0.68
+      '@aeriajs/validation': 0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)
       jsonwebtoken: 9.0.2
-      mongodb: 6.7.0(socks@2.8.3)
+      mongodb: 6.8.0(socks@2.8.3)
     optionalDependencies:
-      mongodb-memory-server: 9.3.0
+      mongodb-memory-server: 9.4.0
     transitivePeerDependencies:
       - '@aws-sdk/credential-providers'
       - '@mongodb-js/zstd'
@@ -3290,47 +2809,47 @@ snapshots:
       - socks
       - supports-color
 
-  '@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)':
+  '@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)':
     dependencies:
-      '@aeriajs/common': 0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0)
-      '@aeriajs/types': 0.0.61
+      '@aeriajs/common': 0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0)
+      '@aeriajs/types': 0.0.68
 
-  '@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))':
+  '@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))':
     dependencies:
-      '@aeriajs/common': 0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0)
-      '@aeriajs/entrypoint': 0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)
-      '@aeriajs/types': 0.0.61
-      '@aeriajs/validation': 0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)
+      '@aeriajs/common': 0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0)
+      '@aeriajs/entrypoint': 0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)
+      '@aeriajs/types': 0.0.68
+      '@aeriajs/validation': 0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)
 
-  '@aeriajs/node-http@0.0.80(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))':
+  '@aeriajs/node-http@0.0.91(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))':
     dependencies:
-      '@aeriajs/http': 0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))
+      '@aeriajs/http': 0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))
 
-  '@aeriajs/security@0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/types@0.0.61)(mongodb@6.7.0(socks@2.8.3))':
+  '@aeriajs/security@0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/types@0.0.68)(mongodb@6.8.0(socks@2.8.3))':
     dependencies:
-      '@aeriajs/common': 0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0)
-      '@aeriajs/core': 0.0.110(@aeriajs/builtins@0.0.110)(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/security@0.0.110)(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(socks@2.8.3)
-      '@aeriajs/types': 0.0.61
-      mongodb: 6.7.0(socks@2.8.3)
+      '@aeriajs/common': 0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0)
+      '@aeriajs/core': 0.0.129(@aeriajs/builtins@0.0.129)(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/security@0.0.129)(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(socks@2.8.3)
+      '@aeriajs/types': 0.0.68
+      mongodb: 6.8.0(socks@2.8.3)
 
-  ? '@aeriajs/server@0.0.112(@aeriajs/builtins@0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(encoding@0.1.13))(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110(@aeriajs/builtins@0.0.110)(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/security@0.0.110)(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(socks@2.8.3))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/node-http@0.0.80(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))))(@aeriajs/types@0.0.61)(mongodb@6.7.0(socks@2.8.3))'
+  ? '@aeriajs/server@0.0.131(@aeriajs/builtins@0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(encoding@0.1.13))(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129(@aeriajs/builtins@0.0.129)(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/security@0.0.129)(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(socks@2.8.3))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/node-http@0.0.91(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))))(@aeriajs/types@0.0.68)(mongodb@6.8.0(socks@2.8.3))'
   : dependencies:
-      '@aeriajs/builtins': 0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(encoding@0.1.13)
-      '@aeriajs/common': 0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0)
-      '@aeriajs/core': 0.0.110(@aeriajs/builtins@0.0.110)(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/security@0.0.110)(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(socks@2.8.3)
-      '@aeriajs/entrypoint': 0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)
-      '@aeriajs/http': 0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))
-      '@aeriajs/node-http': 0.0.80(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))
-      '@aeriajs/server': 0.0.112(@aeriajs/builtins@0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(encoding@0.1.13))(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110(@aeriajs/builtins@0.0.110)(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/security@0.0.110)(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(socks@2.8.3))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/node-http@0.0.80(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))))(@aeriajs/types@0.0.61)(mongodb@6.7.0(socks@2.8.3))
-      '@aeriajs/types': 0.0.61
-      mongodb: 6.7.0(socks@2.8.3)
+      '@aeriajs/builtins': 0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(encoding@0.1.13)
+      '@aeriajs/common': 0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0)
+      '@aeriajs/core': 0.0.129(@aeriajs/builtins@0.0.129)(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/security@0.0.129)(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(socks@2.8.3)
+      '@aeriajs/entrypoint': 0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)
+      '@aeriajs/http': 0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))
+      '@aeriajs/node-http': 0.0.91(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))
+      '@aeriajs/server': 0.0.131(@aeriajs/builtins@0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(encoding@0.1.13))(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129(@aeriajs/builtins@0.0.129)(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/security@0.0.129)(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(socks@2.8.3))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/node-http@0.0.91(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))))(@aeriajs/types@0.0.68)(mongodb@6.8.0(socks@2.8.3))
+      '@aeriajs/types': 0.0.68
+      mongodb: 6.8.0(socks@2.8.3)
 
-  '@aeriajs/types@0.0.61': {}
+  '@aeriajs/types@0.0.68': {}
 
-  '@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)':
+  '@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)':
     dependencies:
-      '@aeriajs/common': 0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0)
-      '@aeriajs/types': 0.0.61
+      '@aeriajs/common': 0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0)
+      '@aeriajs/types': 0.0.68
 
   '@babel/code-frame@7.24.7':
     dependencies:
@@ -3350,10 +2869,10 @@ snapshots:
     dependencies:
       regenerator-runtime: 0.14.1
 
-  '@changesets/apply-release-plan@7.0.3':
+  '@changesets/apply-release-plan@7.0.4':
     dependencies:
       '@babel/runtime': 7.24.7
-      '@changesets/config': 3.0.1
+      '@changesets/config': 3.0.2
       '@changesets/get-version-range-type': 0.4.0
       '@changesets/git': 3.0.0
       '@changesets/should-skip-package': 0.1.0
@@ -3367,11 +2886,11 @@ snapshots:
       resolve-from: 5.0.0
       semver: 7.6.2
 
-  '@changesets/assemble-release-plan@6.0.2':
+  '@changesets/assemble-release-plan@6.0.3':
     dependencies:
       '@babel/runtime': 7.24.7
       '@changesets/errors': 0.2.0
-      '@changesets/get-dependents-graph': 2.1.0
+      '@changesets/get-dependents-graph': 2.1.1
       '@changesets/should-skip-package': 0.1.0
       '@changesets/types': 6.0.0
       '@manypkg/get-packages': 1.1.3
@@ -3381,16 +2900,16 @@ snapshots:
     dependencies:
       '@changesets/types': 6.0.0
 
-  '@changesets/cli@2.27.5':
+  '@changesets/cli@2.27.7':
     dependencies:
       '@babel/runtime': 7.24.7
-      '@changesets/apply-release-plan': 7.0.3
-      '@changesets/assemble-release-plan': 6.0.2
+      '@changesets/apply-release-plan': 7.0.4
+      '@changesets/assemble-release-plan': 6.0.3
       '@changesets/changelog-git': 0.2.0
-      '@changesets/config': 3.0.1
+      '@changesets/config': 3.0.2
       '@changesets/errors': 0.2.0
-      '@changesets/get-dependents-graph': 2.1.0
-      '@changesets/get-release-plan': 4.0.2
+      '@changesets/get-dependents-graph': 2.1.1
+      '@changesets/get-release-plan': 4.0.3
       '@changesets/git': 3.0.0
       '@changesets/logger': 0.1.0
       '@changesets/pre': 2.0.0
@@ -3407,20 +2926,19 @@ snapshots:
       external-editor: 3.1.0
       fs-extra: 7.0.1
       human-id: 1.0.2
-      meow: 6.1.1
+      mri: 1.2.0
       outdent: 0.5.0
       p-limit: 2.3.0
-      preferred-pm: 3.1.3
+      preferred-pm: 3.1.4
       resolve-from: 5.0.0
       semver: 7.6.2
       spawndamnit: 2.0.0
       term-size: 2.2.1
-      tty-table: 4.2.3
 
-  '@changesets/config@3.0.1':
+  '@changesets/config@3.0.2':
     dependencies:
       '@changesets/errors': 0.2.0
-      '@changesets/get-dependents-graph': 2.1.0
+      '@changesets/get-dependents-graph': 2.1.1
       '@changesets/logger': 0.1.0
       '@changesets/types': 6.0.0
       '@manypkg/get-packages': 1.1.3
@@ -3431,7 +2949,7 @@ snapshots:
     dependencies:
       extendable-error: 0.1.7
 
-  '@changesets/get-dependents-graph@2.1.0':
+  '@changesets/get-dependents-graph@2.1.1':
     dependencies:
       '@changesets/types': 6.0.0
       '@manypkg/get-packages': 1.1.3
@@ -3439,11 +2957,11 @@ snapshots:
       fs-extra: 7.0.1
       semver: 7.6.2
 
-  '@changesets/get-release-plan@4.0.2':
+  '@changesets/get-release-plan@4.0.3':
     dependencies:
       '@babel/runtime': 7.24.7
-      '@changesets/assemble-release-plan': 6.0.2
-      '@changesets/config': 3.0.1
+      '@changesets/assemble-release-plan': 6.0.3
+      '@changesets/config': 3.0.2
       '@changesets/pre': 2.0.0
       '@changesets/read': 0.6.0
       '@changesets/types': 6.0.0
@@ -3507,11 +3025,11 @@ snapshots:
       human-id: 1.0.2
       prettier: 2.8.8
 
-  '@commitlint/cli@19.3.0(@types/node@20.14.2)(typescript@5.4.5)':
+  '@commitlint/cli@19.3.0(@types/node@20.14.10)(typescript@5.5.3)':
     dependencies:
       '@commitlint/format': 19.3.0
       '@commitlint/lint': 19.2.2
-      '@commitlint/load': 19.2.0(@types/node@20.14.2)(typescript@5.4.5)
+      '@commitlint/load': 19.2.0(@types/node@20.14.10)(typescript@5.5.3)
       '@commitlint/read': 19.2.1
       '@commitlint/types': 19.0.3
       execa: 8.0.1
@@ -3558,15 +3076,15 @@ snapshots:
       '@commitlint/rules': 19.0.3
       '@commitlint/types': 19.0.3
 
-  '@commitlint/load@19.2.0(@types/node@20.14.2)(typescript@5.4.5)':
+  '@commitlint/load@19.2.0(@types/node@20.14.10)(typescript@5.5.3)':
     dependencies:
       '@commitlint/config-validator': 19.0.3
       '@commitlint/execute-rule': 19.0.0
       '@commitlint/resolve-extends': 19.1.0
       '@commitlint/types': 19.0.3
       chalk: 5.3.0
-      cosmiconfig: 9.0.0(typescript@5.4.5)
-      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.14.2)(cosmiconfig@9.0.0(typescript@5.4.5))(typescript@5.4.5)
+      cosmiconfig: 9.0.0(typescript@5.5.3)
+      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.14.10)(cosmiconfig@9.0.0(typescript@5.5.3))(typescript@5.5.3)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -3760,17 +3278,17 @@ snapshots:
   '@esbuild/win32-x64@0.21.5':
     optional: true
 
-  '@eslint-community/eslint-utils@4.4.0(eslint@9.5.0)':
+  '@eslint-community/eslint-utils@4.4.0(eslint@9.6.0)':
     dependencies:
-      eslint: 9.5.0
+      eslint: 9.6.0
       eslint-visitor-keys: 3.4.3
 
-  '@eslint-community/regexpp@4.10.1': {}
+  '@eslint-community/regexpp@4.11.0': {}
 
-  '@eslint/config-array@0.16.0':
+  '@eslint/config-array@0.17.0':
     dependencies:
       '@eslint/object-schema': 2.1.4
-      debug: 4.3.5
+      debug: 4.3.5(supports-color@8.1.1)
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -3778,8 +3296,8 @@ snapshots:
   '@eslint/eslintrc@3.1.0':
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.5
-      espree: 10.0.1
+      debug: 4.3.5(supports-color@8.1.1)
+      espree: 10.1.0
       globals: 14.0.0
       ignore: 5.3.1
       import-fresh: 3.3.0
@@ -3789,7 +3307,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@eslint/js@9.5.0': {}
+  '@eslint/js@9.6.0': {}
 
   '@eslint/object-schema@2.1.4': {}
 
@@ -3881,49 +3399,49 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@stylistic/eslint-plugin-js@2.2.0(eslint@9.5.0)':
+  '@stylistic/eslint-plugin-js@2.3.0(eslint@9.6.0)':
     dependencies:
       '@types/eslint': 8.56.10
-      acorn: 8.12.0
-      eslint: 9.5.0
+      acorn: 8.12.1
+      eslint: 9.6.0
       eslint-visitor-keys: 4.0.0
-      espree: 10.0.1
+      espree: 10.1.0
 
-  '@stylistic/eslint-plugin-jsx@2.2.0(eslint@9.5.0)':
+  '@stylistic/eslint-plugin-jsx@2.3.0(eslint@9.6.0)':
     dependencies:
-      '@stylistic/eslint-plugin-js': 2.2.0(eslint@9.5.0)
+      '@stylistic/eslint-plugin-js': 2.3.0(eslint@9.6.0)
       '@types/eslint': 8.56.10
-      eslint: 9.5.0
+      eslint: 9.6.0
       estraverse: 5.3.0
       picomatch: 4.0.2
 
-  '@stylistic/eslint-plugin-plus@2.2.0(eslint@9.5.0)(typescript@5.4.5)':
+  '@stylistic/eslint-plugin-plus@2.3.0(eslint@9.6.0)(typescript@5.5.3)':
     dependencies:
       '@types/eslint': 8.56.10
-      '@typescript-eslint/utils': 7.13.0(eslint@9.5.0)(typescript@5.4.5)
-      eslint: 9.5.0
+      '@typescript-eslint/utils': 7.15.0(eslint@9.6.0)(typescript@5.5.3)
+      eslint: 9.6.0
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  '@stylistic/eslint-plugin-ts@2.2.0(eslint@9.5.0)(typescript@5.4.5)':
+  '@stylistic/eslint-plugin-ts@2.3.0(eslint@9.6.0)(typescript@5.5.3)':
     dependencies:
-      '@stylistic/eslint-plugin-js': 2.2.0(eslint@9.5.0)
+      '@stylistic/eslint-plugin-js': 2.3.0(eslint@9.6.0)
       '@types/eslint': 8.56.10
-      '@typescript-eslint/utils': 7.13.0(eslint@9.5.0)(typescript@5.4.5)
-      eslint: 9.5.0
+      '@typescript-eslint/utils': 7.15.0(eslint@9.6.0)(typescript@5.5.3)
+      eslint: 9.6.0
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  '@stylistic/eslint-plugin@2.2.0(eslint@9.5.0)(typescript@5.4.5)':
+  '@stylistic/eslint-plugin@2.3.0(eslint@9.6.0)(typescript@5.5.3)':
     dependencies:
-      '@stylistic/eslint-plugin-js': 2.2.0(eslint@9.5.0)
-      '@stylistic/eslint-plugin-jsx': 2.2.0(eslint@9.5.0)
-      '@stylistic/eslint-plugin-plus': 2.2.0(eslint@9.5.0)(typescript@5.4.5)
-      '@stylistic/eslint-plugin-ts': 2.2.0(eslint@9.5.0)(typescript@5.4.5)
+      '@stylistic/eslint-plugin-js': 2.3.0(eslint@9.6.0)
+      '@stylistic/eslint-plugin-jsx': 2.3.0(eslint@9.6.0)
+      '@stylistic/eslint-plugin-plus': 2.3.0(eslint@9.6.0)(typescript@5.5.3)
+      '@stylistic/eslint-plugin-ts': 2.3.0(eslint@9.6.0)(typescript@5.5.3)
       '@types/eslint': 8.56.10
-      eslint: 9.5.0
+      eslint: 9.6.0
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -3940,7 +3458,7 @@ snapshots:
 
   '@types/conventional-commits-parser@5.0.0':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.10
 
   '@types/eslint@8.56.10':
     dependencies:
@@ -3951,17 +3469,13 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/minimist@1.2.5': {}
-
-  '@types/mocha@10.0.6': {}
+  '@types/mocha@10.0.7': {}
 
   '@types/node@12.20.55': {}
 
-  '@types/node@20.14.2':
+  '@types/node@20.14.10':
     dependencies:
       undici-types: 5.26.5
-
-  '@types/normalize-package-data@2.4.4': {}
 
   '@types/semver@7.5.8': {}
 
@@ -3973,89 +3487,89 @@ snapshots:
 
   '@types/whatwg-url@8.2.2':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.10
       '@types/webidl-conversions': 7.0.3
     optional: true
 
-  '@typescript-eslint/eslint-plugin@7.13.0(@typescript-eslint/parser@7.13.0(eslint@9.5.0)(typescript@5.4.5))(eslint@9.5.0)(typescript@5.4.5)':
+  '@typescript-eslint/eslint-plugin@7.15.0(@typescript-eslint/parser@7.15.0(eslint@9.6.0)(typescript@5.5.3))(eslint@9.6.0)(typescript@5.5.3)':
     dependencies:
-      '@eslint-community/regexpp': 4.10.1
-      '@typescript-eslint/parser': 7.13.0(eslint@9.5.0)(typescript@5.4.5)
-      '@typescript-eslint/scope-manager': 7.13.0
-      '@typescript-eslint/type-utils': 7.13.0(eslint@9.5.0)(typescript@5.4.5)
-      '@typescript-eslint/utils': 7.13.0(eslint@9.5.0)(typescript@5.4.5)
-      '@typescript-eslint/visitor-keys': 7.13.0
-      eslint: 9.5.0
+      '@eslint-community/regexpp': 4.11.0
+      '@typescript-eslint/parser': 7.15.0(eslint@9.6.0)(typescript@5.5.3)
+      '@typescript-eslint/scope-manager': 7.15.0
+      '@typescript-eslint/type-utils': 7.15.0(eslint@9.6.0)(typescript@5.5.3)
+      '@typescript-eslint/utils': 7.15.0(eslint@9.6.0)(typescript@5.5.3)
+      '@typescript-eslint/visitor-keys': 7.15.0
+      eslint: 9.6.0
       graphemer: 1.4.0
       ignore: 5.3.1
       natural-compare: 1.4.0
-      ts-api-utils: 1.3.0(typescript@5.4.5)
+      ts-api-utils: 1.3.0(typescript@5.5.3)
     optionalDependencies:
-      typescript: 5.4.5
+      typescript: 5.5.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/parser@7.13.0(eslint@9.5.0)(typescript@5.4.5)':
+  '@typescript-eslint/parser@7.15.0(eslint@9.6.0)(typescript@5.5.3)':
     dependencies:
-      '@typescript-eslint/scope-manager': 7.13.0
-      '@typescript-eslint/types': 7.13.0
-      '@typescript-eslint/typescript-estree': 7.13.0(typescript@5.4.5)
-      '@typescript-eslint/visitor-keys': 7.13.0
-      debug: 4.3.5
-      eslint: 9.5.0
+      '@typescript-eslint/scope-manager': 7.15.0
+      '@typescript-eslint/types': 7.15.0
+      '@typescript-eslint/typescript-estree': 7.15.0(typescript@5.5.3)
+      '@typescript-eslint/visitor-keys': 7.15.0
+      debug: 4.3.5(supports-color@8.1.1)
+      eslint: 9.6.0
     optionalDependencies:
-      typescript: 5.4.5
+      typescript: 5.5.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/scope-manager@7.13.0':
+  '@typescript-eslint/scope-manager@7.15.0':
     dependencies:
-      '@typescript-eslint/types': 7.13.0
-      '@typescript-eslint/visitor-keys': 7.13.0
+      '@typescript-eslint/types': 7.15.0
+      '@typescript-eslint/visitor-keys': 7.15.0
 
-  '@typescript-eslint/type-utils@7.13.0(eslint@9.5.0)(typescript@5.4.5)':
+  '@typescript-eslint/type-utils@7.15.0(eslint@9.6.0)(typescript@5.5.3)':
     dependencies:
-      '@typescript-eslint/typescript-estree': 7.13.0(typescript@5.4.5)
-      '@typescript-eslint/utils': 7.13.0(eslint@9.5.0)(typescript@5.4.5)
-      debug: 4.3.5
-      eslint: 9.5.0
-      ts-api-utils: 1.3.0(typescript@5.4.5)
+      '@typescript-eslint/typescript-estree': 7.15.0(typescript@5.5.3)
+      '@typescript-eslint/utils': 7.15.0(eslint@9.6.0)(typescript@5.5.3)
+      debug: 4.3.5(supports-color@8.1.1)
+      eslint: 9.6.0
+      ts-api-utils: 1.3.0(typescript@5.5.3)
     optionalDependencies:
-      typescript: 5.4.5
+      typescript: 5.5.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/types@7.13.0': {}
+  '@typescript-eslint/types@7.15.0': {}
 
-  '@typescript-eslint/typescript-estree@7.13.0(typescript@5.4.5)':
+  '@typescript-eslint/typescript-estree@7.15.0(typescript@5.5.3)':
     dependencies:
-      '@typescript-eslint/types': 7.13.0
-      '@typescript-eslint/visitor-keys': 7.13.0
-      debug: 4.3.5
+      '@typescript-eslint/types': 7.15.0
+      '@typescript-eslint/visitor-keys': 7.15.0
+      debug: 4.3.5(supports-color@8.1.1)
       globby: 11.1.0
       is-glob: 4.0.3
-      minimatch: 9.0.4
+      minimatch: 9.0.5
       semver: 7.6.2
-      ts-api-utils: 1.3.0(typescript@5.4.5)
+      ts-api-utils: 1.3.0(typescript@5.5.3)
     optionalDependencies:
-      typescript: 5.4.5
+      typescript: 5.5.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/utils@7.13.0(eslint@9.5.0)(typescript@5.4.5)':
+  '@typescript-eslint/utils@7.15.0(eslint@9.6.0)(typescript@5.5.3)':
     dependencies:
-      '@eslint-community/eslint-utils': 4.4.0(eslint@9.5.0)
-      '@typescript-eslint/scope-manager': 7.13.0
-      '@typescript-eslint/types': 7.13.0
-      '@typescript-eslint/typescript-estree': 7.13.0(typescript@5.4.5)
-      eslint: 9.5.0
+      '@eslint-community/eslint-utils': 4.4.0(eslint@9.6.0)
+      '@typescript-eslint/scope-manager': 7.15.0
+      '@typescript-eslint/types': 7.15.0
+      '@typescript-eslint/typescript-estree': 7.15.0(typescript@5.5.3)
+      eslint: 9.6.0
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  '@typescript-eslint/visitor-keys@7.13.0':
+  '@typescript-eslint/visitor-keys@7.15.0':
     dependencies:
-      '@typescript-eslint/types': 7.13.0
+      '@typescript-eslint/types': 7.15.0
       eslint-visitor-keys: 3.4.3
 
   JSONStream@1.3.5:
@@ -4065,45 +3579,45 @@ snapshots:
 
   abbrev@1.1.1: {}
 
-  acorn-jsx@5.3.2(acorn@8.12.0):
+  acorn-jsx@5.3.2(acorn@8.12.1):
     dependencies:
-      acorn: 8.12.0
+      acorn: 8.12.1
 
   acorn-walk@8.3.3:
     dependencies:
-      acorn: 8.12.0
+      acorn: 8.12.1
 
-  acorn@8.12.0: {}
+  acorn@8.12.1: {}
 
-  aeria-lang@0.0.4:
+  aeria-lang@0.0.8(@aeria-lang/build@0.0.11(@aeria-lang/compiler@0.0.6))(@aeria-lang/compiler@0.0.6):
     dependencies:
-      '@aeria-lang/build': 0.0.9
-      '@aeria-lang/compiler': 0.0.3
+      '@aeria-lang/build': 0.0.11(@aeria-lang/compiler@0.0.6)
+      '@aeria-lang/compiler': 0.0.6
     optional: true
 
-  ? aeria@0.0.118(@aeriajs/builtins@0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(encoding@0.1.13))(@aeriajs/cli@0.0.49(@aeriajs/builtins@0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(encoding@0.1.13))(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110(@aeriajs/builtins@0.0.110)(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/security@0.0.110)(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(socks@2.8.3))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61))(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110(@aeriajs/builtins@0.0.110)(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/security@0.0.110)(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(socks@2.8.3))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/node-http@0.0.80(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))))(@aeriajs/security@0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/types@0.0.61)(mongodb@6.7.0(socks@2.8.3)))(@aeriajs/server@0.0.112(@aeriajs/builtins@0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(encoding@0.1.13))(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110(@aeriajs/builtins@0.0.110)(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/security@0.0.110)(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(socks@2.8.3))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/node-http@0.0.80(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))))(@aeriajs/types@0.0.61)(mongodb@6.7.0(socks@2.8.3)))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))
+  ? aeria@0.0.138(@aeriajs/builtins@0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(encoding@0.1.13))(@aeriajs/cli@0.0.69(@aeria-lang/build@0.0.11(@aeria-lang/compiler@0.0.6))(@aeria-lang/compiler@0.0.6)(@aeriajs/builtins@0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(encoding@0.1.13))(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129(@aeriajs/builtins@0.0.129)(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/security@0.0.129)(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(socks@2.8.3))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68))(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129(@aeriajs/builtins@0.0.129)(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/security@0.0.129)(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(socks@2.8.3))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/node-http@0.0.91(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))))(@aeriajs/security@0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/types@0.0.68)(mongodb@6.8.0(socks@2.8.3)))(@aeriajs/server@0.0.131(@aeriajs/builtins@0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(encoding@0.1.13))(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129(@aeriajs/builtins@0.0.129)(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/security@0.0.129)(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(socks@2.8.3))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/node-http@0.0.91(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))))(@aeriajs/types@0.0.68)(mongodb@6.8.0(socks@2.8.3)))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))
   : dependencies:
-      '@aeriajs/builtins': 0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(encoding@0.1.13)
-      '@aeriajs/cli': 0.0.49(@aeriajs/builtins@0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(encoding@0.1.13))(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110(@aeriajs/builtins@0.0.110)(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/security@0.0.110)(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(socks@2.8.3))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)
-      '@aeriajs/common': 0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0)
-      '@aeriajs/core': 0.0.110(@aeriajs/builtins@0.0.110)(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/security@0.0.110)(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(socks@2.8.3)
-      '@aeriajs/entrypoint': 0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)
-      '@aeriajs/http': 0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))
-      '@aeriajs/node-http': 0.0.80(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))
-      '@aeriajs/security': 0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/types@0.0.61)(mongodb@6.7.0(socks@2.8.3))
-      '@aeriajs/server': 0.0.112(@aeriajs/builtins@0.0.110(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110)(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(encoding@0.1.13))(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/core@0.0.110(@aeriajs/builtins@0.0.110)(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/security@0.0.110)(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(socks@2.8.3))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)))(@aeriajs/node-http@0.0.80(@aeriajs/http@0.0.80(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/entrypoint@0.0.71(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))(@aeriajs/types@0.0.61)(@aeriajs/validation@0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61))))(@aeriajs/types@0.0.61)(mongodb@6.7.0(socks@2.8.3))
-      '@aeriajs/types': 0.0.61
-      '@aeriajs/validation': 0.0.72(@aeriajs/common@0.0.69(@aeriajs/types@0.0.61)(bson@6.7.0))(@aeriajs/types@0.0.61)
+      '@aeriajs/builtins': 0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(encoding@0.1.13)
+      '@aeriajs/cli': 0.0.69(@aeria-lang/build@0.0.11(@aeria-lang/compiler@0.0.6))(@aeria-lang/compiler@0.0.6)(@aeriajs/builtins@0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(encoding@0.1.13))(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129(@aeriajs/builtins@0.0.129)(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/security@0.0.129)(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(socks@2.8.3))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)
+      '@aeriajs/common': 0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0)
+      '@aeriajs/core': 0.0.129(@aeriajs/builtins@0.0.129)(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/security@0.0.129)(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(socks@2.8.3)
+      '@aeriajs/entrypoint': 0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)
+      '@aeriajs/http': 0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))
+      '@aeriajs/node-http': 0.0.91(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))
+      '@aeriajs/security': 0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/types@0.0.68)(mongodb@6.8.0(socks@2.8.3))
+      '@aeriajs/server': 0.0.131(@aeriajs/builtins@0.0.129(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129)(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(encoding@0.1.13))(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/core@0.0.129(@aeriajs/builtins@0.0.129)(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/security@0.0.129)(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(socks@2.8.3))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)))(@aeriajs/node-http@0.0.91(@aeriajs/http@0.0.91(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/entrypoint@0.0.82(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))(@aeriajs/types@0.0.68)(@aeriajs/validation@0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68))))(@aeriajs/types@0.0.68)(mongodb@6.8.0(socks@2.8.3))
+      '@aeriajs/types': 0.0.68
+      '@aeriajs/validation': 0.0.83(@aeriajs/common@0.0.80(@aeriajs/types@0.0.68)(bson@6.8.0))(@aeriajs/types@0.0.68)
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.3.5
+      debug: 4.3.5(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
   agent-base@7.1.1:
     dependencies:
-      debug: 4.3.5
+      debug: 4.3.5(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
     optional: true
@@ -4130,8 +3644,6 @@ snapshots:
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
       uri-js: 4.4.1
-
-  ansi-colors@4.1.1: {}
 
   ansi-colors@4.1.3: {}
 
@@ -4175,34 +3687,9 @@ snapshots:
 
   argparse@2.0.1: {}
 
-  array-buffer-byte-length@1.0.1:
-    dependencies:
-      call-bind: 1.0.7
-      is-array-buffer: 3.0.4
-
   array-ify@1.0.0: {}
 
   array-union@2.1.0: {}
-
-  array.prototype.flat@1.3.2:
-    dependencies:
-      call-bind: 1.0.7
-      define-properties: 1.2.1
-      es-abstract: 1.23.3
-      es-shim-unscopables: 1.0.2
-
-  arraybuffer.prototype.slice@1.0.3:
-    dependencies:
-      array-buffer-byte-length: 1.0.1
-      call-bind: 1.0.7
-      define-properties: 1.2.1
-      es-abstract: 1.23.3
-      es-errors: 1.3.0
-      get-intrinsic: 1.2.4
-      is-array-buffer: 3.0.4
-      is-shared-array-buffer: 1.0.3
-
-  arrify@1.0.1: {}
 
   astral-regex@2.0.0: {}
 
@@ -4210,10 +3697,6 @@ snapshots:
     dependencies:
       tslib: 2.6.3
     optional: true
-
-  available-typed-arrays@1.0.7:
-    dependencies:
-      possible-typed-array-names: 1.0.0
 
   b4a@1.6.6:
     optional: true
@@ -4252,16 +3735,12 @@ snapshots:
     dependencies:
       fill-range: 7.1.1
 
-  breakword@1.0.6:
-    dependencies:
-      wcwidth: 1.0.1
-
   browser-stdout@1.3.1: {}
 
   bson@5.5.1:
     optional: true
 
-  bson@6.7.0: {}
+  bson@6.8.0: {}
 
   buffer-crc32@0.2.13:
     optional: true
@@ -4316,7 +3795,7 @@ snapshots:
     dependencies:
       '@npmcli/fs': 3.1.1
       fs-minipass: 3.0.3
-      glob: 10.4.1
+      glob: 10.4.3
       lru-cache: 7.18.3
       minipass: 7.1.2
       minipass-collect: 1.0.2
@@ -4327,23 +3806,7 @@ snapshots:
       tar: 6.2.1
       unique-filename: 3.0.0
 
-  call-bind@1.0.7:
-    dependencies:
-      es-define-property: 1.0.0
-      es-errors: 1.3.0
-      function-bind: 1.1.2
-      get-intrinsic: 1.2.4
-      set-function-length: 1.2.2
-
   callsites@3.1.0: {}
-
-  camelcase-keys@6.2.2:
-    dependencies:
-      camelcase: 5.3.1
-      map-obj: 4.3.0
-      quick-lru: 4.0.1
-
-  camelcase@5.3.1: {}
 
   camelcase@6.3.0: {}
 
@@ -4361,18 +3824,6 @@ snapshots:
   chalk@5.3.0: {}
 
   chardet@0.7.0: {}
-
-  chokidar@3.5.3:
-    dependencies:
-      anymatch: 3.1.3
-      braces: 3.0.3
-      glob-parent: 5.1.2
-      is-binary-path: 2.1.0
-      is-glob: 4.0.3
-      normalize-path: 3.0.0
-      readdirp: 3.6.0
-    optionalDependencies:
-      fsevents: 2.3.3
 
   chokidar@3.6.0:
     dependencies:
@@ -4398,12 +3849,6 @@ snapshots:
     dependencies:
       restore-cursor: 3.1.0
 
-  cliui@6.0.0:
-    dependencies:
-      string-width: 4.2.3
-      strip-ansi: 6.0.1
-      wrap-ansi: 6.2.0
-
   cliui@7.0.4:
     dependencies:
       string-width: 4.2.3
@@ -4415,8 +3860,6 @@ snapshots:
       string-width: 4.2.3
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
-
-  clone@1.0.4: {}
 
   color-convert@1.9.3:
     dependencies:
@@ -4477,21 +3920,21 @@ snapshots:
 
   core-util-is@1.0.3: {}
 
-  cosmiconfig-typescript-loader@5.0.0(@types/node@20.14.2)(cosmiconfig@9.0.0(typescript@5.4.5))(typescript@5.4.5):
+  cosmiconfig-typescript-loader@5.0.0(@types/node@20.14.10)(cosmiconfig@9.0.0(typescript@5.5.3))(typescript@5.5.3):
     dependencies:
-      '@types/node': 20.14.2
-      cosmiconfig: 9.0.0(typescript@5.4.5)
+      '@types/node': 20.14.10
+      cosmiconfig: 9.0.0(typescript@5.5.3)
       jiti: 1.21.6
-      typescript: 5.4.5
+      typescript: 5.5.3
 
-  cosmiconfig@9.0.0(typescript@5.4.5):
+  cosmiconfig@9.0.0(typescript@5.5.3):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.4.5
+      typescript: 5.5.3
 
   create-require@1.1.1: {}
 
@@ -4507,77 +3950,19 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  csv-generate@3.4.3: {}
-
-  csv-parse@4.16.3: {}
-
-  csv-stringify@5.6.5: {}
-
-  csv@5.5.3:
-    dependencies:
-      csv-generate: 3.4.3
-      csv-parse: 4.16.3
-      csv-stringify: 5.6.5
-      stream-transform: 2.1.3
-
   cyclist@1.0.2: {}
 
   dargs@8.1.0: {}
 
-  data-view-buffer@1.0.1:
-    dependencies:
-      call-bind: 1.0.7
-      es-errors: 1.3.0
-      is-data-view: 1.0.1
-
-  data-view-byte-length@1.0.1:
-    dependencies:
-      call-bind: 1.0.7
-      es-errors: 1.3.0
-      is-data-view: 1.0.1
-
-  data-view-byte-offset@1.0.0:
-    dependencies:
-      call-bind: 1.0.7
-      es-errors: 1.3.0
-      is-data-view: 1.0.1
-
-  debug@4.3.4(supports-color@8.1.1):
+  debug@4.3.5(supports-color@8.1.1):
     dependencies:
       ms: 2.1.2
     optionalDependencies:
       supports-color: 8.1.1
 
-  debug@4.3.5:
-    dependencies:
-      ms: 2.1.2
-
-  decamelize-keys@1.1.1:
-    dependencies:
-      decamelize: 1.2.0
-      map-obj: 1.0.1
-
-  decamelize@1.2.0: {}
-
   decamelize@4.0.0: {}
 
   deep-is@0.1.4: {}
-
-  defaults@1.0.4:
-    dependencies:
-      clone: 1.0.4
-
-  define-data-property@1.1.4:
-    dependencies:
-      es-define-property: 1.0.0
-      es-errors: 1.3.0
-      gopd: 1.0.1
-
-  define-properties@1.2.1:
-    dependencies:
-      define-data-property: 1.1.4
-      has-property-descriptors: 1.0.2
-      object-keys: 1.1.1
 
   delegates@1.0.0: {}
 
@@ -4587,7 +3972,7 @@ snapshots:
 
   diff@4.0.2: {}
 
-  diff@5.0.0: {}
+  diff@5.2.0: {}
 
   dir-glob@3.0.1:
     dependencies:
@@ -4637,81 +4022,6 @@ snapshots:
   error-ex@1.3.2:
     dependencies:
       is-arrayish: 0.2.1
-
-  es-abstract@1.23.3:
-    dependencies:
-      array-buffer-byte-length: 1.0.1
-      arraybuffer.prototype.slice: 1.0.3
-      available-typed-arrays: 1.0.7
-      call-bind: 1.0.7
-      data-view-buffer: 1.0.1
-      data-view-byte-length: 1.0.1
-      data-view-byte-offset: 1.0.0
-      es-define-property: 1.0.0
-      es-errors: 1.3.0
-      es-object-atoms: 1.0.0
-      es-set-tostringtag: 2.0.3
-      es-to-primitive: 1.2.1
-      function.prototype.name: 1.1.6
-      get-intrinsic: 1.2.4
-      get-symbol-description: 1.0.2
-      globalthis: 1.0.4
-      gopd: 1.0.1
-      has-property-descriptors: 1.0.2
-      has-proto: 1.0.3
-      has-symbols: 1.0.3
-      hasown: 2.0.2
-      internal-slot: 1.0.7
-      is-array-buffer: 3.0.4
-      is-callable: 1.2.7
-      is-data-view: 1.0.1
-      is-negative-zero: 2.0.3
-      is-regex: 1.1.4
-      is-shared-array-buffer: 1.0.3
-      is-string: 1.0.7
-      is-typed-array: 1.1.13
-      is-weakref: 1.0.2
-      object-inspect: 1.13.1
-      object-keys: 1.1.1
-      object.assign: 4.1.5
-      regexp.prototype.flags: 1.5.2
-      safe-array-concat: 1.1.2
-      safe-regex-test: 1.0.3
-      string.prototype.trim: 1.2.9
-      string.prototype.trimend: 1.0.8
-      string.prototype.trimstart: 1.0.8
-      typed-array-buffer: 1.0.2
-      typed-array-byte-length: 1.0.1
-      typed-array-byte-offset: 1.0.2
-      typed-array-length: 1.0.6
-      unbox-primitive: 1.0.2
-      which-typed-array: 1.1.15
-
-  es-define-property@1.0.0:
-    dependencies:
-      get-intrinsic: 1.2.4
-
-  es-errors@1.3.0: {}
-
-  es-object-atoms@1.0.0:
-    dependencies:
-      es-errors: 1.3.0
-
-  es-set-tostringtag@2.0.3:
-    dependencies:
-      get-intrinsic: 1.2.4
-      has-tostringtag: 1.0.2
-      hasown: 2.0.2
-
-  es-shim-unscopables@1.0.2:
-    dependencies:
-      hasown: 2.0.2
-
-  es-to-primitive@1.2.1:
-    dependencies:
-      is-callable: 1.2.7
-      is-date-object: 1.0.5
-      is-symbol: 1.0.4
 
   esbuild@0.20.2:
     optionalDependencies:
@@ -4779,11 +4089,11 @@ snapshots:
     optionalDependencies:
       source-map: 0.6.1
 
-  eslint-config-aeria@0.0.30(@stylistic/eslint-plugin@2.2.0(eslint@9.5.0)(typescript@5.4.5))(@typescript-eslint/eslint-plugin@7.13.0(@typescript-eslint/parser@7.13.0(eslint@9.5.0)(typescript@5.4.5))(eslint@9.5.0)(typescript@5.4.5))(@typescript-eslint/parser@7.13.0(eslint@9.5.0)(typescript@5.4.5)):
+  eslint-config-aeria@0.0.30(@stylistic/eslint-plugin@2.3.0(eslint@9.6.0)(typescript@5.5.3))(@typescript-eslint/eslint-plugin@7.15.0(@typescript-eslint/parser@7.15.0(eslint@9.6.0)(typescript@5.5.3))(eslint@9.6.0)(typescript@5.5.3))(@typescript-eslint/parser@7.15.0(eslint@9.6.0)(typescript@5.5.3)):
     dependencies:
-      '@stylistic/eslint-plugin': 2.2.0(eslint@9.5.0)(typescript@5.4.5)
-      '@typescript-eslint/eslint-plugin': 7.13.0(@typescript-eslint/parser@7.13.0(eslint@9.5.0)(typescript@5.4.5))(eslint@9.5.0)(typescript@5.4.5)
-      '@typescript-eslint/parser': 7.13.0(eslint@9.5.0)(typescript@5.4.5)
+      '@stylistic/eslint-plugin': 2.3.0(eslint@9.6.0)(typescript@5.5.3)
+      '@typescript-eslint/eslint-plugin': 7.15.0(@typescript-eslint/parser@7.15.0(eslint@9.6.0)(typescript@5.5.3))(eslint@9.6.0)(typescript@5.5.3)
+      '@typescript-eslint/parser': 7.15.0(eslint@9.6.0)(typescript@5.5.3)
 
   eslint-scope@8.0.1:
     dependencies:
@@ -4794,24 +4104,24 @@ snapshots:
 
   eslint-visitor-keys@4.0.0: {}
 
-  eslint@9.5.0:
+  eslint@9.6.0:
     dependencies:
-      '@eslint-community/eslint-utils': 4.4.0(eslint@9.5.0)
-      '@eslint-community/regexpp': 4.10.1
-      '@eslint/config-array': 0.16.0
+      '@eslint-community/eslint-utils': 4.4.0(eslint@9.6.0)
+      '@eslint-community/regexpp': 4.11.0
+      '@eslint/config-array': 0.17.0
       '@eslint/eslintrc': 3.1.0
-      '@eslint/js': 9.5.0
+      '@eslint/js': 9.6.0
       '@humanwhocodes/module-importer': 1.0.1
       '@humanwhocodes/retry': 0.3.0
       '@nodelib/fs.walk': 1.2.8
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.3
-      debug: 4.3.5
+      debug: 4.3.5(supports-color@8.1.1)
       escape-string-regexp: 4.0.0
       eslint-scope: 8.0.1
       eslint-visitor-keys: 4.0.0
-      espree: 10.0.1
+      espree: 10.1.0
       esquery: 1.5.0
       esutils: 2.0.3
       fast-deep-equal: 3.1.3
@@ -4833,10 +4143,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  espree@10.0.1:
+  espree@10.1.0:
     dependencies:
-      acorn: 8.12.0
-      acorn-jsx: 5.3.2(acorn@8.12.0)
+      acorn: 8.12.1
+      acorn-jsx: 5.3.2(acorn@8.12.1)
       eslint-visitor-keys: 4.0.0
 
   esprima@4.0.1: {}
@@ -4962,12 +4272,8 @@ snapshots:
 
   follow-redirects@1.15.6(debug@4.3.5):
     optionalDependencies:
-      debug: 4.3.5
+      debug: 4.3.5(supports-color@8.1.1)
     optional: true
-
-  for-each@0.3.3:
-    dependencies:
-      is-callable: 1.2.7
 
   foreground-child@3.2.1:
     dependencies:
@@ -5011,17 +4317,6 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
-  function-bind@1.1.2: {}
-
-  function.prototype.name@1.1.6:
-    dependencies:
-      call-bind: 1.0.7
-      define-properties: 1.2.1
-      es-abstract: 1.23.3
-      functions-have-names: 1.2.3
-
-  functions-have-names@1.2.3: {}
-
   gauge@3.0.2:
     dependencies:
       aproba: 2.0.0
@@ -5036,25 +4331,11 @@ snapshots:
 
   get-caller-file@2.0.5: {}
 
-  get-intrinsic@1.2.4:
-    dependencies:
-      es-errors: 1.3.0
-      function-bind: 1.1.2
-      has-proto: 1.0.3
-      has-symbols: 1.0.3
-      hasown: 2.0.2
-
   get-stream@5.2.0:
     dependencies:
       pump: 3.0.0
 
   get-stream@8.0.1: {}
-
-  get-symbol-description@1.0.2:
-    dependencies:
-      call-bind: 1.0.7
-      es-errors: 1.3.0
-      get-intrinsic: 1.2.4
 
   git-raw-commits@4.0.0:
     dependencies:
@@ -5070,12 +4351,13 @@ snapshots:
     dependencies:
       is-glob: 4.0.3
 
-  glob@10.4.1:
+  glob@10.4.3:
     dependencies:
       foreground-child: 3.2.1
-      jackspeak: 3.4.0
-      minimatch: 9.0.4
+      jackspeak: 3.4.1
+      minimatch: 9.0.5
       minipass: 7.1.2
+      package-json-from-dist: 1.0.0
       path-scurry: 1.11.1
 
   glob@7.2.3:
@@ -5092,7 +4374,7 @@ snapshots:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 5.0.1
+      minimatch: 5.1.6
       once: 1.4.0
 
   global-directory@4.0.1:
@@ -5100,11 +4382,6 @@ snapshots:
       ini: 4.1.1
 
   globals@14.0.0: {}
-
-  globalthis@1.0.4:
-    dependencies:
-      define-properties: 1.2.1
-      gopd: 1.0.1
 
   globby@11.1.0:
     dependencies:
@@ -5115,45 +4392,17 @@ snapshots:
       merge2: 1.4.1
       slash: 3.0.0
 
-  gopd@1.0.1:
-    dependencies:
-      get-intrinsic: 1.2.4
-
   graceful-fs@4.2.11: {}
 
-  grapheme-splitter@1.0.4: {}
-
   graphemer@1.4.0: {}
-
-  hard-rejection@2.1.0: {}
-
-  has-bigints@1.0.2: {}
 
   has-flag@3.0.0: {}
 
   has-flag@4.0.0: {}
 
-  has-property-descriptors@1.0.2:
-    dependencies:
-      es-define-property: 1.0.0
-
-  has-proto@1.0.3: {}
-
-  has-symbols@1.0.3: {}
-
-  has-tostringtag@1.0.2:
-    dependencies:
-      has-symbols: 1.0.3
-
   has-unicode@2.0.1: {}
 
-  hasown@2.0.2:
-    dependencies:
-      function-bind: 1.1.2
-
   he@1.2.0: {}
-
-  hosted-git-info@2.8.9: {}
 
   http-cache-semantics@4.1.1: {}
 
@@ -5161,21 +4410,21 @@ snapshots:
     dependencies:
       '@tootallnate/once': 2.0.0
       agent-base: 6.0.2
-      debug: 4.3.5
+      debug: 4.3.5(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.5
+      debug: 4.3.5(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
-  https-proxy-agent@7.0.4:
+  https-proxy-agent@7.0.5:
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.5
+      debug: 4.3.5(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
     optional: true
@@ -5225,50 +4474,16 @@ snapshots:
 
   ini@4.1.1: {}
 
-  internal-slot@1.0.7:
-    dependencies:
-      es-errors: 1.3.0
-      hasown: 2.0.2
-      side-channel: 1.0.6
-
   ip-address@9.0.5:
     dependencies:
       jsbn: 1.1.0
       sprintf-js: 1.1.3
 
-  is-array-buffer@3.0.4:
-    dependencies:
-      call-bind: 1.0.7
-      get-intrinsic: 1.2.4
-
   is-arrayish@0.2.1: {}
-
-  is-bigint@1.0.4:
-    dependencies:
-      has-bigints: 1.0.2
 
   is-binary-path@2.1.0:
     dependencies:
       binary-extensions: 2.3.0
-
-  is-boolean-object@1.1.2:
-    dependencies:
-      call-bind: 1.0.7
-      has-tostringtag: 1.0.2
-
-  is-callable@1.2.7: {}
-
-  is-core-module@2.13.1:
-    dependencies:
-      hasown: 2.0.2
-
-  is-data-view@1.0.1:
-    dependencies:
-      is-typed-array: 1.1.13
-
-  is-date-object@1.0.5:
-    dependencies:
-      has-tostringtag: 1.0.2
 
   is-extglob@2.1.1: {}
 
@@ -5280,70 +4495,35 @@ snapshots:
 
   is-lambda@1.0.1: {}
 
-  is-negative-zero@2.0.3: {}
-
-  is-number-object@1.0.7:
-    dependencies:
-      has-tostringtag: 1.0.2
-
   is-number@7.0.0: {}
 
   is-obj@2.0.0: {}
 
   is-path-inside@3.0.3: {}
 
-  is-plain-obj@1.1.0: {}
-
   is-plain-obj@2.1.0: {}
-
-  is-regex@1.1.4:
-    dependencies:
-      call-bind: 1.0.7
-      has-tostringtag: 1.0.2
-
-  is-shared-array-buffer@1.0.3:
-    dependencies:
-      call-bind: 1.0.7
 
   is-stream@2.0.1: {}
 
   is-stream@3.0.0: {}
 
-  is-string@1.0.7:
-    dependencies:
-      has-tostringtag: 1.0.2
-
   is-subdir@1.2.0:
     dependencies:
       better-path-resolve: 1.0.0
-
-  is-symbol@1.0.4:
-    dependencies:
-      has-symbols: 1.0.3
 
   is-text-path@2.0.0:
     dependencies:
       text-extensions: 2.4.0
 
-  is-typed-array@1.1.13:
-    dependencies:
-      which-typed-array: 1.1.15
-
   is-unicode-supported@0.1.0: {}
-
-  is-weakref@1.0.2:
-    dependencies:
-      call-bind: 1.0.7
 
   is-windows@1.0.2: {}
 
   isarray@1.0.0: {}
 
-  isarray@2.0.5: {}
-
   isexe@2.0.0: {}
 
-  jackspeak@3.4.0:
+  jackspeak@3.4.1:
     dependencies:
       '@isaacs/cliui': 8.0.2
     optionalDependencies:
@@ -5409,10 +4589,6 @@ snapshots:
   keyv@4.5.4:
     dependencies:
       json-buffer: 3.0.1
-
-  kind-of@6.0.3: {}
-
-  kleur@4.1.5: {}
 
   levn@0.4.1:
     dependencies:
@@ -5486,7 +4662,7 @@ snapshots:
       slice-ansi: 4.0.0
       wrap-ansi: 6.2.0
 
-  lru-cache@10.2.2: {}
+  lru-cache@10.3.1: {}
 
   lru-cache@4.1.5:
     dependencies:
@@ -5547,27 +4723,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  map-obj@1.0.1: {}
-
-  map-obj@4.3.0: {}
-
   memory-pager@1.5.0: {}
 
   meow@12.1.1: {}
-
-  meow@6.1.1:
-    dependencies:
-      '@types/minimist': 1.2.5
-      camelcase-keys: 6.2.2
-      decamelize-keys: 1.1.1
-      hard-rejection: 2.1.0
-      minimist-options: 4.1.0
-      normalize-package-data: 2.5.0
-      read-pkg-up: 7.0.1
-      redent: 3.0.0
-      trim-newlines: 3.0.1
-      type-fest: 0.13.1
-      yargs-parser: 18.1.3
 
   merge-stream@2.0.0: {}
 
@@ -5582,25 +4740,17 @@ snapshots:
 
   mimic-fn@4.0.0: {}
 
-  min-indent@1.0.1: {}
-
   minimatch@3.1.2:
     dependencies:
       brace-expansion: 1.1.11
 
-  minimatch@5.0.1:
+  minimatch@5.1.6:
     dependencies:
       brace-expansion: 2.0.1
 
-  minimatch@9.0.4:
+  minimatch@9.0.5:
     dependencies:
       brace-expansion: 2.0.1
-
-  minimist-options@4.1.0:
-    dependencies:
-      arrify: 1.0.1
-      is-plain-obj: 1.1.0
-      kind-of: 6.0.3
 
   minimist@1.2.8: {}
 
@@ -5662,35 +4812,33 @@ snapshots:
       stream-each: 1.2.3
       through2: 2.0.5
 
-  mixme@0.5.10: {}
-
   mkdirp@0.5.6:
     dependencies:
       minimist: 1.2.8
 
   mkdirp@1.0.4: {}
 
-  mocha@10.4.0:
+  mocha@10.6.0:
     dependencies:
-      ansi-colors: 4.1.1
+      ansi-colors: 4.1.3
       browser-stdout: 1.3.1
-      chokidar: 3.5.3
-      debug: 4.3.4(supports-color@8.1.1)
-      diff: 5.0.0
+      chokidar: 3.6.0
+      debug: 4.3.5(supports-color@8.1.1)
+      diff: 5.2.0
       escape-string-regexp: 4.0.0
       find-up: 5.0.0
       glob: 8.1.0
       he: 1.2.0
       js-yaml: 4.1.0
       log-symbols: 4.1.0
-      minimatch: 5.0.1
+      minimatch: 5.1.6
       ms: 2.1.3
-      serialize-javascript: 6.0.0
+      serialize-javascript: 6.0.2
       strip-json-comments: 3.1.1
       supports-color: 8.1.1
-      workerpool: 6.2.1
+      workerpool: 6.5.1
       yargs: 16.2.0
-      yargs-parser: 20.2.4
+      yargs-parser: 20.2.9
       yargs-unparser: 2.0.0
 
   mongodb-connection-string-url@2.6.0:
@@ -5704,14 +4852,14 @@ snapshots:
       '@types/whatwg-url': 11.0.5
       whatwg-url: 13.0.0
 
-  mongodb-memory-server-core@9.3.0:
+  mongodb-memory-server-core@9.4.0:
     dependencies:
       async-mutex: 0.4.1
       camelcase: 6.3.0
-      debug: 4.3.5
+      debug: 4.3.5(supports-color@8.1.1)
       find-cache-dir: 3.3.2
       follow-redirects: 1.15.6(debug@4.3.5)
-      https-proxy-agent: 7.0.4
+      https-proxy-agent: 7.0.5
       mongodb: 5.9.2
       new-find-package-json: 2.0.0
       semver: 7.6.2
@@ -5727,9 +4875,9 @@ snapshots:
       - supports-color
     optional: true
 
-  mongodb-memory-server@9.3.0:
+  mongodb-memory-server@9.4.0:
     dependencies:
-      mongodb-memory-server-core: 9.3.0
+      mongodb-memory-server-core: 9.4.0
       tslib: 2.6.3
     transitivePeerDependencies:
       - '@aws-sdk/credential-providers'
@@ -5749,10 +4897,10 @@ snapshots:
       '@mongodb-js/saslprep': 1.1.7
     optional: true
 
-  mongodb@6.7.0(socks@2.8.3):
+  mongodb@6.8.0(socks@2.8.3):
     dependencies:
       '@mongodb-js/saslprep': 1.1.7
-      bson: 6.7.0
+      bson: 6.8.0
       mongodb-connection-string-url: 3.0.1
     optionalDependencies:
       socks: 2.8.3
@@ -5766,6 +4914,8 @@ snapshots:
       rimraf: 2.7.1
       run-queue: 1.0.3
 
+  mri@1.2.0: {}
+
   ms@2.1.2: {}
 
   ms@2.1.3: {}
@@ -5776,7 +4926,7 @@ snapshots:
 
   new-find-package-json@2.0.0:
     dependencies:
-      debug: 4.3.5
+      debug: 4.3.5(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
     optional: true
@@ -5792,13 +4942,6 @@ snapshots:
   nopt@5.0.0:
     dependencies:
       abbrev: 1.1.1
-
-  normalize-package-data@2.5.0:
-    dependencies:
-      hosted-git-info: 2.8.9
-      resolve: 1.22.8
-      semver: 5.7.2
-      validate-npm-package-license: 3.0.4
 
   normalize-path@3.0.0: {}
 
@@ -5818,17 +4961,6 @@ snapshots:
       set-blocking: 2.0.0
 
   object-assign@4.1.1: {}
-
-  object-inspect@1.13.1: {}
-
-  object-keys@1.1.1: {}
-
-  object.assign@4.1.5:
-    dependencies:
-      call-bind: 1.0.7
-      define-properties: 1.2.1
-      has-symbols: 1.0.3
-      object-keys: 1.1.1
 
   once@1.4.0:
     dependencies:
@@ -5871,7 +5003,7 @@ snapshots:
 
   p-limit@4.0.0:
     dependencies:
-      yocto-queue: 1.0.0
+      yocto-queue: 1.1.1
 
   p-locate@4.1.0:
     dependencies:
@@ -5892,6 +5024,8 @@ snapshots:
       aggregate-error: 3.1.0
 
   p-try@2.2.0: {}
+
+  package-json-from-dist@1.0.0: {}
 
   parallel-transform@1.2.0:
     dependencies:
@@ -5920,11 +5054,9 @@ snapshots:
 
   path-key@4.0.0: {}
 
-  path-parse@1.0.7: {}
-
   path-scurry@1.11.1:
     dependencies:
-      lru-cache: 10.2.2
+      lru-cache: 10.3.1
       minipass: 7.1.2
 
   path-type@4.0.0: {}
@@ -5944,14 +5076,12 @@ snapshots:
     dependencies:
       find-up: 4.1.0
 
-  possible-typed-array-names@1.0.0: {}
-
-  preferred-pm@3.1.3:
+  preferred-pm@3.1.4:
     dependencies:
       find-up: 5.0.0
       find-yarn-workspace-root2: 1.2.16
       path-exists: 4.0.0
-      which-pm: 2.0.0
+      which-pm: 2.2.0
 
   prelude-ls@1.2.1: {}
 
@@ -6027,24 +5157,9 @@ snapshots:
   queue-tick@1.0.1:
     optional: true
 
-  quick-lru@4.0.1: {}
-
   randombytes@2.1.0:
     dependencies:
       safe-buffer: 5.2.1
-
-  read-pkg-up@7.0.1:
-    dependencies:
-      find-up: 4.1.0
-      read-pkg: 5.2.0
-      type-fest: 0.8.1
-
-  read-pkg@5.2.0:
-    dependencies:
-      '@types/normalize-package-data': 2.4.4
-      normalize-package-data: 2.5.0
-      parse-json: 5.2.0
-      type-fest: 0.6.0
 
   read-yaml-file@1.1.0:
     dependencies:
@@ -6073,35 +5188,15 @@ snapshots:
     dependencies:
       picomatch: 2.3.1
 
-  redent@3.0.0:
-    dependencies:
-      indent-string: 4.0.0
-      strip-indent: 3.0.0
-
   regenerator-runtime@0.14.1: {}
-
-  regexp.prototype.flags@1.5.2:
-    dependencies:
-      call-bind: 1.0.7
-      define-properties: 1.2.1
-      es-errors: 1.3.0
-      set-function-name: 2.0.2
 
   require-directory@2.1.1: {}
 
   require-from-string@2.0.2: {}
 
-  require-main-filename@2.0.0: {}
-
   resolve-from@4.0.0: {}
 
   resolve-from@5.0.0: {}
-
-  resolve@1.22.8:
-    dependencies:
-      is-core-module: 2.13.1
-      path-parse: 1.0.7
-      supports-preserve-symlinks-flag: 1.0.0
 
   restore-cursor@3.1.0:
     dependencies:
@@ -6128,52 +5223,21 @@ snapshots:
     dependencies:
       aproba: 1.2.0
 
-  safe-array-concat@1.1.2:
-    dependencies:
-      call-bind: 1.0.7
-      get-intrinsic: 1.2.4
-      has-symbols: 1.0.3
-      isarray: 2.0.5
-
   safe-buffer@5.1.2: {}
 
   safe-buffer@5.2.1: {}
 
-  safe-regex-test@1.0.3:
-    dependencies:
-      call-bind: 1.0.7
-      es-errors: 1.3.0
-      is-regex: 1.1.4
-
   safer-buffer@2.1.2: {}
-
-  semver@5.7.2: {}
 
   semver@6.3.1: {}
 
   semver@7.6.2: {}
 
-  serialize-javascript@6.0.0:
+  serialize-javascript@6.0.2:
     dependencies:
       randombytes: 2.1.0
 
   set-blocking@2.0.0: {}
-
-  set-function-length@1.2.2:
-    dependencies:
-      define-data-property: 1.1.4
-      es-errors: 1.3.0
-      function-bind: 1.1.2
-      get-intrinsic: 1.2.4
-      gopd: 1.0.1
-      has-property-descriptors: 1.0.2
-
-  set-function-name@2.0.2:
-    dependencies:
-      define-data-property: 1.1.4
-      es-errors: 1.3.0
-      functions-have-names: 1.2.3
-      has-property-descriptors: 1.0.2
 
   shebang-command@1.2.0:
     dependencies:
@@ -6186,13 +5250,6 @@ snapshots:
   shebang-regex@1.0.0: {}
 
   shebang-regex@3.0.0: {}
-
-  side-channel@1.0.6:
-    dependencies:
-      call-bind: 1.0.7
-      es-errors: 1.3.0
-      get-intrinsic: 1.2.4
-      object-inspect: 1.13.1
 
   signal-exit@3.0.7: {}
 
@@ -6208,19 +5265,10 @@ snapshots:
 
   smart-buffer@4.2.0: {}
 
-  smartwrap@2.0.2:
-    dependencies:
-      array.prototype.flat: 1.3.2
-      breakword: 1.0.6
-      grapheme-splitter: 1.0.4
-      strip-ansi: 6.0.1
-      wcwidth: 1.0.1
-      yargs: 15.4.1
-
   socks-proxy-agent@7.0.0:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.5
+      debug: 4.3.5(supports-color@8.1.1)
       socks: 2.8.3
     transitivePeerDependencies:
       - supports-color
@@ -6249,20 +5297,6 @@ snapshots:
       cross-spawn: 5.1.0
       signal-exit: 3.0.7
 
-  spdx-correct@3.2.0:
-    dependencies:
-      spdx-expression-parse: 3.0.1
-      spdx-license-ids: 3.0.18
-
-  spdx-exceptions@2.5.0: {}
-
-  spdx-expression-parse@3.0.1:
-    dependencies:
-      spdx-exceptions: 2.5.0
-      spdx-license-ids: 3.0.18
-
-  spdx-license-ids@3.0.18: {}
-
   split2@4.2.0: {}
 
   sprintf-js@1.0.3: {}
@@ -6288,10 +5322,6 @@ snapshots:
 
   stream-shift@1.0.3: {}
 
-  stream-transform@2.1.3:
-    dependencies:
-      mixme: 0.5.10
-
   streamx@2.18.0:
     dependencies:
       fast-fifo: 1.3.2
@@ -6312,25 +5342,6 @@ snapshots:
       eastasianwidth: 0.2.0
       emoji-regex: 9.2.2
       strip-ansi: 7.1.0
-
-  string.prototype.trim@1.2.9:
-    dependencies:
-      call-bind: 1.0.7
-      define-properties: 1.2.1
-      es-abstract: 1.23.3
-      es-object-atoms: 1.0.0
-
-  string.prototype.trimend@1.0.8:
-    dependencies:
-      call-bind: 1.0.7
-      define-properties: 1.2.1
-      es-object-atoms: 1.0.0
-
-  string.prototype.trimstart@1.0.8:
-    dependencies:
-      call-bind: 1.0.7
-      define-properties: 1.2.1
-      es-object-atoms: 1.0.0
 
   string_decoder@1.1.1:
     dependencies:
@@ -6354,10 +5365,6 @@ snapshots:
 
   strip-final-newline@3.0.0: {}
 
-  strip-indent@3.0.0:
-    dependencies:
-      min-indent: 1.0.1
-
   strip-json-comments@3.1.1: {}
 
   supports-color@5.5.0:
@@ -6371,8 +5378,6 @@ snapshots:
   supports-color@8.1.1:
     dependencies:
       has-flag: 4.0.0
-
-  supports-preserve-symlinks-flag@1.0.0: {}
 
   tar-stream@3.1.7:
     dependencies:
@@ -6427,99 +5432,40 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  trim-newlines@3.0.1: {}
-
-  ts-api-utils@1.3.0(typescript@5.4.5):
+  ts-api-utils@1.3.0(typescript@5.5.3):
     dependencies:
-      typescript: 5.4.5
+      typescript: 5.5.3
 
-  ts-node@10.9.2(@types/node@20.14.2)(typescript@5.4.5):
+  ts-node@10.9.2(@types/node@20.14.10)(typescript@5.5.3):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
-      '@types/node': 20.14.2
-      acorn: 8.12.0
+      '@types/node': 20.14.10
+      acorn: 8.12.1
       acorn-walk: 8.3.3
       arg: 4.1.3
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 5.4.5
+      typescript: 5.5.3
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
 
   tslib@2.6.3:
     optional: true
 
-  tty-table@4.2.3:
-    dependencies:
-      chalk: 4.1.2
-      csv: 5.5.3
-      kleur: 4.1.5
-      smartwrap: 2.0.2
-      strip-ansi: 6.0.1
-      wcwidth: 1.0.1
-      yargs: 17.7.2
-
   type-check@0.4.0:
     dependencies:
       prelude-ls: 1.2.1
 
-  type-fest@0.13.1: {}
-
   type-fest@0.21.3: {}
-
-  type-fest@0.6.0: {}
-
-  type-fest@0.8.1: {}
-
-  typed-array-buffer@1.0.2:
-    dependencies:
-      call-bind: 1.0.7
-      es-errors: 1.3.0
-      is-typed-array: 1.1.13
-
-  typed-array-byte-length@1.0.1:
-    dependencies:
-      call-bind: 1.0.7
-      for-each: 0.3.3
-      gopd: 1.0.1
-      has-proto: 1.0.3
-      is-typed-array: 1.1.13
-
-  typed-array-byte-offset@1.0.2:
-    dependencies:
-      available-typed-arrays: 1.0.7
-      call-bind: 1.0.7
-      for-each: 0.3.3
-      gopd: 1.0.1
-      has-proto: 1.0.3
-      is-typed-array: 1.1.13
-
-  typed-array-length@1.0.6:
-    dependencies:
-      call-bind: 1.0.7
-      for-each: 0.3.3
-      gopd: 1.0.1
-      has-proto: 1.0.3
-      is-typed-array: 1.1.13
-      possible-typed-array-names: 1.0.0
 
   typedarray@0.0.6: {}
 
-  typescript@5.4.5: {}
-
   typescript@5.5.3: {}
-
-  unbox-primitive@1.0.2:
-    dependencies:
-      call-bind: 1.0.7
-      has-bigints: 1.0.2
-      has-symbols: 1.0.3
-      which-boxed-primitive: 1.0.2
 
   undici-types@5.26.5: {}
 
@@ -6559,15 +5505,6 @@ snapshots:
 
   v8-compile-cache-lib@3.0.1: {}
 
-  validate-npm-package-license@3.0.4:
-    dependencies:
-      spdx-correct: 3.2.0
-      spdx-expression-parse: 3.0.1
-
-  wcwidth@1.0.1:
-    dependencies:
-      defaults: 1.0.4
-
   webidl-conversions@3.0.1: {}
 
   webidl-conversions@7.0.0: {}
@@ -6588,28 +5525,10 @@ snapshots:
       tr46: 0.0.3
       webidl-conversions: 3.0.1
 
-  which-boxed-primitive@1.0.2:
-    dependencies:
-      is-bigint: 1.0.4
-      is-boolean-object: 1.1.2
-      is-number-object: 1.0.7
-      is-string: 1.0.7
-      is-symbol: 1.0.4
-
-  which-module@2.0.1: {}
-
-  which-pm@2.0.0:
+  which-pm@2.2.0:
     dependencies:
       load-yaml-file: 0.2.0
       path-exists: 4.0.0
-
-  which-typed-array@1.1.15:
-    dependencies:
-      available-typed-arrays: 1.0.7
-      call-bind: 1.0.7
-      for-each: 0.3.3
-      gopd: 1.0.1
-      has-tostringtag: 1.0.2
 
   which@1.3.1:
     dependencies:
@@ -6625,7 +5544,7 @@ snapshots:
 
   word-wrap@1.2.5: {}
 
-  workerpool@6.2.1: {}
+  workerpool@6.5.1: {}
 
   wrap-ansi@6.2.0:
     dependencies:
@@ -6659,12 +5578,7 @@ snapshots:
 
   yallist@4.0.0: {}
 
-  yargs-parser@18.1.3:
-    dependencies:
-      camelcase: 5.3.1
-      decamelize: 1.2.0
-
-  yargs-parser@20.2.4: {}
+  yargs-parser@20.2.9: {}
 
   yargs-parser@21.1.1: {}
 
@@ -6675,20 +5589,6 @@ snapshots:
       flat: 5.0.2
       is-plain-obj: 2.1.0
 
-  yargs@15.4.1:
-    dependencies:
-      cliui: 6.0.0
-      decamelize: 1.2.0
-      find-up: 4.1.0
-      get-caller-file: 2.0.5
-      require-directory: 2.1.1
-      require-main-filename: 2.0.0
-      set-blocking: 2.0.0
-      string-width: 4.2.3
-      which-module: 2.0.1
-      y18n: 4.0.3
-      yargs-parser: 18.1.3
-
   yargs@16.2.0:
     dependencies:
       cliui: 7.0.4
@@ -6697,7 +5597,7 @@ snapshots:
       require-directory: 2.1.1
       string-width: 4.2.3
       y18n: 5.0.8
-      yargs-parser: 20.2.4
+      yargs-parser: 20.2.9
 
   yargs@17.7.2:
     dependencies:
@@ -6719,6 +5619,6 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  yocto-queue@1.0.0: {}
+  yocto-queue@1.1.1: {}
 
   zen-observable@0.8.15: {}
