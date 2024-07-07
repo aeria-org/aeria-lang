@@ -6,7 +6,7 @@ import Prelude hiding (between)
 
 import Aeria.Diagnostic.Message (Diagnostic(..))
 import Aeria.Diagnostic.Position (SourcePos(..), Span(..))
-import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionIndividualActions, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPreferred, CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), ExtendsName(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), Ident, ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PreferredItem(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), WritableItem(..))
+import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionIndividualActions, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPreferred, CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), ExtendsName(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PreferredItem(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), WritableItem(..))
 import Control.Lazy (fix)
 import Data.Array as A
 import Data.Either (Either(..))
@@ -14,7 +14,7 @@ import Data.List as L
 import Data.Maybe (Maybe(..), fromMaybe, isJust)
 import Data.String.CodeUnits (fromCharArray)
 import Data.Tuple.Nested (type (/\), (/\))
-import Parsing (ParseError(..), Parser, Position(..), fail, position, runParser)
+import Parsing (ParseError(..), Parser, Position(..), position, runParser)
 import Parsing.Combinators (choice, many, manyTill, optionMaybe, sepBy, try, (<?>), (<|>))
 import Parsing.Expr (Assoc(..), Operator(..), buildExprParser)
 import Parsing.Language (emptyDef)
@@ -278,10 +278,7 @@ pGetter = do
 pCollectionProperties :: ParserM CollectionProperties
 pCollectionProperties =
   fix \self -> lang.braces $ do
-    properties <- many (try (pProperty self)) <?> "Expected properties inside braces"
-    if L.null properties
-      then fail "Expected at least one property inside braces"
-      else pure properties
+    many (try (pProperty self))
 
 pCollectionRequired :: ParserM CollectionRequired
 pCollectionRequired = lang.braces $ many (try pRequired)

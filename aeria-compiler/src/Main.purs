@@ -1,15 +1,14 @@
 module Main
   ( main
-  , module Aeria.Driver
-  , module Aeria.Diagnostic.Message
   , module Data.Either
+  , module Aeria
   )
 where
 
 import Prelude
 
-import Aeria.Diagnostic.Message (ppDiagnostic)
-import Aeria.Driver (compile, compile')
+import Aeria (checker, compile, ppDiagnostic)
+import Aeria.Driver (compile')
 import Data.Array (reverse, slice)
 import Data.Either (Either(..))
 import Effect (Effect)
