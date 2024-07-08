@@ -6,7 +6,7 @@ import Prelude hiding (between)
 
 import Aeria.Diagnostic.Message (Diagnostic(..))
 import Aeria.Diagnostic.Position (SourcePos(..), Span(..))
-import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionIndividualActions, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPreferred, CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), ExtendsName(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PreferredItem(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), WritableItem(..))
+import Aeria.Syntax.Tree (ActionItem(..), AdditionalProperties(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionIndividualActions, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPreferred, CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), ExtendsName(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PreferredItem(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), WritableItem(..))
 import Control.Lazy (fix)
 import Data.Array as A
 import Data.Either (Either(..))
@@ -77,37 +77,42 @@ pPropertyType p = fix \self -> choice
   [ try (tArray self)
   , try tPrimitives
   , try tCollection
-  , try tObject
+  , try (tObject self)
   ] <?> "Expected a property type"
   where
     tPrimitives = choice [tConst, tStr, tBool, tInt, tNum, tEnum]
-    tArray self = pArrayType self PArray
-    tCollection = pCollectionType PRef
-    tObject = pObjectType p PObject
+    tArray self = pArrayType self
+    tCollection = pCollectionType
+    tObject self = pObjectType self p
 
-    pArrayType self constructor = do
+    pArrayType self = do
       begin <- sourcePos
       _ <- string "[]" <?> "Expected '[]' for array type"
       arrType <- self
       end <- sourcePos
-      pure $ constructor (Span begin end) arrType
+      pure $ PArray (Span begin end) arrType
 
-    pCollectionType constructor = do
+    pCollectionType = do
       begin <- sourcePos
       collectionName <- pCollectionName
       end <- sourcePos
-      pure $ constructor (Span begin end) collectionName
+      pure $ PRef (Span begin end) collectionName
 
-    pObjectType p' constructor = lang.braces $ do
+    pObjectType self p' = lang.braces $ do
       begin <- sourcePos
       results <- runParsers
         [ "required" /\ unsafeCoerce (pPropertyParser "required" pCollectionRequired)
         , "properties" /\ unsafeCoerce (pPropertyParser "properties" p')
+        , "additionalProperties" /\ unsafeCoerce (pPropertyParser "additionalProperties" $ do
+            propertyType <- self
+            pure $ AdditionalProperties propertyType
+          )
         ]
       let required = unsafeCoerce $ getParserValue "required" results
       let properties = unsafeCoerce $ getParserValue "properties" results
+      let additionalProperties = unsafeCoerce $ getParserValue "additionalProperties" results
       end <- sourcePos
-      pure $ constructor (Span begin end) (fromMaybe L.Nil required) (fromMaybe L.Nil properties)
+      pure $ PObject (Span begin end) (fromMaybe L.Nil required) (fromMaybe L.Nil properties) additionalProperties
 
     tStr = pSimpleType PString "str"
     tBool = pSimpleType PBoolean "bool"

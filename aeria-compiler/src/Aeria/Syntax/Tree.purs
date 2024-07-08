@@ -339,7 +339,7 @@ data PropertyType
   | PConst Span
   | PRef Span CollectionName
   | PArray Span PropertyType
-  | PObject Span CollectionRequired CollectionProperties
+  | PObject Span CollectionRequired CollectionProperties (Maybe AdditionalProperties)
 
 derive instance genericPropertyType :: Generic PropertyType _
 
@@ -385,7 +385,7 @@ instance WriteForeign PropertyType
     writeImpl
     { kind: "PConst"
     }
-  writeImpl (PObject _ required properties) =
+  writeImpl (PObject _ required properties _) =
     writeImpl
     { kind: "PObject"
     , required: writeImpl (toUnfoldable required :: Array Required)
@@ -1169,6 +1169,22 @@ instance WriteForeign PreferredItem where
       , table: writeImpl (toUnfoldable table :: Array TableItem)
       , formLayout: writeImpl (toUnfoldable formLayout :: Array LayoutItem)
       , tableLayout: writeImpl (toUnfoldable tableLayout :: Array TableLayoutItem)
+      }
+
+data AdditionalProperties = AdditionalProperties PropertyType
+
+derive instance genericAdditionalProperties :: Generic AdditionalProperties _
+
+instance showAdditionalProperties :: Show AdditionalProperties where
+  show = genericShow
+
+instance eqAdditionalProperties :: Eq AdditionalProperties where
+  eq = genericEq
+
+instance WriteForeign AdditionalProperties where
+  writeImpl (AdditionalProperties _) =
+    writeImpl
+      {
       }
 
 data Collection

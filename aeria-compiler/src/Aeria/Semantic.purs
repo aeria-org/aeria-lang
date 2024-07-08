@@ -388,7 +388,7 @@ sProperty collectionName property@(Property { type_ }) =
   case type_ of
     PBoolean _ -> sBooleanProperty property
     PArray _ _ -> sArrayProperty collectionName property
-    PObject _ _ _ -> sObjectProperty collectionName property
+    PObject _ _ _ _ -> sObjectProperty collectionName property
     PEnum _ -> sEnumProperty property
     PString _ -> sStringProperty property
     PNum _ -> sNumberProperty property
@@ -425,7 +425,7 @@ sArrayProperty collectionName = sAttributes'
 
       sAttributes (Property { span, name, type_: (PArray span' type'), attributes: arrayAttributes }) literalAttributes M.empty
       case type' of
-        object@(PObject _ _ _)  -> sObjectProperty collectionName (Property { span, type_: object, attributes: typeAttributes, name })
+        object@(PObject _ _ _ _)  -> sObjectProperty collectionName (Property { span, type_: object, attributes: typeAttributes, name })
         _                       -> sProperty collectionName (Property { span, type_: type', attributes: typeAttributes, name })
 
     sAttributes' property@(Property { span, type_ }) =
@@ -450,7 +450,7 @@ sObjectProperty (CollectionName _ collectionName) = sAttributes' 0
     sAttributes' idx property@(Property { span, type_ }) = do
       sAttributes property M.empty M.empty
       case type_ of
-        PObject _ required properties -> do
+        PObject _ required properties _ -> do
           let objectName =  (CollectionName span (collectionName <> (show idx)))
           context <- ask >>= extendContext objectName properties L.Nil
           local (const context) $ do

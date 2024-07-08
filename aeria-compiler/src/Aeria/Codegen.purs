@@ -5,7 +5,7 @@ import Prelude
 import Aeria.Codegen.Javascript.Tree as Js
 import Aeria.Codegen.Type (codegenType)
 import Aeria.Codegen.Typescript.Tree as Ts
-import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Attributes, Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPreferred, CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), ExtendsName(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PreferredItem(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), WritableItem(..))
+import Aeria.Syntax.Tree (ActionItem(..), AdditionalProperties(..), Attribute(..), AttributeName(..), AttributeValue(..), Attributes, Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPreferred, CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), ExtendsName(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PreferredItem(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), WritableItem(..))
 import Control.Lazy (fix)
 import Data.Array (concat, elem, head, union)
 import Data.Either (Either(..))
@@ -577,47 +577,25 @@ cCollectionProperties properties getters = Js.object $ union (cProperties proper
           = Js.objectProperty2 (getPropertyName name) (cProperty property)
 
         cProperty :: Property -> Js.JsTree
-        cProperty property@(Property { type_, attributes }) =
-          collectionProperties [props, attributes']
+        cProperty (Property { type_, attributes }) = collectionProperties [type_', attributes']
           where
-            props = cPropertyType property type_
+            type_' = cPropertyType type_
+            attributes' = cAttributes type_ attributes
 
-            attributes' =
-              let
-                attributes'' = L.filter
-                  (\(Attribute _ attributeName _) ->
-                    let name = getAttributeName attributeName
-                      in name /= "values" && name /= "value"
-                  ) attributes
-              in cAttributes type_ attributes''
-
-        cPropertyType :: Property -> PropertyType -> Array Js.JsObjectProperty
-        cPropertyType property@(Property { attributes }) type_ =
-          case type_ of
+        cPropertyType :: PropertyType -> Array Js.JsObjectProperty
+        cPropertyType propertyType =
+          case propertyType of
+            PConst _ -> []
+            PEnum _ -> []
             PNum _ ->  [cType "number"]
             PInteger _ ->  [cType "integer"]
             PString _ ->  [cType "string"]
             PBoolean _ ->  [cType "boolean"]
-            PConst _ ->
-              let const = L.find (\(Attribute _ attributeName _) -> getAttributeName attributeName == "value") attributes
-              in case const of
-                Just (Attribute _ _ (ALiteral _ literal)) ->
-                  [ Js.objectProperty2 "const" (cLiteral literal)
-                  ]
-                _ -> []
-            PEnum _ ->
-              [ Js.objectProperty2 "enum" (cEnumType property)
-              ]
-            PArray _ type_' ->
-              let arrayAttribute = L.filter (\(Attribute _ attributeName _) ->
-                  not (getAttributeName attributeName `elem` arrayAttributes)) attributes
-              in
-                [ cType "array"
-                , cArrayType property type_' arrayAttribute
-                ]
-            PObject _ required properties'' ->
+            PArray _ _ -> [cType "array"]
+            PObject _ required properties'' additionalProperties ->
               concat
                 [ collectionPropertyL "required" cRequired required
+                , collectionPropertyM "additionalProperties" (\(AdditionalProperties p)  -> Js.object $ cPropertyType p) additionalProperties
                 , [ cType "object"
                   , Js.objectProperty2 "properties" (Js.object $ cProperties properties'')
                   ]
@@ -629,16 +607,34 @@ cCollectionProperties properties getters = Js.object $ union (cProperties proper
         cType type_' = Js.objectProperty2 "type" (Js.string type_')
 
         cAttributes :: PropertyType -> Attributes -> Array Js.JsObjectProperty
-        cAttributes = go''
+        cAttributes propertyType attributes =
+          case propertyType of
+            PConst _ ->
+              let const = L.find (\(Attribute _ attributeName _) -> getAttributeName attributeName == "value") attributes
+              in case const of
+                Just (Attribute _ _ (ALiteral _ literal)) ->
+                  [ Js.objectProperty2 "const" (cLiteral literal)
+                  ]
+                _ -> []
+            PEnum _ ->
+              let values = L.find (\(Attribute _ attributeName _) -> getAttributeName attributeName == "values") attributes
+              in case values of
+                Just (Attribute _ _ (ALiteral _ (LArray _ value))) ->
+                  [ Js.objectProperty2 "enum" (Js.array $ L.toUnfoldable $ map cLiteral value)
+                  ]
+                _ -> []
+            PArray _ type_' ->
+              let
+                typeAttributes = L.filter (\(Attribute _ attributeName _) -> not (getAttributeName attributeName `elem` arrayAttributes)) attributes
+                arrayAttributes' = L.filter (\(Attribute _ attributeName _) -> getAttributeName attributeName `elem` arrayAttributes) attributes
+                typeAttributes' =
+                  [concat [cPropertyType type_', cAttributes type_' typeAttributes]
+                    # Js.object
+                    # Js.objectProperty2 "items"]
+                arrayAttributes'' = L.toUnfoldable $ map go' arrayAttributes'
+              in concat [typeAttributes', arrayAttributes'']
+            _ -> L.toUnfoldable $ map go' attributes
           where
-            go'' type_ attributes =
-              case type_ of
-                PArray _ _ ->
-                  let arrayAttribute = L.filter (\(Attribute _ attributeName _) ->
-                    getAttributeName attributeName `elem` arrayAttributes) attributes
-                  in L.toUnfoldable $ map go' arrayAttribute
-                _ -> L.toUnfoldable $ map go' attributes
-
             go' (Attribute _ attributeName attributeValue) =
               let attributeName' = getAttributeName attributeName
               in case attributeValue of
@@ -651,19 +647,6 @@ cCollectionProperties properties getters = Js.object $ union (cProperties proper
           , "maxItems"
           , "uniqueItems"
           ]
-
-        cEnumType (Property { attributes }) = Js.array cvalues
-          where
-          cvalues =
-            case L.find (\(Attribute _ attributeName _) -> getAttributeName attributeName == "values") attributes of
-              Just (Attribute _ _ (ALiteral _ (LArray _ value))) ->
-                L.toUnfoldable $ map cLiteral value
-              _ -> []
-
-        cArrayType property type_' attributes =
-          concat [cPropertyType property type_', cAttributes type_' attributes]
-            # Js.object
-            # Js.objectProperty2 "items"
 
 cLiteral :: Literal -> Js.JsTree
 cLiteral =
