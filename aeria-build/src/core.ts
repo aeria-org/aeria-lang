@@ -5,7 +5,7 @@ export const compileSource = (target: CompilationTarget) => {
   return compiler.compile(target.filename)(target.source)(target.module)
 }
 
-export const checkSource = (target: CompilationTarget) => {
+export const checkSource = (target: Omit<CompilationTarget, 'module'>) => {
   return compiler.checker(target.filename)(target.source)
 }
 
