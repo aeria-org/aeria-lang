@@ -58,5 +58,10 @@ export declare const compile: (filename: string) => (source: string) => (targetM
   CompilationResult
 >
 
+export declare const checker: (filename: string) => (source: string) => Either<
+  CompilationError,
+  unknown
+>
+
 export declare const ppDiagnostic: (error: CompilationError) => string
 

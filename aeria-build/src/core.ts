@@ -5,6 +5,10 @@ export const compileSource = (target: CompilationTarget) => {
   return compiler.compile(target.filename)(target.source)(target.module)
 }
 
+export const checkSource = (target: CompilationTarget) => {
+  return compiler.checker(target.filename)(target.source)
+}
+
 export const getDeclarations = (result: compiler.CompilationResult) => {
   const declarations: Map<string, Declaration> = new Map()
 
