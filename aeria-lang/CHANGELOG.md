@@ -1,5 +1,12 @@
 # aeria-lang
 
+## 0.0.10
+
+### Patch Changes
+
+- Updated dependencies [76dae82]
+  - @aeria-lang/build@0.0.13
+
 ## 0.0.9
 
 ### Patch Changes
