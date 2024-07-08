@@ -1,5 +1,11 @@
 # @aeria-lang/compiler
 
+## 0.0.7
+
+### Patch Changes
+
+- 08d3d26: Release
+
 ## 0.0.6
 
 ### Patch Changes
