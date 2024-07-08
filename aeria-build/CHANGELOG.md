@@ -1,5 +1,11 @@
 # @aeria-lang/build
 
+## 0.0.13
+
+### Patch Changes
+
+- 76dae82: Modify `checkSource()` signature
+
 ## 0.0.12
 
 ### Patch Changes
