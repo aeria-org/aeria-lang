@@ -1,0 +1,13 @@
+collection CollectionLayoutTest {
+  layout {
+    name "grid"
+    options {
+      title prop1
+      badge prop2
+      picture prop3
+      information prop4
+      active prop5
+      translateBadge false
+    }
+  }
+}

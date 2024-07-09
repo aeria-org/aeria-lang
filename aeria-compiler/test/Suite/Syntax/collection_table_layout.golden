@@ -1,0 +1,114 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "tableLayout": [
+        {
+          "route": "/route1",
+          "kind": "TableLayoutItem",
+          "if_": {
+            "kind": "Cond",
+            "expr": {
+              "right": {
+                "kind": "ELiteral",
+                "expr": {
+                  "value": true,
+                  "kind": "LBoolean"
+                }
+              },
+              "left": {
+                "kind": "ELiteral",
+                "expr": {
+                  "value": {
+                    "value": "prop1",
+                    "kind": "PropertyName"
+                  },
+                  "kind": "LProperty"
+                }
+              },
+              "kind": "EEq"
+            }
+          },
+          "button": {
+            "value": true,
+            "type": "left"
+          },
+          "actionName": {
+            "value": "action1",
+            "kind": "PropertyName"
+          },
+          "action": {
+            "translate": true,
+            "setItem": true,
+            "selection": false,
+            "requires": [
+              {
+                "propertyName": {
+                  "value": "prop1",
+                  "kind": "PropertyName"
+                },
+                "kind": "RequireItem"
+              },
+              {
+                "propertyName": {
+                  "value": "prop2",
+                  "kind": "PropertyName"
+                },
+                "kind": "RequireItem"
+              },
+              {
+                "propertyName": {
+                  "value": "prop3",
+                  "kind": "PropertyName"
+                },
+                "kind": "RequireItem"
+              }
+            ],
+            "query": {
+              "macro": "({\n        prop3: \"value3\",\n        prop4: \"value4\"\n      })\n      ",
+              "kind": "Macro"
+            },
+            "params": {
+              "macro": "({\n        prop1: \"value1\",\n        prop2: \"value2\"\n      })\n      ",
+              "kind": "Macro"
+            },
+            "kind": "ActionItem",
+            "icon": "fa fa-icon",
+            "fetchItem": true,
+            "effect": "foo",
+            "clearItem": true,
+            "ask": true,
+            "actionName": {
+              "value": "action1",
+              "kind": "PropertyName"
+            }
+          }
+        },
+        {
+          "kind": "TableLayoutItem",
+          "button": {
+            "value": false,
+            "type": "left"
+          },
+          "actionName": {
+            "value": "action2",
+            "kind": "PropertyName"
+          },
+          "action": {
+            "requires": [],
+            "kind": "ActionItem",
+            "actionName": {
+              "value": "action2",
+              "kind": "PropertyName"
+            }
+          }
+        }
+      ],
+      "name": {
+        "value": "CollectionTableLayoutTest",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection"
+    }
+  ]
+}

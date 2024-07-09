@@ -6,7 +6,7 @@ import Prelude hiding (between)
 
 import Aeria.Diagnostic.Message (Diagnostic(..))
 import Aeria.Diagnostic.Position (SourcePos(..), Span(..))
-import Aeria.Syntax.Tree (ActionItem(..), AdditionalProperties(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionIndividualActions, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPreferred, CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), ExtendsName(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PreferredItem(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), WritableItem(..))
+import Aeria.Syntax.Tree (ActionItem(..), AdditionalProperties(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionIndividualActions, CollectionLayout(..), CollectionName(..), CollectionOwned(..), CollectionPreferred, CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), ExtendsName(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), LayoutOptions(..), Literal(..), Macro(..), PreferredItem(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), WritableItem(..))
 import Control.Lazy (fix)
 import Data.Array as A
 import Data.Either (Either(..))
@@ -14,7 +14,7 @@ import Data.List as L
 import Data.Maybe (Maybe(..), fromMaybe, isJust)
 import Data.String.CodeUnits (fromCharArray)
 import Data.Tuple.Nested (type (/\), (/\))
-import Parsing (ParseError(..), Parser, Position(..), position, runParser)
+import Parsing (ParseError(..), Parser, Position(..), fail, position, runParser)
 import Parsing.Combinators (choice, many, manyTill, optionMaybe, sepBy, try, (<?>), (<|>))
 import Parsing.Expr (Assoc(..), Operator(..), buildExprParser)
 import Parsing.Language (emptyDef)
@@ -36,8 +36,8 @@ lang = P.makeTokenParser aeria
         , commentEnd = "*/"
         , commentLine = "//"
         , nestedComments = true
-        , identStart = letter
-        , identLetter = alphaNum <|> oneOf [ '_', '\'' ]
+        , identStart = letter <|> oneOf [ '_' ]
+        , identLetter = alphaNum <|> oneOf [ '_' ]
         , caseSensitive = true
         }
 
@@ -193,6 +193,7 @@ pExpr = fix \self -> buildExprParser table (expr self)
       , [ binary "&&" EAnd AssocLeft ]
       , [ binary "||" EOr AssocLeft ]
       , [ unary "exists" EExists ]
+      , [ unary "truthy" ETruthy ]
       , [ unary "!" ENot ]
       ]
 
@@ -572,7 +573,7 @@ pCollectionTableLayout = lang.braces $ many (try go)
         , clearItem
         , params
         , query
-        , requires
+        , requires: fromMaybe L.Nil requires
         }
       }
 
@@ -669,7 +670,60 @@ pLayoutItem = do
       pProps = pPropertyParser "props" (pMacro "@js () =>")
 
 pCollectionLayout :: ParserM CollectionLayout
-pCollectionLayout = lang.braces $ many (try pLayoutItem)
+pCollectionLayout = lang.braces $ do
+  begin <- sourcePos
+  results <- runParsers allParsers'
+  end <- sourcePos
+  let name = unsafeCoerce $ getParserValue "name" results
+  let options = unsafeCoerce $ getParserValue "options" results
+  case name of
+    Just name' ->
+      pure $ CollectionLayout
+        { span: Span begin end
+        , name: name'
+        , options
+        }
+    Nothing -> fail "Expected 'name' property in layout"
+
+  where
+    allParsers' =
+      [ "name" /\ (unsafeCoerce pGrid)
+      , "options" /\ (unsafeCoerce pOptions)
+      ]
+
+    pGrid = pPropertyParser "name" lang.stringLiteral
+    pOptions = pPropertyParser "options" $ lang.braces do
+      results <- runParsers allParsersOptions
+      let title = unsafeCoerce $ getParserValue "title" results
+      let badge = unsafeCoerce $ getParserValue "badge" results
+      let picture = unsafeCoerce $ getParserValue "picture" results
+      let information = unsafeCoerce $ getParserValue "information" results
+      let active = unsafeCoerce $ getParserValue "active" results
+      let translateBadge = unsafeCoerce $ getParserValue "translateBadge" results
+      pure $ LayoutOptions
+        { title
+        , badge
+        , picture
+        , information
+        , active
+        , translateBadge
+        }
+
+    allParsersOptions =
+      [ "title" /\ (unsafeCoerce pTitle)
+      , "badge" /\ (unsafeCoerce pBadge)
+      , "picture" /\ (unsafeCoerce pPicture)
+      , "information" /\ (unsafeCoerce pInformation)
+      , "active" /\ (unsafeCoerce pActive)
+      , "translateBadge" /\ (unsafeCoerce pTranslateBadge)
+      ]
+
+    pTitle = pPropertyParser "title" pPropertyName
+    pBadge = pPropertyParser "badge" pPropertyName
+    pPicture = pPropertyParser "picture" pPropertyName
+    pInformation = pPropertyParser "information" pPropertyName
+    pActive = pPropertyParser "active" pPropertyName
+    pTranslateBadge = pPropertyParser "translateBadge" pBoolean
 
 pCollectionFormLayout :: ParserM CollectionFormLayout
 pCollectionFormLayout = lang.braces $ many (try pLayoutItem)
@@ -720,14 +774,13 @@ pPreferred = do
         , individualActions: fromMaybe L.Nil individualActions
         , filters: fromMaybe L.Nil filters
         , filtersPresets: fromMaybe L.Nil filtersPresets
-        , layout: fromMaybe L.Nil layout
+        , layout: layout
         , table: fromMaybe L.Nil table
         , tableMeta: fromMaybe L.Nil tableMeta
         , form: fromMaybe L.Nil form
         , tableLayout: fromMaybe L.Nil tableLayout
         , formLayout: fromMaybe L.Nil formLayout
         }
-
 
     allParsers =
       [ "actions"           /\ (unsafeCoerce pCollectionActions')
@@ -824,7 +877,7 @@ pCollection = go
           , indexes: fromMaybe L.Nil indexes
           , filtersPresets: fromMaybe L.Nil filtersPresets
           , individualActions: fromMaybe L.Nil individualActions
-          , layout: fromMaybe L.Nil layout
+          , layout: layout
           }
 
   allParsers =

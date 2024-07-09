@@ -1,10 +1,63 @@
-module Aeria.Semantic where
+module Aeria.Semantic
+  ( CollectionContext(..)
+  , Context(..)
+  , SemanticM
+  , collectionHasProperty
+  , emptyContext
+  , extendContext
+  , literalPos
+  , lookupCollection
+  , lookupGetter
+  , lookupProperty
+  , makeDiagnostic
+  , runSemantic
+  , sActions
+  , sArrayProperty
+  , sArrayType
+  , sAttributes
+  , sBooleanProperty
+  , sCheckIfPropertiesIsValid
+  , sCollection
+  , sConstProperty
+  , sEnumProperty
+  , sExpr
+  , sFileProperty
+  , sFilters
+  , sFiltersPresets
+  , sForm
+  , sFormLayout
+  , sFunctions
+  , sGetters
+  , sImmutable
+  , sIndexes
+  , sIndividualActions
+  , sLayout
+  , sNumberProperty
+  , sObjectProperty
+  , sProgram
+  , sProperties
+  , sProperty
+  , sRefProperty
+  , sRequired
+  , sSearch
+  , sSecurity
+  , sStringProperty
+  , sTable
+  , sTableLayout
+  , sTableMeta
+  , sType
+  , sWritable
+  , throwDiagnostic
+  , typeOf
+  , typeOfArray
+  )
+  where
 
 import Prelude
 
 import Aeria.Diagnostic.Message (Diagnostic(..))
 import Aeria.Diagnostic.Position (Span)
-import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionImmutable(..), CollectionIndexes, CollectionIndividualActions, CollectionLayout, CollectionName(..), CollectionPreferred, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), PreferredItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), Typ(..), WritableItem(..))
+import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionImmutable(..), CollectionIndexes, CollectionIndividualActions, CollectionLayout(..), CollectionName(..), CollectionPreferred, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), LayoutOptions(..), Literal(..), PreferredItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), Typ(..), WritableItem(..))
 import Control.Monad.Except (Except, runExcept, throwError)
 import Control.Monad.Reader (ReaderT, ask, local, runReaderT)
 import Data.Array (elem)
@@ -114,6 +167,7 @@ throwDiagnostic span semanticError = do
   let diagnostic = makeDiagnostic context span semanticError
   throwError diagnostic
 
+-- TODO: a função esta errada
 sExpr :: Context -> CollectionName -> Expr -> Either String Unit
 sExpr context collectionName@(CollectionName _ collectName) expr =
   case expr of
@@ -127,6 +181,7 @@ sExpr context collectionName@(CollectionName _ collectName) expr =
     EAnd lft rgt  -> sBinaryExpr lft rgt
     EExists expr' -> sExists expr'
     ENot expr'    -> sExpr context collectionName expr'
+    ETruthy expr' -> sExpr context collectionName expr'
     ELiteral _    -> pure unit
   where
     sBinaryExpr :: Expr -> Expr -> Either String Unit
@@ -239,12 +294,15 @@ sTableLayout collectionName = traverse_ go
             Right _ -> pure unit
         _ -> pure unit
 
-sLayout :: CollectionName -> CollectionLayout -> SemanticM Unit
-sLayout _ = traverse_ go
-  where
-  go (LayoutItem { component: Nothing }) = pure unit
-  go (LayoutItem { component: (Just (LayoutItemComponent { span, name }))}) =
-    when (isNothing name) (throwDiagnostic span "\"name\" property in \"layout\" is required")
+sLayout :: CollectionName -> Maybe CollectionLayout -> SemanticM Unit
+sLayout _ Nothing = pure unit
+sLayout collectionName (Just (CollectionLayout {span, name, options})) = do
+  when (not (name `elem` ["grid", "tabular", "list"])) $ (throwDiagnostic span "Invalid layout name")
+  case options of
+    Just (LayoutOptions { title, badge, picture, information, active }) -> do
+      let properties = L.fromFoldable [title, badge, picture, information, active]
+      sCheckIfPropertiesIsValid collectionName (L.catMaybes properties)
+    Nothing -> pure unit
 
 sPreferred :: CollectionName -> CollectionPreferred -> SemanticM Unit
 sPreferred collectionName = traverse_ go

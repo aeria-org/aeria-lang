@@ -240,6 +240,7 @@ data Expr
   | EEq Expr Expr
   | EOr Expr Expr
   | EExists Expr
+  | ETruthy Expr
   | ENot Expr
 
 derive instance genericExpr :: Generic Expr _
@@ -309,6 +310,11 @@ instance WriteForeign Expr
   writeImpl (ENot e1) =
     writeImpl
     { kind: "ENot"
+    , expr: writeImpl e1
+    }
+  writeImpl (ETruthy e1) =
+    writeImpl
+    { kind: "ETruthy"
     , expr: writeImpl e1
     }
 
@@ -735,36 +741,55 @@ instance WriteForeign FiltersPresetsItem where
       , filters: writeImpl filters
       }
 
-type CollectionLayout = List LayoutItem
-
-data LayoutItem = LayoutItem
+data CollectionLayout = CollectionLayout
   { span :: Span
-  , name :: PropertyName
-  , verticalSpacing :: Maybe Number
-  , separator :: Maybe String
-  , span_ :: Maybe Number
-  , component :: Maybe LayoutItemComponent
-  , if_ :: Maybe Cond
+  , name :: String
+  , options :: Maybe LayoutOptions
   }
 
-derive instance genericLayoutItem :: Generic LayoutItem _
+derive instance genericCollectionLayout :: Generic CollectionLayout _
 
-instance showLayoutItem :: Show LayoutItem where
+instance showCollectionLayout :: Show CollectionLayout where
   show = genericShow
 
-instance eqLayoutItem :: Eq LayoutItem where
+instance eqCollectionLayout :: Eq CollectionLayout where
   eq = genericEq
 
-instance WriteForeign LayoutItem where
-  writeImpl (LayoutItem { name, verticalSpacing, separator, span_, component, if_ }) =
+instance WriteForeign CollectionLayout where
+  writeImpl (CollectionLayout {name, options}) =
     writeImpl
-      { kind: "LayoutItem"
+      { kind: "CollectionLayout"
       , name: writeImpl name
-      , verticalSpacing: writeImpl verticalSpacing
-      , separator: writeImpl separator
-      , span_: writeImpl span_
-      , component: writeImpl component
-      , if_: writeImpl if_
+      , options: writeImpl options
+      }
+
+data LayoutOptions = LayoutOptions
+  { title :: Maybe PropertyName
+  , badge :: Maybe PropertyName
+  , picture :: Maybe PropertyName
+  , information :: Maybe PropertyName
+  , active :: Maybe PropertyName
+  , translateBadge :: Maybe Boolean
+  }
+
+derive instance genericLayoutOptions :: Generic LayoutOptions _
+
+instance showLayoutOptions :: Show LayoutOptions where
+  show = genericShow
+
+instance eqLayoutOptions :: Eq LayoutOptions where
+  eq = genericEq
+
+instance WriteForeign LayoutOptions where
+  writeImpl (LayoutOptions {title, badge, picture, information, translateBadge, active}) =
+    writeImpl
+      { kind: "LayoutOptions"
+      , title: writeImpl title
+      , badge: writeImpl badge
+      , picture: writeImpl picture
+      , information: writeImpl information
+      , active: writeImpl active
+      , translateBadge: writeImpl translateBadge
       }
 
 data LayoutItemCondition = LayoutItemCondition PropertyName Cond
@@ -1042,6 +1067,7 @@ instance WriteForeign ActionItem where
       , params: writeImpl params
       , query: writeImpl query
       , requires: writeImpl (toUnfoldable requires :: Array RequireItem)
+      --  writeImpl (toUnfoldable tableLayout :: Array TableLayoutItem)
       }
 
 type CollectionIndividualActions = List ActionItem
@@ -1087,6 +1113,36 @@ instance WriteForeign CollectionTemporary where
 
 type CollectionFormLayout = List LayoutItem
 
+data LayoutItem = LayoutItem
+  { span :: Span
+  , name :: PropertyName
+  , verticalSpacing :: Maybe Number
+  , separator :: Maybe String
+  , span_ :: Maybe Number
+  , component :: Maybe LayoutItemComponent
+  , if_ :: Maybe Cond
+  }
+
+derive instance genericLayoutItem :: Generic LayoutItem _
+
+instance showLayoutItem :: Show LayoutItem where
+  show = genericShow
+
+instance eqLayoutItem :: Eq LayoutItem where
+  eq = genericEq
+
+instance WriteForeign LayoutItem where
+  writeImpl (LayoutItem { name, verticalSpacing, separator, span_, component, if_ }) =
+    writeImpl
+      { kind: "LayoutItem"
+      , name: writeImpl name
+      , verticalSpacing: writeImpl verticalSpacing
+      , separator: writeImpl separator
+      , span_: writeImpl span_
+      , component: writeImpl component
+      , if_: writeImpl if_
+      }
+
 type CollectionTableLayout = List TableLayoutItem
 
 data TableLayoutItem = TableLayoutItem
@@ -1127,7 +1183,7 @@ data PreferredItem = PreferredItem
   , individualActions :: CollectionIndividualActions
   , filters :: CollectionFilters
   , filtersPresets :: CollectionFiltersPresets
-  , layout :: CollectionLayout
+  , layout :: Maybe CollectionLayout
   , table :: CollectionTable
   , form :: CollectionForm
   , tableLayout :: CollectionTableLayout
@@ -1164,7 +1220,7 @@ instance WriteForeign PreferredItem where
       , individualActions: writeImpl (toUnfoldable individualActions :: Array ActionItem)
       , filters: writeImpl (toUnfoldable filters :: Array FilterItem)
       , filtersPresets: writeImpl (toUnfoldable filtersPresets :: Array FiltersPresetsItem)
-      , layout: writeImpl (toUnfoldable layout :: Array LayoutItem)
+      , layout: writeImpl layout
       , form: writeImpl (toUnfoldable form :: Array FormItem)
       , table: writeImpl (toUnfoldable table :: Array TableItem)
       , formLayout: writeImpl (toUnfoldable formLayout :: Array LayoutItem)
@@ -1184,7 +1240,7 @@ instance eqAdditionalProperties :: Eq AdditionalProperties where
 instance WriteForeign AdditionalProperties where
   writeImpl (AdditionalProperties _) =
     writeImpl
-      {
+      { kind: "AdditionalProperties"
       }
 
 data Collection
@@ -1214,7 +1270,7 @@ data Collection
     , filters :: CollectionFilters
     , filtersPresets :: CollectionFiltersPresets
     , indexes :: CollectionIndexes
-    , layout :: CollectionLayout
+    , layout :: Maybe CollectionLayout
     , formLayout :: CollectionFormLayout
     , search :: Maybe CollectionSearch
     }
@@ -1282,7 +1338,7 @@ instance WriteForeign Collection where
         , filters: writeImpl (toUnfoldable filters :: Array FilterItem)
         , filtersPresets: writeImpl (toUnfoldable filtersPresets :: Array FiltersPresetsItem)
         , indexes: writeImpl (toUnfoldable indexes :: Array IndexesItem)
-        , layout: writeImpl (toUnfoldable layout :: Array LayoutItem)
+        , layout: writeImpl layout
         , formLayout: writeImpl (toUnfoldable formLayout :: Array LayoutItem)
         }
 

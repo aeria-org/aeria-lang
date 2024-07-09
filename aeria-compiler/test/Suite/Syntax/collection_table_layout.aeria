@@ -1,0 +1,36 @@
+collection CollectionTableLayoutTest {
+  tableLayout {
+    action1 {
+      route "/route1"
+      icon "fa fa-icon"
+      ask true
+      if @cond(prop1 == true)
+      selection false
+      effect "foo"
+      button true
+      translate true
+      setItem true
+      fetchItem true
+      clearItem true
+      params @js () => ({
+        prop1: "value1",
+        prop2: "value2"
+      })
+      @end
+      query @js () => ({
+        prop3: "value3",
+        prop4: "value4"
+      })
+      @end
+      requires {
+        prop1
+        prop2
+        prop3
+      }
+    }
+
+    action2 {
+      button false
+    }
+  }
+}

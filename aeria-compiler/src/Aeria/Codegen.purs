@@ -5,7 +5,7 @@ import Prelude
 import Aeria.Codegen.Javascript.Tree as Js
 import Aeria.Codegen.Type (codegenType)
 import Aeria.Codegen.Typescript.Tree as Ts
-import Aeria.Syntax.Tree (ActionItem(..), AdditionalProperties(..), Attribute(..), AttributeName(..), AttributeValue(..), Attributes, Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout, CollectionName(..), CollectionOwned(..), CollectionPreferred, CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), ExtendsName(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), Literal(..), Macro(..), PreferredItem(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), WritableItem(..))
+import Aeria.Syntax.Tree (ActionItem(..), AdditionalProperties(..), Attribute(..), AttributeName(..), AttributeValue(..), Attributes, Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout(..), CollectionName(..), CollectionOwned(..), CollectionPreferred, CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), ExtendsName(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), LayoutOptions(..), Literal(..), Macro(..), PreferredItem(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), WritableItem(..))
 import Control.Lazy (fix)
 import Data.Array (concat, elem, head, union)
 import Data.Either (Either(..))
@@ -234,9 +234,9 @@ cCollection (Collection
   temporaryDescription          = collectionPropertyM "temporary" cTemporary temporary
   formDescription               = collectionPropertyL "form" cForm form
   tableDescription              = collectionPropertyL "table" cTable table
-  layoutDescription             = collectionPropertyL "layout" cLayout layout
+  layoutDescription             = collectionPropertyM "layout" cLayout layout
   tableLayoutDescription        = collectionPropertyL "tableLayout" cTableLayout tableLayout
-  formLayoutDescription         = collectionPropertyL "formLayout" cLayout formLayout
+  formLayoutDescription         = collectionPropertyL "formLayout" cFormLayout formLayout
   actionsDescription            = collectionPropertyL "actions" cActions actions
   individualActionsDescription  = collectionPropertyL "individualActions" cActions individualActions
   filtersDescription            = collectionPropertyL "filters" cFilters filters
@@ -343,15 +343,40 @@ cPreferred preferred =
           [ collectionPropertyL "tableMeta" cTableMeta tableMeta
           , collectionPropertyL "form" cForm form
           , collectionPropertyL "table" cTable table
-          , collectionPropertyL "layout" cLayout layout
+          , collectionPropertyM "layout" cLayout layout
           , collectionPropertyL "tableLayout" cTableLayout tableLayout
-          , collectionPropertyL "formLayout" cLayout formLayout
+          , collectionPropertyL "formLayout" cFormLayout formLayout
           , collectionPropertyL "actions" cActions actions
           , collectionPropertyL "individualActions" cActions individualActions
           , collectionPropertyL "filters" cFilters filters
           , collectionPropertyL "filtersPresets" cFiltersPresets filtersPresets
           ]
         )
+
+-- cFormLayout :: CollectionFormLayout -> Js.JsTree
+-- cFormLayout collectionFormLayout = Js.object
+--   [ (cLayout collectionLayout)]
+cFormLayout :: CollectionFormLayout -> Js.JsTree
+cFormLayout collectionFormLayout = Js.object
+  [Js.objectProperty2 "fields" $
+    map go collectionFormLayout
+      # L.toUnfoldable
+      # Js.object]
+  where
+    go (LayoutItem { name, component, span_, if_, verticalSpacing  }) =
+      Js.objectProperty2 (getPropertyName name) $
+        collectionProperties
+          [ collectionPropertyM "span" Js.float span_
+          , collectionPropertyM "verticalSpacing" Js.float verticalSpacing
+          , collectionPropertyM "if" (\(Cond _ expr) -> cExpr expr) if_
+          , collectionPropertyM "component" cComponent component
+          ]
+
+    cComponent (LayoutItemComponent { name, props }) =
+      collectionProperties
+        [ collectionPropertyM "name" Js.string name
+        , collectionPropertyM "props" (\(Macro _ code) -> Js.code code) props
+        ]
 
 cActions :: CollectionActions -> Js.JsTree
 cActions actions =
@@ -393,31 +418,30 @@ cActions actions =
           ]
 
 cLayout :: CollectionLayout -> Js.JsTree
-cLayout layout =
-  map go layout
-    # L.toUnfoldable
-    # Js.object
-  where
-    go (LayoutItem { name, component, span_, if_, verticalSpacing  }) =
-      Js.objectProperty2 (getPropertyName name) $
-        collectionProperties
-          [ collectionPropertyM "span" Js.float span_
-          , collectionPropertyM "verticalSpacing" Js.float verticalSpacing
-          , collectionPropertyM "if" (\(Cond _ expr) -> cExpr expr) if_
-          , collectionPropertyM "component" cComponent component
-          ]
-
-    cComponent (LayoutItemComponent { name, props }) =
-      collectionProperties
-        [ collectionPropertyM "name" Js.string name
-        , collectionPropertyM "props" (\(Macro _ code) -> Js.code code) props
-        ]
+cLayout (CollectionLayout { name, options }) =
+  collectionProperties
+    [ [Js.objectProperty2 "name" $ Js.string name]
+    , case options of
+      Just (LayoutOptions {title, badge, picture, information, active, translateBadge}) ->
+        [Js.objectProperty2 "options" $ collectionProperties
+          [ collectionPropertyM "title" (Js.string <<< getPropertyName) title
+          , collectionPropertyM "badge" (Js.string <<< getPropertyName) badge
+          , collectionPropertyM "picture" (Js.string <<< getPropertyName) picture
+          , collectionPropertyM "information" (Js.string <<< getPropertyName) information
+          , collectionPropertyM "active" (Js.string <<< getPropertyName) active
+          , collectionPropertyM "translateBadge" Js.boolean translateBadge
+          ]]
+      Nothing -> []
+    ]
 
 cTableLayout :: CollectionTableLayout -> Js.JsTree
 cTableLayout tableLayout =
-  map go tableLayout
-    # L.toUnfoldable
-    # Js.object
+  Js.object
+    [ Js.objectProperty2 "actions" $
+        map go tableLayout
+          # L.toUnfoldable
+          # Js.object
+    ]
   where
     go (TableLayoutItem { actionName, route, if_, button, action }) =
       let
@@ -537,6 +561,7 @@ cUnaryExpr oper e1 =
 
 cExpr :: Expr -> Js.JsTree
 cExpr (ELiteral value) = cLiteral value
+cExpr (ETruthy e1) = cUnaryExpr "truthy" (cExpr e1)
 cExpr (EExists e1) = cUnaryExpr "exists" (cExpr e1)
 cExpr (ENot e1) = cUnaryExpr "not" (cExpr e1)
 cExpr (EOr e1 e2) =

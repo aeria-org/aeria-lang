@@ -1,0 +1,40 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "name": {
+        "value": "CollectionLayoutTest",
+        "kind": "CollectionName"
+      },
+      "layout": {
+        "options": {
+          "translateBadge": false,
+          "title": {
+            "value": "prop1",
+            "kind": "PropertyName"
+          },
+          "picture": {
+            "value": "prop3",
+            "kind": "PropertyName"
+          },
+          "kind": "LayoutOptions",
+          "information": {
+            "value": "prop4",
+            "kind": "PropertyName"
+          },
+          "badge": {
+            "value": "prop2",
+            "kind": "PropertyName"
+          },
+          "active": {
+            "value": "prop5",
+            "kind": "PropertyName"
+          }
+        },
+        "name": "grid",
+        "kind": "CollectionLayout"
+      },
+      "kind": "Collection"
+    }
+  ]
+}

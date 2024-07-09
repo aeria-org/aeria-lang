@@ -1,0 +1,48 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "name": {
+        "value": "CollectionFormLayoutTest",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection",
+      "formLayout": [
+        {
+          "verticalSpacing": 3,
+          "span_": 3,
+          "separator": "top",
+          "name": {
+            "value": "prop1",
+            "kind": "PropertyName"
+          },
+          "kind": "LayoutItem",
+          "if_": {
+            "kind": "Cond",
+            "expr": {
+              "kind": "ETruthy",
+              "expr": {
+                "kind": "ELiteral",
+                "expr": {
+                  "value": {
+                    "value": "_id",
+                    "kind": "PropertyName"
+                  },
+                  "kind": "LProperty"
+                }
+              }
+            }
+          },
+          "component": {
+            "props": {
+              "macro": "{\n          return {\n            prop1: \"value1\",\n            prop2: \"value2\",\n          }\n        }\n        ",
+              "kind": "Macro"
+            },
+            "name": "componentTest",
+            "kind": "LayoutItemComponent"
+          }
+        }
+      ]
+    }
+  ]
+}
