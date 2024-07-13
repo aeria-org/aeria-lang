@@ -3,7 +3,7 @@ module Aeria.Codegen where
 import Prelude
 
 import Aeria.Codegen.Javascript.Tree as Js
-import Aeria.Codegen.Type (codegenType)
+import Aeria.Codegen.Type (typegen)
 import Aeria.Codegen.Typescript.Tree as Ts
 import Aeria.Syntax.Tree (ActionItem(..), AdditionalProperties(..), Attribute(..), AttributeName(..), AttributeValue(..), Attributes, Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionLayout(..), CollectionName(..), CollectionOwned(..), CollectionPreferred, CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), ExtendsName(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), LayoutOptions(..), Literal(..), Macro(..), PreferredItem(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), WritableItem(..))
 import Control.Lazy (fix)
@@ -32,7 +32,7 @@ codegen (Program { collections }) = map go collections
     jsImportsFunctions = map (Js.importSpecifier1 <<< Js.identifier) functions'
 
     collection' = cCollection collection
-    collectionType = codegenType collection'
+    collectionType = typegen collection'
 
     tsFile =
       Ts.statements
@@ -562,7 +562,7 @@ cUnaryExpr oper e1 =
 cExpr :: Expr -> Js.JsTree
 cExpr (ELiteral value) = cLiteral value
 cExpr (ETruthy e1) = cUnaryExpr "truthy" (cExpr e1)
-cExpr (EExists e1) = cUnaryExpr "exists" (cExpr e1)
+-- cExpr (EExists e1) = cUnaryExpr "exists" (cExpr e1)
 cExpr (ENot e1) = cUnaryExpr "not" (cExpr e1)
 cExpr (EOr e1 e2) =
   Js.object

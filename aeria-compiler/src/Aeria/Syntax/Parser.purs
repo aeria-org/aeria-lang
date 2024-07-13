@@ -87,7 +87,7 @@ pPropertyType p = fix \self -> choice
 
     pArrayType self = do
       begin <- sourcePos
-      _ <- string "[]" <?> "Expected '[]' for array type"
+      _ <- string "[]" <?> "Expected \"[]\" for array type"
       arrType <- self
       end <- sourcePos
       pure $ PArray (Span begin end) arrType
@@ -123,12 +123,12 @@ pPropertyType p = fix \self -> choice
 
     pSimpleType constructor keyword = do
       begin <- sourcePos
-      _ <- lang.reservedOp keyword <?> ("Expected '" <> keyword <> "'")
+      _ <- lang.reservedOp keyword <?> ("Expected \"" <> keyword <> "\"")
       end <- sourcePos
       pure $ constructor (Span begin end)
 
 pBoolean :: ParserM Boolean
-pBoolean = pTrue <|> pFalse <?> "Expected a boolean ('true' or 'false')"
+pBoolean = pTrue <|> pFalse <?> "Expected a boolean (\"true\" or \"false\")"
   where
     pTrue :: ParserM Boolean
     pTrue = lang.reserved "true" $> true
@@ -192,7 +192,7 @@ pExpr = fix \self -> buildExprParser table (expr self)
         ]
       , [ binary "&&" EAnd AssocLeft ]
       , [ binary "||" EOr AssocLeft ]
-      , [ unary "exists" EExists ]
+      -- , [ unary "exists" EExists ]
       , [ unary "truthy" ETruthy ]
       , [ unary "!" ENot ]
       ]
@@ -200,13 +200,13 @@ pExpr = fix \self -> buildExprParser table (expr self)
     binary name fun assoc = Infix go assoc
       where
         go = do
-          lang.reservedOp name <?> ("Expected binary operator '" <> name <> "'")
+          lang.reservedOp name <?> ("Expected binary operator \"" <> name <> "\"")
           pure fun
 
     unary name fun = Prefix go
       where
         go = do
-          lang.reservedOp name <?> ("Expected unary operator '" <> name <> "'")
+          lang.reservedOp name <?> ("Expected unary operator \"" <> name <> "\"")
           pure fun
 
     expr self = lang.parens self <|> value
@@ -216,7 +216,7 @@ pExpr = fix \self -> buildExprParser table (expr self)
 pAttribute :: ParserM Attribute
 pAttribute = do
   begin <- sourcePos
-  attributeName <- lang.reservedOp "@" *> pAttributeName <?> "Expected attribute name starting with '@'"
+  attributeName <- lang.reservedOp "@" *> pAttributeName <?> "Expected attribute name starting with \"@\""
   attributeValue <- case attributeName of
     AttributeName _ "constraints" -> do
       beginAttributeValue <- sourcePos

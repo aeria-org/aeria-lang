@@ -16,18 +16,24 @@ import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Aff as Aff
 import Effect.Console (log)
+import Effect.Exception (throw)
+import Effect.Unsafe (unsafePerformEffect)
 import Node.Buffer (fromString, toString)
 import Node.Encoding (Encoding(..))
 import Node.FS.Aff (mkdir, writeFile)
-import Node.FS.Sync (readFile)
+import Node.FS.Sync (exists, readFile)
 
 type FilePath = String
 
 writeOutput :: String -> String -> String -> Effect Unit
 writeOutput filePath fileName content = do
-  Aff.runAff_ (\_ -> pure unit) (mkdir filePath)
+  dirExists <- exists filePath
+  when (not dirExists) (Aff.runAff_ handle (mkdir filePath))
   buffer <- fromString content UTF8
-  Aff.runAff_ (\_ -> pure unit) (writeFile (filePath <> "/" <> fileName) buffer)
+  Aff.runAff_ handle (writeFile (filePath <> "/" <> fileName) buffer)
+  where
+    handle (Left err) = unsafePerformEffect (throw $ show err)
+    handle (Right _) = pure unit
 
 readSource :: String -> Effect String
 readSource filePath = do
@@ -46,13 +52,18 @@ emitCode name jsCode tsCode outputPath targetModule = do
 
 compile :: FilePath -> String -> String -> Either Diagnostic (Array (Array String))
 compile filepath source targetModule = do
-  case parseModule targetModule of
+  case parseTargetModule targetModule of
     Just targetModule' ->
       case compile'' filepath source of
         Right result ->
           pure $
             result
-              # map (\(Codegen name js ts) -> ["collection", name, ppJavascript targetModule' js, ppTypescript ts])
+              # map (\(Codegen name js ts) ->
+                [ "collection"
+                , name
+                , ppJavascript targetModule' js
+                , ppTypescript ts
+                ])
               # L.toUnfoldable
         Left err -> Left err
     Nothing -> Right []
@@ -66,7 +77,7 @@ checker filepath source = do
 compile' :: FilePath -> String -> String -> Effect Unit
 compile' filepath outputPath output = do
   source <- readSource filepath
-  case parseModule output of
+  case parseTargetModule output of
     Just output' ->
       case compile'' filepath source of
         Right program' -> for_ program' (\(Codegen name js ts) ->
@@ -84,7 +95,7 @@ compile'' filepath source = do
         Left err -> Left err
     Left err -> Left err
 
-parseModule :: String -> Maybe TargetModule
-parseModule "commonjs" = Just CommonJs
-parseModule "esnext" = Just EsNext
-parseModule _ = Nothing
+parseTargetModule :: String -> Maybe TargetModule
+parseTargetModule "commonjs" = Just CommonJs
+parseTargetModule "esnext" = Just EsNext
+parseTargetModule _ = Nothing

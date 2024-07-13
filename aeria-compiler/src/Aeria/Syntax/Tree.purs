@@ -239,9 +239,9 @@ data Expr
   | EGt Expr Expr
   | EEq Expr Expr
   | EOr Expr Expr
-  | EExists Expr
   | ETruthy Expr
   | ENot Expr
+  -- | EExists Expr
 
 derive instance genericExpr :: Generic Expr _
 
@@ -302,11 +302,11 @@ instance WriteForeign Expr
     { kind: "EOr"
     , left: writeImpl e1, right: writeImpl e2
     }
-  writeImpl (EExists e1) =
-    writeImpl
-    { kind: "EExists"
-    , expr: writeImpl e1
-    }
+  -- writeImpl (EExists e1) =
+  --   writeImpl
+  --   { kind: "EExists"
+  --   , expr: writeImpl e1
+  --   }
   writeImpl (ENot e1) =
     writeImpl
     { kind: "ENot"

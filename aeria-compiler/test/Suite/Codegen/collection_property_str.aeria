@@ -1,5 +1,0 @@
-collection CollectionPropertyStrTest {
-  properties {
-    prop1 str
-  }
-}

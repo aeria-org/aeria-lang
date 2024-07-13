@@ -1,0 +1,5 @@
+collection collectionPropertyIntTest {
+  properties {
+    prop1 int @minimum(1) @maximum(10) @exclusiveMinimum(1) @exclusiveMaximum(10) @default(1)
+  }
+}

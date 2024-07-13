@@ -33,8 +33,8 @@ syntaxTest testName schema golden = do
         let json = writeJSON program'
         compareJSON json golden `shouldEqual` true
 
-codegenJsTest :: forall m52. Monad m52 => TargetModule -> String -> String -> String -> SpecT Aff Unit m52 Unit
-codegenJsTest targetModule testName schema golden = do
+codegenTest :: forall m52. Monad m52 => TargetModule -> String -> String -> String -> SpecT Aff Unit m52 Unit
+codegenTest targetModule testName schema golden = do
   it testName do
     let codegen = compile'' "<stdin>" schema
     case codegen of
@@ -44,8 +44,8 @@ codegenJsTest targetModule testName schema golden = do
           let code = ppJavascript targetModule jsStatments
           formatJS code `shouldEqual` formatJS golden)
 
-codegenTsTest ∷ ∀ (m23 ∷ Type -> Type). Monad m23 ⇒ String → String → String → SpecT Aff Unit m23 Unit
-codegenTsTest testName schema golden = do
+typegenTest ∷ ∀ (m23 ∷ Type -> Type). Monad m23 ⇒ String → String → String → SpecT Aff Unit m23 Unit
+typegenTest testName schema golden = do
   it testName do
     let codegen = compile'' "<stdin>" schema
     case codegen of
@@ -57,10 +57,10 @@ codegenTsTest testName schema golden = do
 
 main :: Effect Unit
 main = do
-  syntax <- readPrograms "./test/Suite/Syntax" ".golden"
-  commonJs <- readPrograms "./test/Suite/Codegen" ".js"
-  esnext <- readPrograms "./test/Suite/Codegen" ".mjs"
-  typescript <- readPrograms "./test/Suite/Codegen" ".d.ts"
+  syntax <- readPrograms "./test/Suite/Syntax" ".golden" false
+  commonJs <- readPrograms "./test/Suite/Codegen" ".js" true
+  esnext <- readPrograms "./test/Suite/Codegen" ".mjs" true
+  typescript <- readPrograms "./test/Suite/Codegen" ".d.ts" true
 
   launchAff_ $ runSpec [consoleReporter] do
     describe "Syntax" do
@@ -70,12 +70,12 @@ main = do
     describe "Codegen" do
       describe "CommonJs" do
         for_ commonJs (\(Program { name, schema, golden }) ->
-          codegenJsTest CommonJs name schema golden)
+          codegenTest CommonJs name schema golden)
 
       describe "EsNext" do
         for_ esnext (\(Program { name, schema, golden }) ->
-          codegenJsTest EsNext name schema golden)
+          codegenTest EsNext name schema golden)
 
       describe "Typescript" do
         for_ typescript (\(Program { name, schema, golden }) ->
-          codegenTsTest name schema golden)
+          typegenTest name schema golden)

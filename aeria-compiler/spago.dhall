@@ -35,6 +35,7 @@ to generate this file without the comments in this block.
   , "unicode"
   , "unsafe-coerce"
   , "yoga-json"
+  , "exceptions"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
