@@ -1,0 +1,13 @@
+collection CollectionGetters {
+  properties {
+    prop1 int
+    prop2 int
+  }
+
+  getters {
+    sum @js (doc) => {
+      return doc.prop1 + doc.prop2;
+    }
+    @end
+  }
+}

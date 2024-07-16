@@ -1,0 +1,9 @@
+collection CollectionExtends extends aeria.users {
+  properties {
+    prop1 str
+  }
+
+  functions {
+    register @expose
+  }
+}

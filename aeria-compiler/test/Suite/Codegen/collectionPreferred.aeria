@@ -1,0 +1,20 @@
+collection CollectionPreferred {
+  properties {
+    prop1 str
+    prop2 str
+  }
+
+  preferred {
+    role1 {
+      table {
+        prop1
+      }
+    }
+
+    role2 {
+      table {
+        prop2
+      }
+    }
+  }
+}
