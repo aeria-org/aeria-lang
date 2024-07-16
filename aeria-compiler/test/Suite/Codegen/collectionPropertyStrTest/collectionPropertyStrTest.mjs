@@ -16,5 +16,5 @@ export const collectionPropertyStrTest = defineCollection({
     },
   },
 });
-export const extendcollectionPropertyStrTestCollection = (collection) =>
+export const extendCollectionPropertyStrTestCollection = (collection) =>
   extendCollection(collectionPropertyStrTest, collection);

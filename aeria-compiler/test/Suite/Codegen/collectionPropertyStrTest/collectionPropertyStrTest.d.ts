@@ -19,10 +19,10 @@ export declare type collectionPropertyStrTestCollection = {
 export declare const collectionPropertyStrTest: collectionPropertyStrTestCollection & {
   item: SchemaWithId<collectionPropertyStrTestCollection["description"]>;
 };
-export declare type collectionPropertyStrTest = SchemaWithId<
+export declare type CollectionPropertyStrTest = SchemaWithId<
   typeof collectionPropertyStrTest.description
 >;
-export declare const extendcollectionPropertyStrTestCollection: <
+export declare const extendCollectionPropertyStrTestCollection: <
   const TCollection extends { [P in keyof Collection]?: Partial<Collection[P]> }
 >(
   collection: TCollection

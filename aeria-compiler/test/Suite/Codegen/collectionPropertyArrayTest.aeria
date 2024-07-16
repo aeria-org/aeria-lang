@@ -1,0 +1,14 @@
+collection collectionPropertyArrayTest {
+  properties {
+    prop1 []str @minItems(1) @maxItems(10) @uniqueItems(true) @minLength(10) @maxLength(1) @default(["value1", "value2", "value3"])
+
+    prop2 []{
+      properties {
+        prop3 str
+        prop4 str
+      }
+    }
+
+    prop4 []File
+  }
+}

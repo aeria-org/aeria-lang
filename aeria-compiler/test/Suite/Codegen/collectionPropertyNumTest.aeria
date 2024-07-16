@@ -1,0 +1,5 @@
+collection CollectionPropertyNumTest {
+  properties {
+    prop1 num @minimum(1) @maximum(10) @exclusiveMinimum(1) @exclusiveMaximum(10) @default(1)
+  }
+}

@@ -1,10 +1,10 @@
 import { extendCollection, defineCollection } from "aeria";
-export const collectionPropertyIntTest = defineCollection({
+export const collectionPropertyNumTest = defineCollection({
   description: {
-    $id: "collectionPropertyIntTest",
+    $id: "collectionPropertyNumTest",
     properties: {
       prop1: {
-        type: "integer",
+        type: "number",
         minimum: 1.0,
         maximum: 10.0,
         exclusiveMinimum: 1.0,
@@ -14,5 +14,5 @@ export const collectionPropertyIntTest = defineCollection({
     },
   },
 });
-export const extendCollectionPropertyIntTestCollection = (collection) =>
-  extendCollection(collectionPropertyIntTest, collection);
+export const extendCollectionPropertyNumTestCollection = (collection) =>
+  extendCollection(collectionPropertyNumTest, collection);

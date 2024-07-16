@@ -1,0 +1,10 @@
+collection CollectionPropertyConstTest {
+  properties {
+    prop1         const @value("test")
+    prop2         const @value(1.1)
+    prop3         const @value(1)
+    prop4         const @value(false)
+    prop5         const @value(undefined)
+    prop6         const @value(null)
+  }
+}

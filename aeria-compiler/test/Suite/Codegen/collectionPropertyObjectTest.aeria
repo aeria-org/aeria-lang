@@ -1,0 +1,23 @@
+collection CollectionPropertyObjectTest {
+  properties {
+    prop1 {
+      required {
+        prop2
+        prop3
+      }
+      properties {
+        prop2 str
+        prop3 num
+        prop4 {
+          required {
+            prop5
+          }
+          properties {
+            prop5 str
+            prop6 str
+          }
+        }
+      }
+    }
+  }
+}

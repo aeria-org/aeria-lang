@@ -1,4 +1,4 @@
-collection collectionPropertyStrTest {
+collection CollectionPropertyStrTest {
   properties {
     prop1 str @minLength(1) @maxLength(1) @format("date") @mask("yy-mm-aaaa") @inputType("text") @default("12-03-2024")
   }

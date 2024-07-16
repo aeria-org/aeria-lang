@@ -90,7 +90,7 @@
         {
           "kind": "FunctionItem",
           "functioName": {
-            "value": "delete",
+            "value": "remove",
             "kind": "FunctionName"
           },
           "custom": false

@@ -16,5 +16,5 @@ exports.collectionPropertyStrTest = defineCollection({
     },
   },
 });
-exports.extendcollectionPropertyStrTestCollection = (collection) =>
+exports.extendCollectionPropertyStrTestCollection = (collection) =>
   extendCollection(collectionPropertyStrTest, collection);

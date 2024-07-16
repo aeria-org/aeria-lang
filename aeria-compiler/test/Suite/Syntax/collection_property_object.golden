@@ -1,0 +1,86 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "properties": [
+        {
+          "type": {
+            "required": [],
+            "properties": [
+              {
+                "type": {
+                  "kind": "PString"
+                },
+                "name": {
+                  "value": "prop2",
+                  "kind": "PropertyName"
+                },
+                "kind": "Property",
+                "attributes": []
+              },
+              {
+                "type": {
+                  "kind": "PNum"
+                },
+                "name": {
+                  "value": "prop3",
+                  "kind": "PropertyName"
+                },
+                "kind": "Property",
+                "attributes": []
+              },
+              {
+                "type": {
+                  "required": [],
+                  "properties": [
+                    {
+                      "type": {
+                        "kind": "PString"
+                      },
+                      "name": {
+                        "value": "prop5",
+                        "kind": "PropertyName"
+                      },
+                      "kind": "Property",
+                      "attributes": []
+                    },
+                    {
+                      "type": {
+                        "kind": "PString"
+                      },
+                      "name": {
+                        "value": "prop6",
+                        "kind": "PropertyName"
+                      },
+                      "kind": "Property",
+                      "attributes": []
+                    }
+                  ],
+                  "kind": "PObject"
+                },
+                "name": {
+                  "value": "prop4",
+                  "kind": "PropertyName"
+                },
+                "kind": "Property",
+                "attributes": []
+              }
+            ],
+            "kind": "PObject"
+          },
+          "name": {
+            "value": "prop1",
+            "kind": "PropertyName"
+          },
+          "kind": "Property",
+          "attributes": []
+        }
+      ],
+      "name": {
+        "value": "CollectionPropertyObjectTest",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection"
+    }
+  ]
+}
