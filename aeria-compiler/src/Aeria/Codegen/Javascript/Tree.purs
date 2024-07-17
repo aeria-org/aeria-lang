@@ -5,144 +5,155 @@ import Prelude
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.Int (toNumber)
-import Data.Maybe (Maybe(..))
 
 data TargetModule
   = CommonJs
   | EsNext
 
-data JsLiteral
-  = JSString String
-  | JSUndefined
-  | JSNull
-  | JSNumber Number
-  | JSBoolean Boolean
-  | JSArray (Array JsTree)
-  | JSObject (Array JsObjectProperty)
+data Identifier = Identifier String
 
-derive instance genericJsLiteral :: Generic JsLiteral _
+derive instance genericIdentifier :: Generic Identifier _
 
-instance eqJsLiteral :: Eq JsLiteral where
-  eq = genericEq
-
-data JsObjectProperty
-  = JsObjectProperty1 JsTree
-  | JsObjectProperty2 JsTree JsTree
-
-derive instance genericJSObjectProperty :: Generic JsObjectProperty _
-
-instance eqJsObjectProperty :: Eq JsObjectProperty where
-  eq = genericEq
-
-data JsImportSpecifier = JsImportSpecifier JsTree (Maybe JsTree)
-
-derive instance genericJsImportSpecifier :: Generic JsImportSpecifier _
-
-instance eqJsImportSpecifier :: Eq JsImportSpecifier where
-  eq = genericEq
-
-data JsSpecifiers = JsSpecifiers (Array JsImportSpecifier)
-
-derive instance genericJsSpecifiers :: Generic JsSpecifiers _
-
-instance eqJsSpecifiers :: Eq JsSpecifiers where
-  eq = genericEq
-
-data JsStatement
-  = JSImportDeclaration JsSpecifiers JsTree
-  | JSVariableDeclaration JsTree JsTree
-  | JSExportNamedDeclaration JsStatement
-  | JSEmptyStatement
-
-derive instance genericJsStatement :: Generic JsStatement _
-
-instance eqJsStatement :: Eq JsStatement where
+instance eqIdentifier :: Eq Identifier where
   eq x = genericEq x
 
-data JsStatements = JsStatements (Array JsStatement)
+data Literal
+  = Null -- null
+  | Undefined -- undefined
+  | String String -- "a", "ab"
+  | Number Number -- 1, 2.0, 3
+  | Boolean Boolean -- true, false
+  | Array (Array Tree) -- [1, 2, 3]
 
-derive instance genericJsStatements :: Generic JsStatements _
+derive instance genericLiteral :: Generic Literal _
 
-instance eqJsStatements :: Eq JsStatements where
+instance eqLiteral :: Eq Literal where
   eq = genericEq
 
-data JsTree
-  = JSLiteral JsLiteral
-  | JSIdentifier String
-  | JSCallExpression JsTree (Array JsTree)
-  | JSArrowFunctionExpression (Array JsTree) JsTree
-  | JSCode String
+data ObjectProperty
+  = ObjectProperty1 Identifier -- { x }
+  | ObjectProperty2 Identifier Tree -- {x: y}
 
-derive instance genericJsTree :: Generic JsTree _
+derive instance genericObjectProperty :: Generic ObjectProperty _
 
-instance eqJsTree :: Eq JsTree where
+instance eqObjectProperty :: Eq ObjectProperty where
+  eq = genericEq
+
+data ImportSpecifier
+  = ImportSpecifier Identifier -- { x }
+  | ImportAliasSpecifier Identifier Identifier -- { x as y }
+
+derive instance genericImportSpecifier :: Generic ImportSpecifier _
+
+instance eqImportSpecifier :: Eq ImportSpecifier where
+  eq = genericEq
+
+data Specifiers = Specifiers (Array ImportSpecifier) -- { x, y, z as z1 }
+
+derive instance genericSpecifiers :: Generic Specifiers _
+
+instance eqSpecifiers :: Eq Specifiers where
+  eq = genericEq
+
+data Tree
+  = Literal Literal -- 1, "a", true
+  | Variable Identifier -- a, b, abc
+  | Call Tree (Array Tree) -- a(), b(argm1, argm2, argm3)
+  | Function (Array Identifier) Tree -- (a, b, ...) => a
+  | Object (Array ObjectProperty) -- { x: 1, y: "a", z: false }
+  | Raw String -- "console.log('hello')"
+
+derive instance genericTree :: Generic Tree _
+
+instance eqTree :: Eq Tree where
   eq x = genericEq x
 
-objectProperty2 :: String -> JsTree -> JsObjectProperty
-objectProperty2 ident tree = JsObjectProperty2 (identifier ident) tree
+data Statement
+  = ImportDeclaration Specifiers Identifier
+  | VariableDeclaration Identifier Tree
+  | ExportDeclaration Statement
+  | EmptyStatement
 
-objectProperty2' :: JsTree -> JsTree -> JsObjectProperty
-objectProperty2' key tree = JsObjectProperty2 key tree
+derive instance genericStatement :: Generic Statement _
 
-objectProperty1 :: String -> JsObjectProperty
-objectProperty1 ident = JsObjectProperty1 (identifier ident)
+instance eqStatement :: Eq Statement where
+  eq x = genericEq x
 
-object :: Array JsObjectProperty -> JsTree
-object o = JSLiteral (JSObject o)
+data Statements = Statements (Array Statement)
 
-array :: Array JsTree -> JsTree
-array a = JSLiteral (JSArray a)
+derive instance genericStatements :: Generic Statements _
 
-string :: String -> JsTree
-string s = JSLiteral (JSString s)
+instance eqStatements :: Eq Statements where
+  eq = genericEq
 
-boolean :: Boolean -> JsTree
-boolean b = JSLiteral (JSBoolean b)
+objectProperty2 :: String -> Tree -> ObjectProperty
+objectProperty2 ident tree = ObjectProperty2 (identifier ident) tree
 
-float :: Number -> JsTree
-float f = JSLiteral (JSNumber f)
+objectProperty2' :: Identifier -> Tree -> ObjectProperty
+objectProperty2' key tree = ObjectProperty2 key tree
 
-int :: Int -> JsTree
-int i = JSLiteral (JSNumber (toNumber i))
+objectProperty1 :: String -> ObjectProperty
+objectProperty1 ident = ObjectProperty1 (identifier ident)
 
-undefined :: JsTree
-undefined = JSLiteral JSUndefined
+object :: Array ObjectProperty -> Tree
+object o = Object o
 
-null :: JsTree
-null = JSLiteral JSNull
+array :: Array Tree -> Tree
+array a = Literal (Array a)
 
-identifier :: String -> JsTree
-identifier s = JSIdentifier s
+string :: String -> Tree
+string s = Literal (String s)
 
-code :: String -> JsTree
-code = JSCode
+boolean :: Boolean -> Tree
+boolean b = Literal (Boolean b)
 
-arrowFunction :: Array JsTree -> JsTree -> JsTree
-arrowFunction = JSArrowFunctionExpression
+float :: Number -> Tree
+float f = Literal (Number f)
 
-call :: JsTree -> Array JsTree -> JsTree
-call = JSCallExpression
+int :: Int -> Tree
+int i = Literal (Number (toNumber i))
 
-import_ ∷ JsSpecifiers -> JsTree -> JsStatement
-import_ = JSImportDeclaration
+undefined :: Tree
+undefined = Literal Undefined
 
-variable ∷ JsTree -> JsTree -> JsStatement
-variable = JSVariableDeclaration
+null :: Tree
+null = Literal Null
 
-exportNamed ∷ JsStatement -> JsStatement
-exportNamed = JSExportNamedDeclaration
+identifier :: String -> Identifier
+identifier s = Identifier s
 
-emptyStatement ∷ JsStatement
-emptyStatement = JSEmptyStatement
+raw :: String -> Tree
+raw = Raw
 
-specifiers :: Array JsImportSpecifier -> JsSpecifiers
-specifiers = JsSpecifiers
+function :: Array Identifier -> Tree -> Tree
+function = Function
 
-importSpecifier1 :: JsTree -> JsImportSpecifier
-importSpecifier1 x = JsImportSpecifier x Nothing
+variable :: String -> Tree
+variable = Variable <<< Identifier
 
-importSpecifier2 :: JsTree -> JsTree -> JsImportSpecifier
-importSpecifier2 x y = JsImportSpecifier x (Just y)
+call :: Tree -> Array Tree -> Tree
+call = Call
 
-statements ∷ Array JsStatement -> JsStatements
-statements = JsStatements
+importDeclaration ∷ Specifiers -> Identifier -> Statement
+importDeclaration = ImportDeclaration
+
+variableDeclaration ∷ Identifier -> Tree -> Statement
+variableDeclaration = VariableDeclaration
+
+exportDeclaration ∷ Statement -> Statement
+exportDeclaration = ExportDeclaration
+
+emptyStatement ∷ Statement
+emptyStatement = EmptyStatement
+
+specifiers :: Array ImportSpecifier -> Specifiers
+specifiers = Specifiers
+
+importSpecifier1 :: Identifier -> ImportSpecifier
+importSpecifier1 x = ImportSpecifier x
+
+importSpecifier2 :: Identifier -> Identifier -> ImportSpecifier
+importSpecifier2 x y = ImportAliasSpecifier x y
+
+statements ∷ Array Statement -> Statements
+statements = Statements

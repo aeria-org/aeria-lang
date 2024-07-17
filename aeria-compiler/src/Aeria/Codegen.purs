@@ -12,9 +12,10 @@ import Data.Either (Either(..))
 import Data.List as L
 import Data.Maybe (Maybe(..), isJust, isNothing)
 import Data.String.Utils (ucLower)
+import Data.Tuple.Nested ((/\))
 
 data Codegen
-  = Codegen String Js.JsStatements Ts.TsStatements
+  = Codegen String Js.Statements Ts.TsStatements
 
 codegen :: Program -> L.List Codegen
 codegen (Program { collections }) = map go collections
@@ -28,7 +29,7 @@ codegen (Program { collections }) = map go collections
         # L.filter (\(FunctionItem { custom }) -> not custom)
         # map (\(FunctionItem { functionName }) -> getFunctionName functionName)
 
-    tsImportsFunctions = map (Ts.importSpecifier <<< Ts.identifier) functions'
+    tsImportsFunctions = map (Ts.importSpecifier1 <<< Ts.identifier) functions'
     jsImportsFunctions = map (Js.importSpecifier1 <<< Js.identifier) functions'
 
     collection' = cCollection collection
@@ -36,12 +37,12 @@ codegen (Program { collections }) = map go collections
 
     tsFile =
       Ts.statements
-        [ Ts.import_
+        [ Ts.importDeclaration
             (Ts.specifiers
               $ concat
-                [ [ Ts.importSpecifier (Ts.identifier "Collection")
-                  , Ts.importSpecifier (Ts.identifier "SchemaWithId")
-                  , Ts.importSpecifier (Ts.identifier "ExtendCollection")
+                [ [ Ts.importSpecifier1 (Ts.identifier "Collection")
+                  , Ts.importSpecifier1 (Ts.identifier "SchemaWithId")
+                  , Ts.importSpecifier1 (Ts.identifier "ExtendCollection")
                   ]
                 , tsImportsFunctions
                 ]
@@ -50,69 +51,67 @@ codegen (Program { collections }) = map go collections
 
         , (case extends of
           Just (ExtendsName package collection'') ->
-            Ts.import_
+            Ts.importDeclaration
               (Ts.specifiers
                 [ Ts.importSpecifier2 (Ts.identifier $ ucLower collection'') (Ts.identifier "original")
                 ])
               (Ts.identifier package)
           Nothing -> Ts.emptyStatement)
 
-        , Ts.exportNamed
-            (Ts.typeAlias
+        , Ts.exportDeclaration $ Ts.declareDeclaration
+            (Ts.typeAliasDeclaration
               (Ts.identifier (collectionName' <> "Collection"))
               (if isJust extends then
-                (Ts.typeReference
-                        [ Ts.typeParameter $ Ts.typeQuery (Ts.identifier "original")
-                        , Ts.typeParameter collectionType
-                        ]
-                        (Ts.identifier "ExtendCollection"))
+                  Ts.type_
+                    (Ts.typeGeneric
+                      [ Ts.typeQuery (Ts.variable "original")
+                      , collectionType
+                      ]
+                      (Ts.type_ $ Ts.typeVariable "ExtendCollection"))
                 else collectionType))
 
-        , Ts.exportNamed
-            (Ts.variable
-              [Ts.declareKeyword, Ts.constKeyword]
+        , Ts.exportDeclaration $ Ts.declareDeclaration
+            (Ts.variableDeclaration
               (Ts.identifier collectionName')
-              (Ts.intersectionType
-                (Ts.typeReference [] (Ts.identifier (collectionName' <> "Collection")))
-                (Ts.typeLiteral
-                  (Ts.typeLitObject
+              (Ts.intersection
+                (Ts.type_ $ Ts.typeVariable (collectionName' <> "Collection"))
+                (Ts.type_
+                  (Ts.typeObject
                     [Ts.typeObjectProperty
                       (Ts.identifier "item")
-                      (Ts.typeReference
-                        [ Ts.typeParameter (Ts.typeReference [] (Ts.identifier (collectionName' <> "Collection[\"description\"]")))
-                        ]
-                        (Ts.identifier "SchemaWithId"))]))))
+                      (Ts.type_
+                        (Ts.typeGeneric
+                          [ (Ts.type_ $ Ts.typeRaw (collectionName' <> "Collection[\"description\"]"))
+                          ]
+                          (Ts.type_ $ Ts.typeVariable "SchemaWithId")))]))))
 
-        , Ts.exportNamed
-          (Ts.typeAlias
-            (Ts.identifier collectionName)
-            ( Ts.typeReference
-              [Ts.typeParameter $ Ts.typeQuery (Ts.identifier (collectionName' <> ".description"))]
-              (Ts.identifier "SchemaWithId")
+        , Ts.exportDeclaration $ Ts.declareDeclaration
+            (Ts.typeAliasDeclaration
+              (Ts.identifier collectionName)
+              (Ts.type_ (Ts.typeGeneric
+                [Ts.typeQuery (Ts.variable (collectionName' <> ".description"))]
+                (Ts.type_ $ Ts.typeVariable  "SchemaWithId")
+              ))
             )
-          )
 
-        , Ts.exportNamed
-            (Ts.variable
-              [Ts.declareKeyword, Ts.constKeyword]
+        , Ts.exportDeclaration $ Ts.declareDeclaration
+            (Ts.variableDeclaration
               (Ts.identifier $ "extend" <> collectionName <> "Collection")
-              (Ts.functionType
-                [ Ts.typeParameter
-                    (Ts.typeExtends
-                      (Ts.typeReference [] (Ts.identifier "const TCollection"))
-                      (Ts.typeReference [] (Ts.identifier "{ [P in keyof Collection]?: Partial<Collection[P]> }")))]
-                [Ts.parameter
-                  (Ts.identifier "collection")
-                  (Ts.typeReference [] (Ts.identifier "TCollection")) ]
-                  (Ts.typeReference
-                    [ Ts.typeParameter $ Ts.typeQuery (Ts.identifier collectionName')
-                    , Ts.typeParameter $ Ts.typeReference [] (Ts.identifier "TCollection")
-                    ]
-                    (Ts.identifier "ExtendCollection"))))]
+              (Ts.type_ $ Ts.typeGeneric
+                [ (Ts.extends
+                  (Ts.type_ $ Ts.typeRaw "const TCollection")
+                  (Ts.type_ $ Ts.typeRaw "{ [P in keyof Collection]?: Partial<Collection[P]> }"))]
+              (Ts.type_ $ Ts.typeFunction
+                [ (Ts.identifier "collection") /\ (Ts.type_ $ Ts.typeVariable "TCollection") ]
+                (Ts.type_ $ (Ts.typeGeneric
+                  [ Ts.typeQuery (Ts.type_ $ Ts.typeVariable collectionName')
+                  , Ts.type_ $ Ts.typeVariable "TCollection"
+                  ]
+                  (Ts.type_ $ Ts.typeVariable "ExtendCollection"))))))]
 
     jsFile =
       Js.statements
-        [ Js.import_
+        [ Js.importDeclaration
             (Js.specifiers
               $ concat
                 [ [ Js.importSpecifier1 (Js.identifier "extendCollection")
@@ -124,36 +123,36 @@ codegen (Program { collections }) = map go collections
 
         , (case extends of
           Just (ExtendsName package collection'') ->
-            Js.import_
+            Js.importDeclaration
               (Js.specifiers
                 [ Js.importSpecifier2 (Js.identifier $ ucLower collection'') (Js.identifier "original")
                 ])
               (Js.identifier package)
           Nothing -> Js.emptyStatement)
 
-        , Js.exportNamed
-          (Js.variable
+        , Js.exportDeclaration
+          (Js.variableDeclaration
             (Js.identifier collectionName')
 
             if isJust extends then
               (Js.call
-                  (Js.identifier "extendCollection")
-                  [Js.identifier "original", collection'])
+                  (Js.variable "extendCollection")
+                  [Js.variable "original", collection'])
               else
                 (Js.call
-                  (Js.identifier "defineCollection")
+                  (Js.variable "defineCollection")
                   [collection']))
 
-        , Js.exportNamed
-            (Js.variable
+        , Js.exportDeclaration
+            (Js.variableDeclaration
               (Js.identifier $ "extend" <> collectionName <> "Collection")
-              (Js.arrowFunction
+              (Js.function
                 [Js.identifier "collection"]
-                (Js.call (Js.identifier "extendCollection")
-                  [Js.identifier collectionName', Js.identifier "collection"]
+                (Js.call (Js.variable "extendCollection")
+                  [Js.variable collectionName', Js.variable "collection"]
                 )))]
 
-cCollection :: Collection -> Js.JsTree
+cCollection :: Collection -> Js.Tree
 cCollection (Collection
   { name
   , required
@@ -248,42 +247,42 @@ cCollection (Collection
   filtersPresetsDescription     = collectionPropertyL "filtersPresets" cFiltersPresets filtersPresets
   preferredDescription          = collectionPropertyL "preferred" cPreferred preferred
 
-collectionPropertyM :: forall a. String -> (a -> Js.JsTree) -> Maybe a -> Array Js.JsObjectProperty
+collectionPropertyM :: forall a. String -> (a -> Js.Tree) -> Maybe a -> Array Js.ObjectProperty
 collectionPropertyM k f x =
   case x of
     Just a -> [Js.objectProperty2 k (f a)]
     Nothing -> []
 
-collectionPropertyL :: forall a. String -> (L.List a -> Js.JsTree) -> L.List a -> Array Js.JsObjectProperty
+collectionPropertyL :: forall a. String -> (L.List a -> Js.Tree) -> L.List a -> Array Js.ObjectProperty
 collectionPropertyL k f x =
   case x of
     L.Nil -> []
     _ -> [Js.objectProperty2 k (f x)]
 
-cPropertyNameL :: L.List PropertyName -> Js.JsTree
+cPropertyNameL :: L.List PropertyName -> Js.Tree
 cPropertyNameL list =
   map cPropertyName list
     # L.toUnfoldable
     # Js.array
 
-collectionProperties :: Array (Array Js.JsObjectProperty) -> Js.JsTree
+collectionProperties :: Array (Array Js.ObjectProperty) -> Js.Tree
 collectionProperties = Js.object <<< concat
 
-cImmutable :: CollectionImmutable -> Js.JsTree
+cImmutable :: CollectionImmutable -> Js.Tree
 cImmutable (CollectionImmutableBool bool) = Js.boolean bool
 cImmutable (CollectionImmutableList immutable) =
   cPropertyNameL (map (\(ImmutableItem _ propertyName) -> propertyName) immutable)
 
-cIcon :: CollectionIcon -> Js.JsTree
+cIcon :: CollectionIcon -> Js.Tree
 cIcon (CollectionIcon icon) = Js.string icon
 
-cOwned :: CollectionOwned -> Js.JsTree
+cOwned :: CollectionOwned -> Js.Tree
 cOwned (CollectionOwned owned) = Js.boolean owned
 
-cTimestamps :: CollectionTimestamps -> Js.JsTree
+cTimestamps :: CollectionTimestamps -> Js.Tree
 cTimestamps (CollectionTimestamps timestamps) = Js.boolean timestamps
 
-cSearch :: CollectionSearch -> Js.JsTree
+cSearch :: CollectionSearch -> Js.Tree
 cSearch (CollectionSearch { placeholder, indexes }) =
   collectionProperties
     [ [ Js.objectProperty2 "indexes" (cPropertyNameL indexes)
@@ -291,35 +290,35 @@ cSearch (CollectionSearch { placeholder, indexes }) =
     , collectionPropertyM "placeholder" Js.string placeholder
     ]
 
-cTemporary :: CollectionTemporary -> Js.JsTree
+cTemporary :: CollectionTemporary -> Js.Tree
 cTemporary (CollectionTemporary {index: (PropertyName _ index), expireAfterSeconds}) =
   Js.object
     [ Js.objectProperty2 "index" (Js.string index)
     , Js.objectProperty2 "expireAfterSeconds" (Js.int expireAfterSeconds)
     ]
 
-cTable :: CollectionTable -> Js.JsTree
+cTable :: CollectionTable -> Js.Tree
 cTable table = cPropertyNameL (map (\(TableItem _ propertyName) -> propertyName) table)
 
-cPresets :: CollectionPresets -> Js.JsTree
+cPresets :: CollectionPresets -> Js.Tree
 cPresets presets = cPropertyNameL (map (\(PresetItem _ propertyName) -> propertyName) presets)
 
-cTableMeta :: CollectionTableMeta -> Js.JsTree
+cTableMeta :: CollectionTableMeta -> Js.Tree
 cTableMeta tableMeta = cPropertyNameL (map (\(TableMetaItem _ propertyName) -> propertyName) tableMeta)
 
-cForm :: CollectionForm -> Js.JsTree
+cForm :: CollectionForm -> Js.Tree
 cForm form = cPropertyNameL (map (\(FormItem _ propertyName) -> propertyName) form)
 
-cFilters :: CollectionFilters -> Js.JsTree
+cFilters :: CollectionFilters -> Js.Tree
 cFilters filters = cPropertyNameL (map (\(FilterItem _ propertyName) -> propertyName) filters)
 
-cIndexes :: CollectionIndexes -> Js.JsTree
+cIndexes :: CollectionIndexes -> Js.Tree
 cIndexes indexes = cPropertyNameL (map (\(IndexesItem _ propertyName) -> propertyName) indexes)
 
-cWritable :: CollectionWritable -> Js.JsTree
+cWritable :: CollectionWritable -> Js.Tree
 cWritable writable = cPropertyNameL (map (\(WritableItem _ propertyName) -> propertyName) writable)
 
-cPreferred :: CollectionPreferred -> Js.JsTree
+cPreferred :: CollectionPreferred -> Js.Tree
 cPreferred preferred =
   map go preferred
     # L.toUnfoldable
@@ -353,10 +352,7 @@ cPreferred preferred =
           ]
         )
 
--- cFormLayout :: CollectionFormLayout -> Js.JsTree
--- cFormLayout collectionFormLayout = Js.object
---   [ (cLayout collectionLayout)]
-cFormLayout :: CollectionFormLayout -> Js.JsTree
+cFormLayout :: CollectionFormLayout -> Js.Tree
 cFormLayout collectionFormLayout = Js.object
   [Js.objectProperty2 "fields" $
     map go collectionFormLayout
@@ -375,10 +371,10 @@ cFormLayout collectionFormLayout = Js.object
     cComponent (LayoutItemComponent { name, props }) =
       collectionProperties
         [ collectionPropertyM "name" Js.string name
-        , collectionPropertyM "props" (\(Macro _ code) -> Js.code code) props
+        , collectionPropertyM "props" (\(Macro _ code) -> Js.raw code) props
         ]
 
-cActions :: CollectionActions -> Js.JsTree
+cActions :: CollectionActions -> Js.Tree
 cActions actions =
   map go actions
     # L.toUnfoldable
@@ -412,12 +408,12 @@ cActions actions =
           , collectionPropertyM "button" Js.boolean button
           , collectionPropertyM "setItem" Js.boolean setItem
           , collectionPropertyM "clearItem" Js.boolean clearItem
-          , collectionPropertyM "params" (\(Macro _ code) -> Js.code code) params
-          , collectionPropertyM "query" (\(Macro _ code) -> Js.code code) query
+          , collectionPropertyM "params" (\(Macro _ code) -> Js.raw code) params
+          , collectionPropertyM "query" (\(Macro _ code) -> Js.raw code) query
           , collectionPropertyL "requires" cPropertyNameL (map (\(RequireItem _ require) -> require) requires)
           ]
 
-cLayout :: CollectionLayout -> Js.JsTree
+cLayout :: CollectionLayout -> Js.Tree
 cLayout (CollectionLayout { name, options }) =
   collectionProperties
     [ [Js.objectProperty2 "name" $ Js.string name]
@@ -434,7 +430,7 @@ cLayout (CollectionLayout { name, options }) =
       Nothing -> []
     ]
 
-cTableLayout :: CollectionTableLayout -> Js.JsTree
+cTableLayout :: CollectionTableLayout -> Js.Tree
 cTableLayout tableLayout =
   Js.object
     [ Js.objectProperty2 "actions" $
@@ -452,21 +448,21 @@ cTableLayout tableLayout =
 
         properties = collectionProperties $
           case cActions (L.singleton action) of
-            Js.JSLiteral (Js.JSObject action') ->
+            Js.Object action' ->
               case head action' of
-                Just (Js.JsObjectProperty2 _ (Js.JSLiteral (Js.JSObject actionProperties))) ->
+                Just (Js.ObjectProperty2 _ (Js.Object actionProperties)) ->
                   union baseObjectProperties [actionProperties]
                 _ -> baseObjectProperties
             _ -> []
 
       in case route of
-          Just route' -> Js.objectProperty2' (Js.string route') properties
+          Just route' -> Js.objectProperty2' (Js.identifier route') properties
           Nothing -> Js.objectProperty2 (getPropertyName actionName) properties
 
     cButton (Left bool) = Js.boolean bool
     cButton (Right (Cond _ expr)) = cExpr expr
 
-cFiltersPresets :: CollectionFiltersPresets -> Js.JsTree
+cFiltersPresets :: CollectionFiltersPresets -> Js.Tree
 cFiltersPresets filtersPresets =
   map go filtersPresets
     # L.toUnfoldable
@@ -477,17 +473,17 @@ cFiltersPresets filtersPresets =
         collectionProperties
           [ collectionPropertyM "name" Js.string label
           , collectionPropertyM "badgeFunction" Js.string badgeFunction
-          , collectionPropertyM "filters" (\(Macro _ code) -> Js.code code) filters
+          , collectionPropertyM "filters" (\(Macro _ code) -> Js.raw code) filters
           ]
 
-cFunctions :: CollectionFunctions -> Js.JsTree
+cFunctions :: CollectionFunctions -> Js.Tree
 cFunctions functions = Js.object
   $ L.toUnfoldable
   $ functions
     # L.filter (\(FunctionItem { custom }) -> not custom)
     # map (\(FunctionItem { functionName }) -> Js.objectProperty1 (getFunctionName functionName))
 
-cExposedFunctions :: CollectionFunctions -> Js.JsTree
+cExposedFunctions :: CollectionFunctions -> Js.Tree
 cExposedFunctions functions = Js.object
   $ L.toUnfoldable
   $ functions
@@ -500,7 +496,7 @@ cExposedFunctions functions = Js.object
         Nothing -> Js.objectProperty1 (getFunctionName functionName)
     )
 
-cSecurity :: CollectionSecurity -> Js.JsTree
+cSecurity :: CollectionSecurity -> Js.Tree
 cSecurity secutiry =
   map go secutiry
     # L.toUnfoldable
@@ -529,7 +525,7 @@ cSecurity secutiry =
         [ collectionPropertyM "strategy" Js.string strategy
         ]
 
-cRequired :: CollectionRequired -> Js.JsTree
+cRequired :: CollectionRequired -> Js.Tree
 cRequired required =
   if hasCondition then
     map (\(Required _ propertyName _) -> cPropertyName propertyName) required
@@ -544,7 +540,7 @@ cRequired required =
   cObject Nothing = Js.boolean true
   cObject (Just (Cond _ cond)) = cExpr cond
 
-cBinaryExpr :: String -> Js.JsTree -> Js.JsTree -> Js.JsTree
+cBinaryExpr :: String -> Js.Tree -> Js.Tree -> Js.Tree
 cBinaryExpr oper e1 e2 =
   Js.object
     [ Js.objectProperty2 "operator" (Js.string oper)
@@ -552,14 +548,14 @@ cBinaryExpr oper e1 e2 =
     , Js.objectProperty2 "term2" e2
     ]
 
-cUnaryExpr :: String -> Js.JsTree -> Js.JsTree
+cUnaryExpr :: String -> Js.Tree -> Js.Tree
 cUnaryExpr oper e1 =
   Js.object
     [ Js.objectProperty2 "operator" (Js.string oper)
     , Js.objectProperty2 "term1" e1
     ]
 
-cExpr :: Expr -> Js.JsTree
+cExpr :: Expr -> Js.Tree
 cExpr (ELiteral value) = cLiteral value
 cExpr (ETruthy e1) = cUnaryExpr "truthy" (cExpr e1)
 -- cExpr (EExists e1) = cUnaryExpr "exists" (cExpr e1)
@@ -579,35 +575,35 @@ cExpr (ELte e1 e2) = cBinaryExpr "lte" (cExpr e1) (cExpr e2)
 cExpr (EGte e1 e2) = cBinaryExpr "gte" (cExpr e1) (cExpr e2)
 cExpr (EEq e1 e2) = cBinaryExpr "eq" (cExpr e1) (cExpr e2)
 
-cCollectionProperties :: CollectionProperties -> CollectionGetters -> Js.JsTree
+cCollectionProperties :: CollectionProperties -> CollectionGetters -> Js.Tree
 cCollectionProperties properties getters = Js.object $ union (cProperties properties) (cGetters getters)
   where
-    cGetters :: CollectionGetters -> Array Js.JsObjectProperty
+    cGetters :: CollectionGetters -> Array Js.ObjectProperty
     cGetters getters' = L.toUnfoldable $ map go getters'
       where
-        go :: Getter -> Js.JsObjectProperty
+        go :: Getter -> Js.ObjectProperty
         go (Getter { name, macro }) =
           Js.objectProperty2 (getPropertyName name) (cGetter macro)
 
-        cGetter :: Macro -> Js.JsTree
+        cGetter :: Macro -> Js.Tree
         cGetter (Macro _ code) = Js.object
-          [ Js.objectProperty2 "getter" (Js.arrowFunction [Js.identifier "doc"] (Js.code code))
+          [ Js.objectProperty2 "getter" (Js.function [Js.identifier "doc"] (Js.raw code))
           ]
 
-    cProperties :: CollectionProperties -> Array Js.JsObjectProperty
+    cProperties :: CollectionProperties -> Array Js.ObjectProperty
     cProperties properties' = L.toUnfoldable $ map go properties'
       where
-        go :: Property -> Js.JsObjectProperty
+        go :: Property -> Js.ObjectProperty
         go property@(Property { name })
           = Js.objectProperty2 (getPropertyName name) (cProperty property)
 
-        cProperty :: Property -> Js.JsTree
+        cProperty :: Property -> Js.Tree
         cProperty (Property { type_, attributes }) = collectionProperties [type_', attributes']
           where
             type_' = cPropertyType type_
             attributes' = cAttributes type_ attributes
 
-        cPropertyType :: PropertyType -> Array Js.JsObjectProperty
+        cPropertyType :: PropertyType -> Array Js.ObjectProperty
         cPropertyType propertyType =
           case propertyType of
             PConst _ -> []
@@ -631,7 +627,7 @@ cCollectionProperties properties getters = Js.object $ union (cProperties proper
 
         cType type_' = Js.objectProperty2 "type" (Js.string type_')
 
-        cAttributes :: PropertyType -> Attributes -> Array Js.JsObjectProperty
+        cAttributes :: PropertyType -> Attributes -> Array Js.ObjectProperty
         cAttributes propertyType attributes =
           case propertyType of
             PConst _ ->
@@ -673,7 +669,7 @@ cCollectionProperties properties getters = Js.object $ union (cProperties proper
           , "uniqueItems"
           ]
 
-cLiteral :: Literal -> Js.JsTree
+cLiteral :: Literal -> Js.Tree
 cLiteral =
   fix \self -> case _ of
     LUndefined _ -> Js.undefined
@@ -685,13 +681,13 @@ cLiteral =
     LArray _ a -> Js.array (L.toUnfoldable $ map self a)
     LProperty _ propertyName -> cPropertyName propertyName
 
-cCollectionName :: CollectionName -> Js.JsTree
+cCollectionName :: CollectionName -> Js.Tree
 cCollectionName name =
   name
     # getCollectionName
     # Js.string
 
-cPropertyName :: PropertyName -> Js.JsTree
+cPropertyName :: PropertyName -> Js.Tree
 cPropertyName name =
   name
     # getPropertyName

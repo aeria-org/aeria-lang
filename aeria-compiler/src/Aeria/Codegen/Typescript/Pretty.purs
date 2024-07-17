@@ -1,12 +1,11 @@
 module Aeria.Codegen.Typescript.Pretty where
 
-import Prelude
+import Aeria.Codegen.Typescript.Tree
+import Prelude (show, (<>))
 
-import Aeria.Codegen.Typescript.Tree (TsIdentifier(..), TsImportSpecifier(..), TsParameter(..), TsSpecifiers(..), TsStatement(..), TsStatementSyntax(..), TsStatements(..), TsType(..), TsTypeLiteral(..), TsTypeObjectProperty(..), TsTypeParameter(..))
-import Data.Array (length)
 import Data.List as L
-import Data.Maybe (Maybe(..))
 import Data.String.Utils (concatWith)
+import Data.Tuple.Nested ((/\))
 
 ppTypescript :: TsStatements -> String
 ppTypescript (TsStatements stmts) =
@@ -15,64 +14,53 @@ ppTypescript (TsStatements stmts) =
 ppStatement :: TsStatement -> String
 ppStatement =
   case _ of
-    TSImportDeclaration specifiers ident ->
+    ImportDeclaration specifiers ident ->
       "import { " <> ppSpecifiers specifiers <> " } from \"" <> ppIdentifier ident <> "\""
-    TSVariableDeclaration statementSyntax ident type_ ->
-       (L.foldr (\s r -> ppStatementSyntax s <> " " <> r) "" statementSyntax) <> ppIdentifier ident <> ": " <> ppType type_
-    TSTypeAliasDeclaration ident type_ -> "declare type " <> ppIdentifier ident <> " = " <> ppType type_
-    TSExportNamedDeclaration statement -> "export " <> ppStatement statement
+    VariableDeclaration ident type_ -> "const " <> ppIdentifier ident <> ": " <> ppTree type_
+    TypeAliasDeclaration ident type_ -> "type " <> ppIdentifier ident <> " = " <> ppTree type_
+    ExportDeclaration statement -> "export " <> ppStatement statement
+    DeclareDeclaration statement -> "declare " <> ppStatement statement
     TSEmptyStatement -> ""
 
-ppStatementSyntax :: TsStatementSyntax -> String
-ppStatementSyntax =
+ppTree :: Tree -> String
+ppTree =
   case _ of
-    TsDeclareKeyword -> "declare"
-    TsConstKeyword -> "const"
+    Type tsType -> ppType tsType
+    Call ident args -> ppIdentifier ident <> "(" <> concatWith args ppTree <> ")"
+    Variable ident -> ppIdentifier ident
+    TypeQuery tree -> "typeof " <> ppTree tree
+    Extends tree1 tree2 -> ppTree tree1 <> " extends " <> ppTree tree2
+    Intersection tree1 tree2 -> ppTree tree1 <> " & " <> ppTree tree2
 
 ppType :: TsType -> String
-ppType =
-  case _ of
-    TSTypeAny -> "any"
-    TSTypeString -> "string"
-    TSTypeLiteral literal  -> ppLiteral literal
-    TSTypeQuery ident -> "typeof " <> ppIdentifier ident
-    TSIntersectionType lft rtg -> ppType lft <> " & " <> ppType rtg
-    TSCallExpression called argum -> ppIdentifier called <> "(" <> concatWith argum ppType <> ")"
-    TSTypeReference paramTypes ident -> ppIdentifier ident <> ppTypeParameters paramTypes
-    TSFunctionType paramTypes param returnType ->
-      ppTypeParameters paramTypes <>"(" <>
-        concatWith param
-        (\(TsParameter param' typ) -> ppIdentifier param' <> ": " <> ppType typ)
-       <>  ") => " <> ppType returnType
-    TSTypeExtends type1 type2 -> ppType type1 <> " extends " <> ppType type2
+ppType TypeAny = "any"
+ppType TypeString = "string"
+ppType TypeNumber = "number"
+ppType TypeBool = "boolean"
+ppType (TypeRaw raw) = raw
+ppType (TypeArray tsType) = ppType tsType <> "[]"
+ppType (TypeLiteralNull) = "null"
+ppType (TypeLiteralUndefined) = "undefined"
+ppType (TypeLiteralString value) = "\"" <> value <> "\""
+ppType (TypeLiteralBool value) = show value
+ppType (TypeLiteralNumber value) = show value
+ppType (TypeLiteralArray values) = "[" <> concatWith values ppTree <> "]"
+ppType (TypeVariable ident) = ppIdentifier ident
+ppType (TypeGeneric params tree) =
+  case tree of
+    Type (TypeFunction _ _) -> "<" <> concatWith params ppTree <> ">" <> ppTree tree
+    _ -> ppTree tree <> "<" <> concatWith params ppTree <> ">"
+ppType (TypeFunction params returnType) =
+  "(" <> concatWith params ((\(ident /\ tree) -> ppIdentifier ident <> ": " <> ppTree tree)) <> ") => " <> ppTree returnType
+ppType (TypeObject props) =
+  "{" <> concatWith props (\(TypeObjectProperty ident tree) -> ppIdentifier ident <> ": " <> ppTree tree) <> "}"
 
-ppTypeParameters :: Array TsTypeParameter -> String
-ppTypeParameters list
-  | length list == 0 = ""
-  | otherwise = "<"<> concatWith list ppTypeParameter <> ">"
+ppSpecifiers :: Specifiers -> String
+ppSpecifiers (Specifiers specifiers) = concatWith specifiers ppImportSpecifier
 
-ppTypeParameter :: TsTypeParameter -> String
-ppTypeParameter (TsTypeParameter ident) = ppType ident
+ppImportSpecifier :: ImportSpecifier -> String
+ppImportSpecifier (ImportSpecifier ident) = ppIdentifier ident
+ppImportSpecifier (ImportAliasSpecifier ident alias) = ppIdentifier ident <> " as " <> ppIdentifier alias
 
-ppLiteral :: TsTypeLiteral -> String
-ppLiteral =
-  case _ of
-    TSTypeLitString value -> "\"" <> value <> "\""
-    TSTypeLitBoolean value -> show value
-    TSTypeLitUndefined -> "undefined"
-    TSTypeLitNull -> "null"
-    TSTypeLitNumber value -> show value
-    TSTypeLitArray value -> "[" <> concatWith value ppType <> "]"
-    TSTypeLitObject value -> "{" <>
-      concatWith value
-        (\(TsTypeObjectProperty k v) -> ppIdentifier k <> ": " <> ppType v  ) <> "}"
-
-ppSpecifiers :: TsSpecifiers -> String
-ppSpecifiers (TsSpecifiers specifiers) = concatWith specifiers ppImportSpecifier
-
-ppImportSpecifier :: TsImportSpecifier -> String
-ppImportSpecifier (TsImportSpecifier importSpecifier Nothing) = ppIdentifier importSpecifier
-ppImportSpecifier (TsImportSpecifier importSpecifier (Just alias)) = ppIdentifier importSpecifier <> " as " <> ppIdentifier alias
-
-ppIdentifier :: TsIdentifier -> String
-ppIdentifier (TsIdentifier ident) = ident
+ppIdentifier :: Identifier -> String
+ppIdentifier (Identifier ident) = ident

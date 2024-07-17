@@ -1,143 +1,152 @@
 module Aeria.Codegen.Typescript.Tree where
 
-import Data.Maybe (Maybe(..))
+import Data.Tuple (Tuple)
 
-data TsTypeObjectProperty = TsTypeObjectProperty TsIdentifier TsType
+data Identifier = Identifier String
 
-data TsTypeLiteral
-  = TSTypeLitString String
-  | TSTypeLitBoolean Boolean
-  | TSTypeLitUndefined
-  | TSTypeLitNull
-  | TSTypeLitArray (Array TsType)
-  | TSTypeLitNumber Number
-  | TSTypeLitObject (Array TsTypeObjectProperty)
-
-data TsIdentifier = TsIdentifier String
-
-data TsStatementSyntax
-  = TsDeclareKeyword
-  | TsConstKeyword
-
-data TsTypeParameter = TsTypeParameter TsType
-
-data TsParameter = TsParameter TsIdentifier TsType
+data TypeObjectProperty = TypeObjectProperty Identifier Tree
 
 data TsType
-  = TSTypeAny
-  | TSTypeString
-  | TSTypeLiteral TsTypeLiteral
-  | TSTypeQuery TsIdentifier
-  | TSTypeExtends TsType TsType
-  | TSIntersectionType TsType TsType
-  | TSCallExpression TsIdentifier (Array TsType)
-  | TSTypeReference (Array TsTypeParameter) TsIdentifier
-  | TSFunctionType (Array TsTypeParameter) (Array TsParameter) TsType
+  = TypeNumber -- number
+  | TypeString -- string
+  | TypeBool -- boolean
+  | TypeAny -- any
+  | TypeRaw String -- "A extends B<C>"
+  | TypeArray TsType -- array
+  | TypeLiteralNull -- null
+  | TypeLiteralUndefined -- undefined
+  | TypeLiteralString String -- "xyz..."
+  | TypeLiteralBool Boolean -- true | false
+  | TypeLiteralNumber Number -- 1.0, 2.0, 3.0, ...
+  | TypeLiteralArray (Array Tree) -- [1, 2, 3, ...]
+  | TypeVariable Identifier -- T
+  | TypeGeneric (Array Tree) Tree -- A<number, string, B>, <A>(params: A) => A, ...
+  | TypeFunction (Array (Tuple Identifier Tree)) Tree -- (x: number, y: string, ...) => number
+  | TypeObject (Array TypeObjectProperty) -- { x: number, y: string }
 
-data TsImportSpecifier = TsImportSpecifier TsIdentifier (Maybe TsIdentifier)
+data ImportSpecifier
+  = ImportSpecifier Identifier -- { x }
+  | ImportAliasSpecifier Identifier Identifier -- { x as y }
 
-data TsSpecifiers
-  = TsSpecifiers (Array TsImportSpecifier)
+data Specifiers
+  = Specifiers (Array ImportSpecifier) -- { x, y, z as z1 }
+
+data Tree
+  = Type TsType -- number | string | boolean | any | ...
+  | Call Identifier (Array Tree) -- x(argm1, argm2, argm3, ...)
+  | Variable Identifier -- x
+  | TypeQuery Tree -- typeof x
+  | Extends Tree Tree -- A extends number
+  | Intersection Tree Tree -- { x: number } & { y: string }
 
 data TsStatement
-  = TSImportDeclaration TsSpecifiers TsIdentifier
-  | TSVariableDeclaration (Array TsStatementSyntax) TsIdentifier TsType
-  | TSTypeAliasDeclaration TsIdentifier TsType
-  | TSExportNamedDeclaration TsStatement
+  = VariableDeclaration Identifier Tree -- const x: number
+  | TypeAliasDeclaration Identifier Tree -- type x = number
+  | ImportDeclaration Specifiers Identifier -- import { x, y } from 'z'
+  | ExportDeclaration TsStatement -- export ...
+  | DeclareDeclaration TsStatement -- declare ...
   | TSEmptyStatement
 
-data TsStatements
-  = TsStatements (Array TsStatement)
+data TsStatements = TsStatements (Array TsStatement)
 
 statements ∷ Array TsStatement -> TsStatements
 statements = TsStatements
 
-import_ ∷ TsSpecifiers -> TsIdentifier -> TsStatement
-import_ = TSImportDeclaration
+importDeclaration ∷ Specifiers -> Identifier -> TsStatement
+importDeclaration = ImportDeclaration
 
-variable ∷ Array TsStatementSyntax -> TsIdentifier -> TsType -> TsStatement
-variable = TSVariableDeclaration
+variableDeclaration ∷ Identifier -> Tree -> TsStatement
+variableDeclaration = VariableDeclaration
 
-typeAlias ∷ TsIdentifier -> TsType -> TsStatement
-typeAlias = TSTypeAliasDeclaration
+typeAliasDeclaration ∷ Identifier -> Tree -> TsStatement
+typeAliasDeclaration = TypeAliasDeclaration
 
-exportNamed ∷ TsStatement -> TsStatement
-exportNamed = TSExportNamedDeclaration
+exportDeclaration ∷ TsStatement -> TsStatement
+exportDeclaration = ExportDeclaration
 
-specifiers ∷ Array TsImportSpecifier -> TsSpecifiers
-specifiers = TsSpecifiers
-
-importSpecifier ∷ TsIdentifier -> TsImportSpecifier
-importSpecifier x = TsImportSpecifier x Nothing
-
-importSpecifier2 ∷ TsIdentifier -> TsIdentifier -> TsImportSpecifier
-importSpecifier2 x y = TsImportSpecifier x (Just y)
-
-typeAny ∷ TsType
-typeAny = TSTypeAny
-
-typeString ∷ TsType
-typeString = TSTypeString
-
-typeLiteral ∷ TsTypeLiteral -> TsType
-typeLiteral = TSTypeLiteral
-
-typeQuery ∷ TsIdentifier -> TsType
-typeQuery = TSTypeQuery
-
-typeExtends ∷ TsType -> TsType -> TsType
-typeExtends = TSTypeExtends
-
-intersectionType ∷ TsType -> TsType -> TsType
-intersectionType = TSIntersectionType
-
-callExpression ∷ TsIdentifier -> Array TsType -> TsType
-callExpression = TSCallExpression
-
-typeReference ∷ Array TsTypeParameter -> TsIdentifier -> TsType
-typeReference = TSTypeReference
-
-functionType ∷ Array TsTypeParameter -> Array TsParameter -> TsType -> TsType
-functionType = TSFunctionType
-
-parameter ∷ TsIdentifier -> TsType -> TsParameter
-parameter = TsParameter
-
-typeParameter ∷ TsType -> TsTypeParameter
-typeParameter = TsTypeParameter
-
-declareKeyword ∷ TsStatementSyntax
-declareKeyword = TsDeclareKeyword
-
-constKeyword ∷ TsStatementSyntax
-constKeyword = TsConstKeyword
-
-identifier ∷ String -> TsIdentifier
-identifier = TsIdentifier
+declareDeclaration ∷ TsStatement -> TsStatement
+declareDeclaration = DeclareDeclaration
 
 emptyStatement ∷ TsStatement
 emptyStatement = TSEmptyStatement
 
-typeLitString ∷ String -> TsTypeLiteral
-typeLitString = TSTypeLitString
+specifiers ∷ Array ImportSpecifier -> Specifiers
+specifiers = Specifiers
 
-typeLitBoolean ∷ Boolean -> TsTypeLiteral
-typeLitBoolean = TSTypeLitBoolean
+importSpecifier1 ∷ Identifier -> ImportSpecifier
+importSpecifier1 x = ImportSpecifier x
 
-typeLitArray ∷ Array TsType -> TsTypeLiteral
-typeLitArray = TSTypeLitArray
+importSpecifier2 ∷ Identifier -> Identifier -> ImportSpecifier
+importSpecifier2 x y = ImportAliasSpecifier x y
 
-typeLitNumber ∷ Number -> TsTypeLiteral
-typeLitNumber = TSTypeLitNumber
+typeString ∷ TsType
+typeString = TypeString
 
-typeLitUndefined ∷ TsTypeLiteral
-typeLitUndefined = TSTypeLitUndefined
+typeNumber ∷ TsType
+typeNumber = TypeNumber
 
-typeLitNull ∷ TsTypeLiteral
-typeLitNull = TSTypeLitNull
+typeBool ∷ TsType
+typeBool = TypeBool
 
-typeLitObject ∷ Array TsTypeObjectProperty -> TsTypeLiteral
-typeLitObject = TSTypeLitObject
+typeAny ∷ TsType
+typeAny = TypeAny
 
-typeObjectProperty ∷ TsIdentifier -> TsType -> TsTypeObjectProperty
-typeObjectProperty = TsTypeObjectProperty
+typeArray ∷ TsType -> TsType
+typeArray = TypeArray
+
+typeRaw ∷ String -> TsType
+typeRaw = TypeRaw
+
+typeVariable ∷ String -> TsType
+typeVariable x = TypeVariable (Identifier x)
+
+typeGeneric ∷ Array Tree -> Tree -> TsType
+typeGeneric = TypeGeneric
+
+typeLiteralString ∷ String -> TsType
+typeLiteralString = TypeLiteralString
+
+typeLiteralBoolean ∷ Boolean -> TsType
+typeLiteralBoolean = TypeLiteralBool
+
+typeLiteralArray ∷ Array Tree -> TsType
+typeLiteralArray = TypeLiteralArray
+
+typeLiteralNumber ∷ Number -> TsType
+typeLiteralNumber = TypeLiteralNumber
+
+typeLiteralUndefined ∷ TsType
+typeLiteralUndefined = TypeLiteralUndefined
+
+typeLiteralNull ∷ TsType
+typeLiteralNull = TypeLiteralNull
+
+typeFunction ∷ (Array (Tuple Identifier Tree)) -> Tree -> TsType
+typeFunction = TypeFunction
+
+typeObject ∷ Array TypeObjectProperty -> TsType
+typeObject = TypeObject
+
+typeObjectProperty :: Identifier -> Tree -> TypeObjectProperty
+typeObjectProperty = TypeObjectProperty
+
+typeQuery ∷ Tree -> Tree
+typeQuery = TypeQuery
+
+type_ :: TsType -> Tree
+type_ = Type
+
+extends ∷ Tree -> Tree -> Tree
+extends = Extends
+
+intersection ∷ Tree -> Tree -> Tree
+intersection = Intersection
+
+call ∷ Identifier -> Array Tree -> Tree
+call = Call
+
+variable :: String -> Tree
+variable x = Variable (Identifier x)
+
+identifier ∷ String -> Identifier
+identifier = Identifier
