@@ -43,25 +43,16 @@
             "selection": false,
             "requires": [
               {
-                "propertyName": {
-                  "value": "prop1",
-                  "kind": "PropertyName"
-                },
-                "kind": "RequireItem"
+                "value": "prop1",
+                "kind": "PropertyName"
               },
               {
-                "propertyName": {
-                  "value": "prop2",
-                  "kind": "PropertyName"
-                },
-                "kind": "RequireItem"
+                "value": "prop2",
+                "kind": "PropertyName"
               },
               {
-                "propertyName": {
-                  "value": "prop3",
-                  "kind": "PropertyName"
-                },
-                "kind": "RequireItem"
+                "value": "prop3",
+                "kind": "PropertyName"
               }
             ],
             "query": {

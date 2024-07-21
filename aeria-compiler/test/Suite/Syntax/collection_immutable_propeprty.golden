@@ -1,0 +1,25 @@
+{
+  "kind": "Program",
+  "collections": [
+    {
+      "name": {
+        "value": "CollectionImmutableListTest",
+        "kind": "CollectionName"
+      },
+      "kind": "Collection",
+      "immutable": {
+        "kind": "CollectionImmutableList",
+        "immutables": [
+          {
+            "value": "prop1",
+            "kind": "PropertyName"
+          },
+          {
+            "value": "prop2",
+            "kind": "PropertyName"
+          }
+        ]
+      }
+    }
+  ]
+}

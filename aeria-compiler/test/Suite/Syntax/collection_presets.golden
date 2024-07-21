@@ -7,22 +7,7 @@
         "value": "CollectionPresetsTest",
         "kind": "CollectionName"
       },
-      "presets": [
-        {
-          "propertyName": {
-            "value": "crud",
-            "kind": "PropertyName"
-          },
-          "kind": "PresetItem"
-        },
-        {
-          "propertyName": {
-            "value": "view",
-            "kind": "PropertyName"
-          },
-          "kind": "PresetItem"
-        }
-      ]
+      "presets": ["crud", "view"]
     }
   ]
 }

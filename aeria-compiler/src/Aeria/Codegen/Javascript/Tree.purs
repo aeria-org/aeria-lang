@@ -89,9 +89,6 @@ instance eqStatements :: Eq Statements where
 objectProperty2 :: String -> Tree -> ObjectProperty
 objectProperty2 ident tree = ObjectProperty2 (identifier ident) tree
 
-objectProperty2' :: Identifier -> Tree -> ObjectProperty
-objectProperty2' key tree = ObjectProperty2 key tree
-
 objectProperty1 :: String -> ObjectProperty
 objectProperty1 ident = ObjectProperty1 (identifier ident)
 
@@ -134,11 +131,11 @@ variable = Variable <<< Identifier
 call :: Tree -> Array Tree -> Tree
 call = Call
 
-importDeclaration ∷ Specifiers -> Identifier -> Statement
-importDeclaration = ImportDeclaration
+importDeclaration ∷ String -> Specifiers -> Statement
+importDeclaration i s = ImportDeclaration s (Identifier i)
 
-variableDeclaration ∷ Identifier -> Tree -> Statement
-variableDeclaration = VariableDeclaration
+variableDeclaration ∷ String -> Tree -> Statement
+variableDeclaration n = VariableDeclaration (Identifier n)
 
 exportDeclaration ∷ Statement -> Statement
 exportDeclaration = ExportDeclaration
@@ -149,11 +146,11 @@ emptyStatement = EmptyStatement
 specifiers :: Array ImportSpecifier -> Specifiers
 specifiers = Specifiers
 
-importSpecifier1 :: Identifier -> ImportSpecifier
-importSpecifier1 x = ImportSpecifier x
+importSpecifier1 :: String -> ImportSpecifier
+importSpecifier1 x = ImportSpecifier (Identifier x)
 
-importSpecifier2 :: Identifier -> Identifier -> ImportSpecifier
-importSpecifier2 x y = ImportAliasSpecifier x y
+importSpecifier2 :: String -> String -> ImportSpecifier
+importSpecifier2 x y = ImportAliasSpecifier (Identifier x) (Identifier y)
 
 statements ∷ Array Statement -> Statements
 statements = Statements

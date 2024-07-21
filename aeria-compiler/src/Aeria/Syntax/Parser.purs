@@ -6,7 +6,7 @@ import Prelude hiding (between)
 
 import Aeria.Diagnostic.Message (Diagnostic(..))
 import Aeria.Diagnostic.Position (SourcePos(..), Span(..))
-import Aeria.Syntax.Tree (ActionItem(..), AdditionalProperties(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionIcon(..), CollectionImmutable(..), CollectionIndexes, CollectionIndividualActions, CollectionLayout(..), CollectionName(..), CollectionOwned(..), CollectionPreferred, CollectionPresets, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionTemporary(..), CollectionTimestamps(..), CollectionWritable, Cond(..), Expr(..), ExtendsName(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), LayoutOptions(..), Literal(..), Macro(..), PreferredItem(..), PresetItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), RequireItem(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), WritableItem(..))
+import Aeria.Syntax.Tree
 import Control.Lazy (fix)
 import Data.Array as A
 import Data.Either (Either(..))
@@ -14,6 +14,7 @@ import Data.List as L
 import Data.Maybe (Maybe(..), fromMaybe, isJust)
 import Data.String.CodeUnits (fromCharArray)
 import Data.Tuple.Nested (type (/\), (/\))
+import Debug (traceM)
 import Parsing (ParseError(..), Parser, Position(..), fail, position, runParser)
 import Parsing.Combinators (choice, many, manyTill, optionMaybe, sepBy, try, (<?>), (<|>))
 import Parsing.Expr (Assoc(..), Operator(..), buildExprParser)
@@ -287,22 +288,16 @@ pCollectionProperties =
     many (try (pProperty self))
 
 pCollectionRequired :: ParserM CollectionRequired
-pCollectionRequired = lang.braces $ many (try pRequired)
+pCollectionRequired = pListProperty pRequired
 
-pListProperty :: forall a. (Span -> PropertyName -> a) -> ParserM (L.List a)
-pListProperty f = lang.braces (many (try item))
-  where
-    item = do
-      begin <- sourcePos
-      propertyName <- pPropertyName
-      end <- sourcePos
-      pure $ f (Span begin end) propertyName
+pListProperty :: forall a. ParserM a -> ParserM (L.List a)
+pListProperty f = lang.braces (many (try f))
 
 pCollectionTable :: ParserM CollectionTable
-pCollectionTable = pListProperty TableItem
+pCollectionTable = pListProperty pPropertyName
 
 pCollectionTableMeta :: ParserM CollectionTableMeta
-pCollectionTableMeta = pListProperty TableMetaItem
+pCollectionTableMeta = pListProperty pPropertyName
 
 pCollectionFunctions :: ParserM CollectionFunctions
 pCollectionFunctions = lang.braces (many (try item))
@@ -321,19 +316,19 @@ pCollectionFunctions = lang.braces (many (try item))
         }
 
 pCollectionWritable :: ParserM CollectionWritable
-pCollectionWritable = pListProperty WritableItem
+pCollectionWritable = pListProperty pPropertyName
 
 pCollectionForm :: ParserM CollectionForm
-pCollectionForm = pListProperty FormItem
+pCollectionForm = pListProperty pPropertyName
 
 pCollectionFilters :: ParserM CollectionFilters
-pCollectionFilters = pListProperty FilterItem
+pCollectionFilters = pListProperty pPropertyName
 
 pCollectionIndexes :: ParserM CollectionIndexes
-pCollectionIndexes = pListProperty IndexesItem
+pCollectionIndexes = pListProperty pPropertyName
 
 pCollectionPresets :: ParserM CollectionPresets
-pCollectionPresets = pListProperty PresetItem
+pCollectionPresets = pListProperty lang.identifier
 
 pCollectionGetters :: ParserM CollectionGetters
 pCollectionGetters = lang.braces $ many (try pGetter)
@@ -350,7 +345,7 @@ pCollectionTimestamps = CollectionTimestamps <$> pBoolean
 pCollectionImmutable :: ParserM CollectionImmutable
 pCollectionImmutable =
   try (CollectionImmutableBool <$> pBoolean)
-  <|> try (CollectionImmutableList <$> pListProperty ImmutableItem)
+  <|> try (CollectionImmutableList <$> pListProperty pPropertyName)
 
 pCollectionSecurity :: ParserM CollectionSecurity
 pCollectionSecurity = lang.braces $ many (try go)
@@ -509,7 +504,7 @@ pActionItem = do
   pClearItem = pPropertyParser "clearItem" pBoolean
   pParams = pPropertyParser "params" (pMacro "@js () =>")
   pQuery = pPropertyParser "query" (pMacro "@js () =>")
-  pRequires = pPropertyParser "requires" (pListProperty RequireItem)
+  pRequires = pPropertyParser "requires" (pListProperty pPropertyName)
 
   allParsers =
     [ "label" /\ (unsafeCoerce pLabel)
@@ -587,7 +582,7 @@ pCollectionTableLayout = lang.braces $ many (try go)
   pClearItem = pPropertyParser "clearItem" pBoolean
   pParams = pPropertyParser "params" (pMacro "@js () =>")
   pQuery = pPropertyParser "query" (pMacro "@js () =>")
-  pRequires = pPropertyParser "requires" (pListProperty RequireItem)
+  pRequires = pPropertyParser "requires" (pListProperty pPropertyName)
   pRoute = pPropertyParser "route" lang.stringLiteral
   pButton = pPropertyParser "button" $ try (Left <$> pBoolean) <|> try (Right <$> pCond)
   pIf = pPropertyParser "if" pCond

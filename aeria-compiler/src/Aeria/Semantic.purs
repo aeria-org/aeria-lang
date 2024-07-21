@@ -4,7 +4,7 @@ import Prelude
 
 import Aeria.Diagnostic.Message (Diagnostic(..))
 import Aeria.Diagnostic.Position (Span)
-import Aeria.Syntax.Tree (ActionItem(..), Attribute(..), AttributeName(..), AttributeValue(..), Collection(..), CollectionActions, CollectionFilters, CollectionFiltersPresets, CollectionForm, CollectionFormLayout, CollectionFunctions, CollectionGetters, CollectionImmutable(..), CollectionIndexes, CollectionIndividualActions, CollectionLayout(..), CollectionName(..), CollectionPreferred, CollectionProperties, CollectionRequired, CollectionSearch(..), CollectionSecurity, CollectionTable, CollectionTableLayout, CollectionTableMeta, CollectionWritable, Cond(..), Expr(..), FilterItem(..), FiltersPresetsItem(..), FormItem(..), FunctionItem(..), FunctionName(..), Getter(..), ImmutableItem(..), IndexesItem(..), LayoutItem(..), LayoutItemComponent(..), LayoutOptions(..), Literal(..), PreferredItem(..), Program(..), Property(..), PropertyName(..), PropertyType(..), Required(..), SecurityItem(..), SecurityLogging(..), SecurityRateLimiting(..), TableItem(..), TableLayoutItem(..), TableMetaItem(..), Typ(..), WritableItem(..))
+import Aeria.Syntax.Tree
 import Control.Monad.Except (Except, runExcept, throwError)
 import Control.Monad.Reader (ReaderT, ask, local, runReaderT)
 import Data.Array (elem)
@@ -333,34 +333,22 @@ sRequired collectionName@(CollectionName _ collectionName') = traverse_ go
     sCond _ Nothing = pure unit
 
 sTable :: CollectionName -> CollectionTable -> SemanticM Unit
-sTable collectionName collectionTable =
-  let properties = map (\(TableItem _ propertyName) -> propertyName) collectionTable
-    in hasProperties collectionName properties
+sTable = hasProperties
 
 sTableMeta :: CollectionName -> CollectionTableMeta -> SemanticM Unit
-sTableMeta collectionName collectionTable =
-  let properties = map (\(TableMetaItem _ propertyName) -> propertyName) collectionTable
-    in hasProperties collectionName properties
+sTableMeta = hasProperties
 
 sFilters :: CollectionName -> CollectionFilters -> SemanticM Unit
-sFilters collectionName collectionFilters =
-  let properties = map (\(FilterItem _ propertyName) -> propertyName) collectionFilters
-    in hasProperties collectionName properties
+sFilters = hasProperties
 
 sForm :: CollectionName -> CollectionForm -> SemanticM Unit
-sForm collectionName collectionForm =
-  let properties = map (\(FormItem _ propertyName) -> propertyName) collectionForm
-    in hasProperties collectionName properties
+sForm = hasProperties
 
 sIndexes :: CollectionName -> CollectionIndexes -> SemanticM Unit
-sIndexes collectionName collectionIndexes =
-  let properties = map (\(IndexesItem _ propertyName) -> propertyName) collectionIndexes
-    in hasProperties collectionName properties
+sIndexes = hasProperties
 
 sWritable :: CollectionName -> CollectionWritable -> SemanticM Unit
-sWritable collectionName collectionWritable =
-  let properties = map (\(WritableItem _ propertyName) -> propertyName) collectionWritable
-    in hasProperties collectionName properties
+sWritable = hasProperties
 
 sFunctions :: CollectionName -> CollectionFunctions -> SemanticM Unit
 sFunctions _ collectionFunctions =
@@ -377,9 +365,7 @@ sFunctions _ collectionFunctions =
 sImmutable :: CollectionName -> Maybe CollectionImmutable -> SemanticM Unit
 sImmutable _ Nothing = pure unit
 sImmutable _ (Just (CollectionImmutableBool _)) = pure unit
-sImmutable collectionName (Just (CollectionImmutableList immutable)) =
-  let properties = map (\(ImmutableItem _ propertyName) -> propertyName) immutable
-    in hasProperties collectionName properties
+sImmutable collectionName (Just (CollectionImmutableList immutable)) = hasProperties collectionName immutable
 
 sGetters :: CollectionName -> CollectionGetters -> SemanticM Unit
 sGetters collectionName = traverse_ \(Getter { name: propertyName@(PropertyName span name) }) -> do

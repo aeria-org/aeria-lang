@@ -5,14 +5,14 @@ export declare type collectionPropertyObjectTestCollection = {
     $id: "collectionPropertyObjectTest";
     properties: {
       prop1: {
-        required: ["prop2", "prop3"];
         type: "object";
+        required: ["prop2", "prop3"];
         properties: {
           prop2: { type: "string" };
           prop3: { type: "number" };
           prop4: {
-            required: ["prop5"];
             type: "object";
+            required: ["prop5"];
             properties: {
               prop5: { type: "string" };
               prop6: { type: "string" };

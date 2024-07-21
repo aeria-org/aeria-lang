@@ -4,25 +4,16 @@
     {
       "tableMeta": [
         {
-          "propertyName": {
-            "value": "prop1",
-            "kind": "PropertyName"
-          },
-          "kind": "TableMetaItem"
+          "value": "prop1",
+          "kind": "PropertyName"
         },
         {
-          "propertyName": {
-            "value": "prop2",
-            "kind": "PropertyName"
-          },
-          "kind": "TableMetaItem"
+          "value": "prop2",
+          "kind": "PropertyName"
         },
         {
-          "propertyName": {
-            "value": "prop3",
-            "kind": "PropertyName"
-          },
-          "kind": "TableMetaItem"
+          "value": "prop3",
+          "kind": "PropertyName"
         }
       ],
       "name": {

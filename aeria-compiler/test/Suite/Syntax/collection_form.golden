@@ -9,18 +9,12 @@
       "kind": "Collection",
       "form": [
         {
-          "propertyName": {
-            "value": "prop1",
-            "kind": "PropertyName"
-          },
-          "kind": "FormItem"
+          "value": "prop1",
+          "kind": "PropertyName"
         },
         {
-          "propertyName": {
-            "value": "prop2",
-            "kind": "PropertyName"
-          },
-          "kind": "FormItem"
+          "value": "prop2",
+          "kind": "PropertyName"
         }
       ]
     }

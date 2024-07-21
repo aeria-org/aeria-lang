@@ -9,25 +9,16 @@
       "kind": "Collection",
       "writable": [
         {
-          "propertyName": {
-            "value": "prop1",
-            "kind": "PropertyName"
-          },
-          "kind": "WritableItem"
+          "value": "prop1",
+          "kind": "PropertyName"
         },
         {
-          "propertyName": {
-            "value": "prop2",
-            "kind": "PropertyName"
-          },
-          "kind": "WritableItem"
+          "value": "prop2",
+          "kind": "PropertyName"
         },
         {
-          "propertyName": {
-            "value": "prop3",
-            "kind": "PropertyName"
-          },
-          "kind": "WritableItem"
+          "value": "prop3",
+          "kind": "PropertyName"
         }
       ]
     }

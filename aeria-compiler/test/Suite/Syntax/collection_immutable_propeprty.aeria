@@ -1,0 +1,6 @@
+collection CollectionImmutableListTest {
+  immutable {
+    prop1
+    prop2
+  }
+}

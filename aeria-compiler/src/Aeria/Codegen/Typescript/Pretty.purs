@@ -7,11 +7,11 @@ import Data.List as L
 import Data.String.Utils (concatWith)
 import Data.Tuple.Nested ((/\))
 
-ppTypescript :: TsStatements -> String
-ppTypescript (TsStatements stmts) =
+ppTypescript :: Statements -> String
+ppTypescript (Statements stmts) =
   L.foldr (\s r -> ppStatement s <> "\n" <> r) "" stmts
 
-ppStatement :: TsStatement -> String
+ppStatement :: Statement -> String
 ppStatement (ImportDeclaration specifiers ident) =
   "import { " <> ppSpecifiers specifiers <> " } from \"" <> ppIdentifier ident <> "\""
 ppStatement (VariableDeclaration ident type_) =

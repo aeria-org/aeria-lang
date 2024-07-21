@@ -4,18 +4,12 @@
     {
       "table": [
         {
-          "propertyName": {
-            "value": "prop1",
-            "kind": "PropertyName"
-          },
-          "kind": "TableItem"
+          "value": "prop1",
+          "kind": "PropertyName"
         },
         {
-          "propertyName": {
-            "value": "prop2",
-            "kind": "PropertyName"
-          },
-          "kind": "TableItem"
+          "value": "prop2",
+          "kind": "PropertyName"
         }
       ],
       "name": {

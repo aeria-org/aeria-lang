@@ -1,5 +1,7 @@
 module Aeria.Codegen.Typescript.Tree where
 
+import Prelude
+
 import Data.Tuple (Tuple)
 
 data Identifier = Identifier String
@@ -39,45 +41,48 @@ data Tree
   | Extends Tree Tree -- A extends number
   | Intersection Tree Tree -- { x: number } & { y: string }
 
-data TsStatement
+data Statement
   = VariableDeclaration Identifier Tree -- const x: number
   | TypeAliasDeclaration Identifier Tree -- type x = number
   | ImportDeclaration Specifiers Identifier -- import { x, y } from 'z'
-  | ExportDeclaration TsStatement -- export ...
-  | DeclareDeclaration TsStatement -- declare ...
+  | ExportDeclaration Statement -- export ...
+  | DeclareDeclaration Statement -- declare ...
   | TSEmptyStatement
 
-data TsStatements = TsStatements (Array TsStatement)
+data Statements = Statements (Array Statement)
 
-statements ∷ Array TsStatement -> TsStatements
-statements = TsStatements
+statements ∷ Array Statement -> Statements
+statements = Statements
 
-importDeclaration ∷ Specifiers -> Identifier -> TsStatement
-importDeclaration = ImportDeclaration
+importDeclaration ∷ String -> Specifiers -> Statement
+importDeclaration i s = ImportDeclaration s (Identifier i)
 
-variableDeclaration ∷ Identifier -> Tree -> TsStatement
-variableDeclaration = VariableDeclaration
+variableDeclaration ∷ String -> Tree -> Statement
+variableDeclaration i = VariableDeclaration (Identifier i)
 
-typeAliasDeclaration ∷ Identifier -> Tree -> TsStatement
-typeAliasDeclaration = TypeAliasDeclaration
+typeAliasDeclaration ∷ String -> Tree -> Statement
+typeAliasDeclaration i = TypeAliasDeclaration (Identifier i)
 
-exportDeclaration ∷ TsStatement -> TsStatement
+exportDeclaration ∷ Statement -> Statement
 exportDeclaration = ExportDeclaration
 
-declareDeclaration ∷ TsStatement -> TsStatement
+exportDeclareDeclaration :: Statement -> Statement
+exportDeclareDeclaration = ExportDeclaration <<< DeclareDeclaration
+
+declareDeclaration ∷ Statement -> Statement
 declareDeclaration = DeclareDeclaration
 
-emptyStatement ∷ TsStatement
+emptyStatement ∷ Statement
 emptyStatement = TSEmptyStatement
 
 specifiers ∷ Array ImportSpecifier -> Specifiers
 specifiers = Specifiers
 
-importSpecifier1 ∷ Identifier -> ImportSpecifier
-importSpecifier1 x = ImportSpecifier x
+importSpecifier1 ∷ String -> ImportSpecifier
+importSpecifier1 x = ImportSpecifier (Identifier x)
 
-importSpecifier2 ∷ Identifier -> Identifier -> ImportSpecifier
-importSpecifier2 x y = ImportAliasSpecifier x y
+importSpecifier2 ∷ String -> String -> ImportSpecifier
+importSpecifier2 x y = ImportAliasSpecifier (Identifier x) (Identifier y)
 
 typeString ∷ TsType
 typeString = TypeString
