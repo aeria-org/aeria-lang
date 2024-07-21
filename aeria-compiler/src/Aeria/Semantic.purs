@@ -463,6 +463,7 @@ sRefProperty collectionName@(CollectionName span collectionName') property = do
         [ "indexes" /\ sArrayType'
         , "populate" /\ sArrayType'
         , "inline" /\ sType [TBoolean]
+        , "form" /\ sArrayType'
         ]
 
     exprAttributes =
@@ -497,6 +498,7 @@ sFileProperty property = sAttributes property literalAttributes M.empty
   literalAttributes =
     M.fromFoldable
       [ "accept" /\ sArrayType TString
+      , "extensions" /\ sArrayType TString
       ]
 
 sType :: Array Typ -> Property -> Literal -> SemanticM Unit
@@ -536,6 +538,7 @@ sNumberProperty property = sAttributes property literalAttributes M.empty
       , "exclusiveMinimum" /\ sType [TNum, TInteger]
       , "exclusiveMaximum" /\ sType [TNum, TInteger]
       , "default" /\ sType [TInteger, TNum]
+      , "placeholder" /\ sType [TString]
       ]
 
 typeOfArray :: L.List Literal -> Maybe Typ
@@ -579,6 +582,8 @@ sStringProperty property = sAttributes property literalAttributes M.empty
       , "inputType" /\ checkInputType
       , "mask" /\ checkMask
       , "default" /\ sType [TString]
+      , "placeholder" /\ sType [TString]
+      , "element" /\ sType [TString]
       ]
 
   checkFormat :: Property -> Literal -> SemanticM Unit

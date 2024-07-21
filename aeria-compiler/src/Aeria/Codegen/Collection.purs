@@ -94,18 +94,18 @@ cDescription (Collection
     immutableDescription          = optionalProperty "immutable" cImmutable immutable
     temporaryDescription          = optionalProperty "temporary" cTemporary temporary
     layoutDescription             = optionalProperty "layout" cLayout layout
-    formDescription               = listProperty "form" cForm form
-    tableDescription              = listProperty "table" cTable table
+    formDescription               = listProperty "form" cNames form
+    tableDescription              = listProperty "table" cNames table
     tableLayoutDescription        = listProperty "tableLayout" cTableLayout tableLayout
     formLayoutDescription         = listProperty "formLayout" cFormLayout formLayout
     actionsDescription            = listProperty "actions" cActions actions
     individualActionsDescription  = listProperty "individualActions" cActions individualActions
-    filtersDescription            = listProperty "filters" cFilters filters
-    indexesDescription            = listProperty "indexes" cIndexes indexes
+    filtersDescription            = listProperty "filters" cNames filters
+    indexesDescription            = listProperty "indexes" cNames indexes
     presetsDescription            = listProperty "presets" cPresets presets
-    writableDescription           = listProperty "writable" cWritable writable
+    writableDescription           = listProperty "writable" cNames writable
     requiredDescription           = listProperty "required" cRequired required
-    tableMetaDescription          = listProperty "tableMeta" cTableMeta tableMeta
+    tableMetaDescription          = listProperty "tableMeta" cNames tableMeta
     filtersPresetsDescription     = listProperty "filtersPresets" cFiltersPresets filtersPresets
     preferredDescription          = listProperty "preferred" cPreferred preferred
 
@@ -121,24 +121,6 @@ cOwned (CollectionOwned owned) = Js.boolean owned
 
 cTimestamps :: CollectionTimestamps -> Js.Tree
 cTimestamps (CollectionTimestamps timestamps) = Js.boolean timestamps
-
-cTable :: CollectionTable -> Js.Tree
-cTable = cNames
-
-cTableMeta :: CollectionTableMeta -> Js.Tree
-cTableMeta = cNames
-
-cForm :: CollectionForm -> Js.Tree
-cForm = cNames
-
-cFilters :: CollectionFilters -> Js.Tree
-cFilters = cNames
-
-cIndexes :: CollectionIndexes -> Js.Tree
-cIndexes = cNames
-
-cWritable :: CollectionWritable -> Js.Tree
-cWritable = cNames
 
 cSearch :: CollectionSearch -> Js.Tree
 cSearch (CollectionSearch { placeholder, indexes }) = Js.object (base <> properties)
@@ -185,14 +167,14 @@ cPreferred preferred =
       where
         description = catMaybes
           [ optionalProperty "layout" cLayout layout
-          , listProperty "tableMeta" cTableMeta tableMeta
-          , listProperty "form" cForm form
-          , listProperty "table" cTable table
+          , listProperty "tableMeta" cNames tableMeta
+          , listProperty "form" cNames form
+          , listProperty "table" cNames table
           , listProperty "tableLayout" cTableLayout tableLayout
           , listProperty "formLayout" cFormLayout formLayout
           , listProperty "actions" cActions actions
           , listProperty "individualActions" cActions individualActions
-          , listProperty "filters" cFilters filters
+          , listProperty "filters" cNames filters
           , listProperty "filtersPresets" cFiltersPresets filtersPresets
           ]
 

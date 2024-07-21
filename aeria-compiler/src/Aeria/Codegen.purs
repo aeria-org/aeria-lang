@@ -46,9 +46,9 @@ mkTsFile extends collectionName collectionType functions =
   Ts.statements
     [ mkTsImports functions
     , mkTsExtendsImport extends
-    , mkTsCollectionTypeAlias extends collectionName collectionType
-    , mkTsCollectionVariable collectionName
-    , mkTsSchemaAlias collectionName
+    , mkTsCollectionType extends collectionName collectionType
+    , mkTsDescription collectionName
+    , mkTsSchemaType collectionName
     , mkTsExtendCollectionFunction collectionName
     ]
 
@@ -68,8 +68,8 @@ mkTsExtendsImport (Just (ExtendsName package collection'')) =
     (Ts.specifiers [Ts.importSpecifier2 (ucLower collection'') "original"])
 mkTsExtendsImport Nothing = Ts.emptyStatement
 
-mkTsCollectionTypeAlias :: Maybe ExtendsName -> CollectionName -> Ts.Tree -> Ts.Statement
-mkTsCollectionTypeAlias extends collectionName collectionType =
+mkTsCollectionType :: Maybe ExtendsName -> CollectionName -> Ts.Tree -> Ts.Statement
+mkTsCollectionType extends collectionName collectionType =
   Ts.exportDeclareDeclaration
     (Ts.typeAliasDeclaration
       (getName collectionName <> "Collection")
@@ -82,8 +82,8 @@ mkTsCollectionTypeAlias extends collectionName collectionType =
             (Ts.type_ $ Ts.typeVariable "ExtendCollection"))
         else collectionType))
 
-mkTsCollectionVariable :: CollectionName -> Ts.Statement
-mkTsCollectionVariable collectionName =
+mkTsDescription :: CollectionName -> Ts.Statement
+mkTsDescription collectionName =
   Ts.exportDeclareDeclaration
     (Ts.variableDeclaration
       (getName collectionName)
@@ -97,8 +97,8 @@ mkTsCollectionVariable collectionName =
                 [ Ts.type_ $ Ts.typeRaw ((getName collectionName) <> "Collection[\"description\"]")]
                 (Ts.type_ $ Ts.typeVariable "SchemaWithId")))]))))
 
-mkTsSchemaAlias :: CollectionName -> Ts.Statement
-mkTsSchemaAlias collectionName@(CollectionName _ collectionName') =
+mkTsSchemaType :: CollectionName -> Ts.Statement
+mkTsSchemaType collectionName@(CollectionName _ collectionName') =
   Ts.exportDeclareDeclaration
     (Ts.typeAliasDeclaration
       collectionName'
@@ -129,7 +129,7 @@ mkJsFile extends collectionName collectionObject functions =
   Js.statements
     [ mkJsImports functions
     , mkJsExtendsImport extends
-    , mkJsCollectionVariable extends collectionName collectionObject
+    , mkJsDefineCollection extends collectionName collectionObject
     , mkJsExtendCollectionFunction collectionName
     ]
 
@@ -148,8 +148,8 @@ mkJsExtendsImport (Just (ExtendsName package collection'')) =
     (Js.specifiers [ Js.importSpecifier2 (ucLower collection'') "original"])
 mkJsExtendsImport Nothing = Js.emptyStatement
 
-mkJsCollectionVariable :: Maybe ExtendsName -> CollectionName -> Js.Tree -> Js.Statement
-mkJsCollectionVariable extends collectionName collection' =
+mkJsDefineCollection :: Maybe ExtendsName -> CollectionName -> Js.Tree -> Js.Statement
+mkJsDefineCollection extends collectionName collection' =
   Js.exportDeclaration
     (Js.variableDeclaration
       (getName collectionName)
