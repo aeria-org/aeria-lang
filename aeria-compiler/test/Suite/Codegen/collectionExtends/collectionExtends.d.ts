@@ -1,5 +1,5 @@
-import { Collection, SchemaWithId, ExtendCollection, register } from "aeria";
 import { users as original } from "aeria";
+import { Collection, SchemaWithId, ExtendCollection, register } from "aeria";
 export declare type collectionExtendsCollection = ExtendCollection<
   typeof original,
   {

@@ -1,16 +1,16 @@
 module Aeria.Codegen where
 
-import Prelude (map, not, (#), ($), (<>))
-
 import Aeria.Syntax.Tree
+
 import Aeria.Codegen.Collection (cCollection)
-import Aeria.Codegen.Type (typegen)
 import Aeria.Codegen.Javascript.Tree as Js
+import Aeria.Codegen.Type (typegen)
 import Aeria.Codegen.Typescript.Tree as Ts
 import Data.List as L
 import Data.Maybe (Maybe(..), isJust)
 import Data.String.Utils (ucLower)
 import Data.Tuple.Nested ((/\))
+import Prelude (map, not, (#), ($), (<>))
 
 data Codegen = Codegen String Js.Statements Ts.Statements
 
@@ -42,16 +42,20 @@ getAeriaFunctions functions =
     # map (\(FunctionItem { functionName }) -> getName functionName)
 
 mkTsFile :: Maybe ExtendsName -> CollectionName -> Ts.Tree -> Array Ts.ImportSpecifier -> Ts.Statements
-mkTsFile extends collectionName collectionType functions =
-  Ts.statements
-    [ mkTsImports functions
-    , mkTsExtendsImport extends
-    , mkTsCollectionType extends collectionName collectionType
-    , mkTsDescription collectionName
-    , mkTsSchemaType collectionName
-    , mkTsExtendCollectionFunction collectionName
-    ]
+mkTsFile extends collectionName collectionType functions = Ts.statements statements
+  where
+    base =
+      [ mkTsImports functions
+      , mkTsCollectionType extends collectionName collectionType
+      , mkTsDescription collectionName
+      , mkTsSchemaType collectionName
+      , mkTsExtendCollectionFunction collectionName
+      ]
 
+    statements =
+      case mkTsExtendsImport extends of
+        Just extendsImport -> [extendsImport] <> base
+        Nothing -> base
 mkTsImports :: Array Ts.ImportSpecifier -> Ts.Statement
 mkTsImports functions =
   Ts.importDeclaration "aeria" (Ts.specifiers $ base <> functions)
@@ -62,11 +66,11 @@ mkTsImports functions =
       , Ts.importSpecifier1 "ExtendCollection"
       ]
 
-mkTsExtendsImport :: Maybe ExtendsName -> Ts.Statement
+mkTsExtendsImport :: Maybe ExtendsName -> Maybe Ts.Statement
 mkTsExtendsImport (Just (ExtendsName package collection'')) =
-  Ts.importDeclaration package
+  Just $ Ts.importDeclaration package
     (Ts.specifiers [Ts.importSpecifier2 (ucLower collection'') "original"])
-mkTsExtendsImport Nothing = Ts.emptyStatement
+mkTsExtendsImport Nothing = Nothing
 
 mkTsCollectionType :: Maybe ExtendsName -> CollectionName -> Ts.Tree -> Ts.Statement
 mkTsCollectionType extends collectionName collectionType =
@@ -125,13 +129,17 @@ mkTsExtendCollectionFunction collectionName@(CollectionName _ collectionName') =
             (Ts.type_ $ Ts.typeVariable "ExtendCollection"))))))
 
 mkJsFile :: Maybe ExtendsName -> CollectionName -> Js.Tree -> Array Js.ImportSpecifier -> Js.Statements
-mkJsFile extends collectionName collectionObject functions =
-  Js.statements
-    [ mkJsImports functions
-    , mkJsExtendsImport extends
-    , mkJsDefineCollection extends collectionName collectionObject
-    , mkJsExtendCollectionFunction collectionName
-    ]
+mkJsFile extends collectionName collectionObject functions = Js.statements statements
+  where
+    base =
+      [ mkJsImports functions
+      , mkJsDefineCollection extends collectionName collectionObject
+      , mkJsExtendCollectionFunction collectionName
+      ]
+    statements =
+      case mkJsExtendsImport extends of
+        Just extendsImport -> [extendsImport] <> base
+        Nothing -> base
 
 mkJsImports :: Array Js.ImportSpecifier -> Js.Statement
 mkJsImports imports =
@@ -142,11 +150,12 @@ mkJsImports imports =
       , Js.importSpecifier1 "defineCollection"
       ]
 
-mkJsExtendsImport :: Maybe ExtendsName -> Js.Statement
+mkJsExtendsImport :: Maybe ExtendsName -> Maybe Js.Statement
 mkJsExtendsImport (Just (ExtendsName package collection'')) =
-  Js.importDeclaration package
-    (Js.specifiers [ Js.importSpecifier2 (ucLower collection'') "original"])
-mkJsExtendsImport Nothing = Js.emptyStatement
+  Just $
+    Js.importDeclaration package
+      (Js.specifiers [ Js.importSpecifier2 (ucLower collection'') "original"])
+mkJsExtendsImport Nothing = Nothing
 
 mkJsDefineCollection :: Maybe ExtendsName -> CollectionName -> Js.Tree -> Js.Statement
 mkJsDefineCollection extends collectionName collection' =

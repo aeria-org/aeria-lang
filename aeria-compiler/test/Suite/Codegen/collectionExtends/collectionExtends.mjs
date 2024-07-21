@@ -1,5 +1,5 @@
-import { extendCollection, defineCollection, register } from "aeria";
 import { users as original } from "aeria";
+import { extendCollection, defineCollection, register } from "aeria";
 export const collectionExtends = extendCollection(original, {
   description: {
     $id: "collectionExtends",

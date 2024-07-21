@@ -47,7 +47,6 @@ data Statement
   | ImportDeclaration Specifiers Identifier -- import { x, y } from 'z'
   | ExportDeclaration Statement -- export ...
   | DeclareDeclaration Statement -- declare ...
-  | TSEmptyStatement
 
 data Statements = Statements (Array Statement)
 
@@ -72,8 +71,6 @@ exportDeclareDeclaration = ExportDeclaration <<< DeclareDeclaration
 declareDeclaration ∷ Statement -> Statement
 declareDeclaration = DeclareDeclaration
 
-emptyStatement ∷ Statement
-emptyStatement = TSEmptyStatement
 
 specifiers ∷ Array ImportSpecifier -> Specifiers
 specifiers = Specifiers

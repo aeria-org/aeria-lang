@@ -1,5 +1,5 @@
-const { extendCollection, defineCollection, register } = require("aeria");
 const { users: original } = require("aeria");
+const { extendCollection, defineCollection, register } = require("aeria");
 exports.collectionExtends = extendCollection(original, {
   description: {
     $id: "collectionExtends",

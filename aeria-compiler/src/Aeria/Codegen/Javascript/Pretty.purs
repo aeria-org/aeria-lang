@@ -23,7 +23,6 @@ ppStatement targetModule (ExportDeclaration statement) =
   case targetModule of
     EsNext -> "export " <> ppStatement targetModule statement
     CommonJs -> "exports." <> ppStatement targetModule statement
-ppStatement _ EmptyStatement = ""
 
 ppTree :: Tree -> String
 ppTree (Literal literal) = ppLiteral literal

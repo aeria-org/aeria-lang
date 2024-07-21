@@ -72,7 +72,6 @@ data Statement
   = ImportDeclaration Specifiers Identifier
   | VariableDeclaration Identifier Tree
   | ExportDeclaration Statement
-  | EmptyStatement
 
 derive instance genericStatement :: Generic Statement _
 
@@ -139,9 +138,6 @@ variableDeclaration n = VariableDeclaration (Identifier n)
 
 exportDeclaration ∷ Statement -> Statement
 exportDeclaration = ExportDeclaration
-
-emptyStatement ∷ Statement
-emptyStatement = EmptyStatement
 
 specifiers :: Array ImportSpecifier -> Specifiers
 specifiers = Specifiers

@@ -22,7 +22,6 @@ ppStatement (ExportDeclaration statement) =
   "export " <> ppStatement statement
 ppStatement (DeclareDeclaration statement) =
   "declare " <> ppStatement statement
-ppStatement TSEmptyStatement = ""
 
 ppTree :: Tree -> String
 ppTree (Type tsType) = ppType tsType
