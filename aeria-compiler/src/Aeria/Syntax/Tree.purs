@@ -2,7 +2,7 @@ module Aeria.Syntax.Tree where
 
 import Prelude
 
-import Aeria.Diagnostic.Position (Span)
+import Aeria.Diagnostic.Position (Span, ghostSpan)
 import Data.Either (Either)
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
@@ -18,11 +18,13 @@ type Ident
 
 class Name a where
   getName :: a -> Ident
+  getSpan :: a -> Span
 
 data FunctionName = FunctionName Span Ident
 
 instance funcName :: Name FunctionName where
   getName (FunctionName _ name) = name
+  getSpan (FunctionName span _) = span
 
 derive instance genericFunctionName :: Generic FunctionName _
 
@@ -47,6 +49,7 @@ data CollectionName = CollectionName Span Ident
 
 instance colName :: Name CollectionName where
   getName (CollectionName _ name) = ucLower name
+  getSpan (CollectionName span _) = span
 
 derive instance genericCollectionName :: Generic CollectionName _
 
@@ -71,6 +74,7 @@ data PropertyName = PropertyName Span Ident
 
 instance propName :: Name PropertyName where
   getName (PropertyName _ name) = name
+  getSpan (PropertyName span _) = span
 
 derive instance genericPropertyName :: Generic PropertyName _
 
@@ -95,6 +99,7 @@ data AttributeName = AttributeName Span Ident
 
 instance attrName :: Name AttributeName where
   getName (AttributeName _ name) = name
+  getSpan (AttributeName span _) = span
 
 derive instance genericAttributeName :: Generic AttributeName _
 
@@ -112,10 +117,11 @@ instance WriteForeign AttributeName
     , value: writeImpl attributeName
     }
 
-data ExtendsName = ExtendsName Ident Ident
+data ExtendsName = ExtendsName Ident Ident  -- TODO: add span
 
 instance extName :: Name ExtendsName where
   getName (ExtendsName _ name) = name
+  getSpan (ExtendsName _ _) = ghostSpan
 
 derive instance genericExtendsName :: Generic ExtendsName _
 
@@ -134,59 +140,6 @@ instance WriteForeign ExtendsName
     , collection: writeImpl collection
     }
 
-data Typ
-  = TInteger
-  | TNum
-  | TUndefined
-  | TNull
-  | TString
-  | TBoolean
-  | TProperty
-  | TArray
-
-derive instance genericTyp :: Generic Typ _
-
-instance showTyp :: Show Typ where
-  show = genericShow
-
-instance eqTyp :: Eq Typ where
-  eq = genericEq
-
-instance WriteForeign Typ
-  where
-  writeImpl TUndefined =
-    writeImpl
-      { kind: "TUndefined"
-      }
-  writeImpl TNull =
-    writeImpl
-      { kind: "TNull"
-      }
-  writeImpl TInteger =
-    writeImpl
-      { kind: "TInteger"
-      }
-  writeImpl TNum =
-    writeImpl
-      { kind: "TNum"
-      }
-  writeImpl TString =
-    writeImpl
-      { kind: "TString"
-      }
-  writeImpl TBoolean =
-    writeImpl
-      { kind: "TBoolean"
-      }
-  writeImpl TProperty =
-    writeImpl
-      { kind: "TProperty"
-      }
-  writeImpl TArray =
-    writeImpl
-      { kind: "TArray"
-      }
-
 data Literal
   = LNull Span
   | LUndefined Span
@@ -200,7 +153,14 @@ data Literal
 derive instance genericLiteral :: Generic Literal _
 
 instance showLiteral :: Show Literal where
-  show x = genericShow x
+  show (LNull _) = "null"
+  show (LUndefined _) = "undefined"
+  show (LInteger _ _) = "integer"
+  show (LNum _ _) = "num"
+  show (LString _ _) = "string"
+  show (LBoolean _ _) = "boolean"
+  show (LProperty _ _) = "property name"
+  show (LArray _ _) = "array"
 
 instance eqLiteral :: Eq Literal where
   eq x = genericEq x

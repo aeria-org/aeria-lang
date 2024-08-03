@@ -935,7 +935,7 @@ getParserValue key results =
     Just (_ /\ v) -> Just v
     Nothing -> Nothing
 
-runParsers ∷ forall a. Array (String /\ (ParserM a)) → ParserM (Array (String /\ a))
+runParsers ∷ forall a. Array (String /\ (ParserM a)) -> ParserM (Array (String /\ a))
 runParsers ps = go' [] ps (A.length ps)
   where
   go' results _ 0  = pure results

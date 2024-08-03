@@ -27,10 +27,10 @@ ppStatement targetModule (ExportDeclaration statement) =
 ppTree :: Tree -> String
 ppTree (Literal literal) = ppLiteral literal
 ppTree (Variable ident) = ppIdentifier ident
-ppTree (Call called params) = ppTree called <> "(" <> concatWith params ppTree <> ")"
-ppTree (Function args body) = "(" <> concatWith args ppIdentifier <> ") => " <> ppTree body
+ppTree (Call called params) = ppTree called <> "(" <> concatWith params "," ppTree <> ")"
+ppTree (Function args body) = "(" <> concatWith args "," ppIdentifier <> ") => " <> ppTree body
 ppTree (Raw code) = code
-ppTree (Object props) = "{" <> concatWith props ppObjectProperty <> "}"
+ppTree (Object props) = "{" <> concatWith props "," ppObjectProperty <> "}"
 
 ppObjectProperty :: ObjectProperty -> String
 ppObjectProperty (ObjectProperty2 key value) = ppIdentifier key <> ": " <> ppTree value
@@ -42,10 +42,10 @@ ppLiteral Undefined = "undefined"
 ppLiteral (String value) = "\"" <> value <> "\""
 ppLiteral (Number value) = show value
 ppLiteral (Boolean value) = show value
-ppLiteral (Array values) = "[" <> concatWith values ppTree <> "]"
+ppLiteral (Array values) = "[" <> concatWith values "," ppTree <> "]"
 
 ppSpecifiers :: TargetModule -> Specifiers -> String
-ppSpecifiers targetModule (Specifiers specifiers) = concatWith specifiers (ppImportSpecifier targetModule)
+ppSpecifiers targetModule (Specifiers specifiers) = concatWith specifiers "," (ppImportSpecifier targetModule)
 
 ppImportSpecifier :: TargetModule -> ImportSpecifier -> String
 ppImportSpecifier targetModule (ImportAliasSpecifier importSpecifier alias) =

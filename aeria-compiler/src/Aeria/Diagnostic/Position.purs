@@ -32,3 +32,6 @@ instance eqSpan :: Eq Span where
 
 instance ordSpan :: Ord Span where
   compare = genericCompare
+
+ghostSpan :: Span
+ghostSpan = Span (SourcePos 0 0 0) (SourcePos 0 0 0)

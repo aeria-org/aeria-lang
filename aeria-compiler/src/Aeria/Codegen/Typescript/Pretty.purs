@@ -25,7 +25,7 @@ ppStatement (DeclareDeclaration statement) =
 
 ppTree :: Tree -> String
 ppTree (Type tsType) = ppType tsType
-ppTree (Call ident args) = ppIdentifier ident <> "(" <> concatWith args ppTree <> ")"
+ppTree (Call ident args) = ppIdentifier ident <> "(" <> concatWith args "," ppTree <> ")"
 ppTree (Variable ident) = ppIdentifier ident
 ppTree (TypeQuery tree) = "typeof " <> ppTree tree
 ppTree (Extends tree1 tree2) = ppTree tree1 <> " extends " <> ppTree tree2
@@ -43,20 +43,20 @@ ppType (TypeArray tsType) = ppType tsType <> "[]"
 ppType (TypeLiteralString value) = "\"" <> value <> "\""
 ppType (TypeLiteralBool value) = show value
 ppType (TypeLiteralNumber value) = show value
-ppType (TypeLiteralArray values) = "[" <> concatWith values ppTree <> "]"
+ppType (TypeLiteralArray values) = "[" <> concatWith values "," ppTree <> "]"
 ppType (TypeVariable ident) = ppIdentifier ident
 ppType (TypeGeneric params tree) =
-  let paramsStr = "<" <> concatWith params ppTree <> ">"
+  let paramsStr = "<" <> concatWith params "," ppTree <> ">"
   in case tree of
        Type (TypeFunction _ _) -> paramsStr <> ppTree tree
        _ -> ppTree tree <> paramsStr
 ppType (TypeFunction params returnType) =
-  "(" <> concatWith params (\(ident /\ tree) -> ppIdentifier ident <> ": " <> ppTree tree) <> ") => " <> ppTree returnType
+  "(" <> concatWith params "," (\(ident /\ tree) -> ppIdentifier ident <> ": " <> ppTree tree) <> ") => " <> ppTree returnType
 ppType (TypeObject props) =
-  "{" <> concatWith props (\(TypeObjectProperty ident tree) -> ppIdentifier ident <> ": " <> ppTree tree) <> "}"
+  "{" <> concatWith props "," (\(TypeObjectProperty ident tree) -> ppIdentifier ident <> ": " <> ppTree tree) <> "}"
 
 ppSpecifiers :: Specifiers -> String
-ppSpecifiers (Specifiers specifiers) = concatWith specifiers ppImportSpecifier
+ppSpecifiers (Specifiers specifiers) = concatWith specifiers "," ppImportSpecifier
 
 ppImportSpecifier :: ImportSpecifier -> String
 ppImportSpecifier (ImportSpecifier ident) = ppIdentifier ident

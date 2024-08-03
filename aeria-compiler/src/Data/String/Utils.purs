@@ -14,11 +14,11 @@ ucLower str =
     Just { head, tail } -> fromCodePointArray (toLower head) <> tail
     Nothing -> ""
 
-concatWith :: forall a. Array a  ->  (a -> String)-> String
-concatWith xs f  =
+concatWith :: forall a. Array a  -> String -> (a -> String)-> String
+concatWith xs x f =
   xs
     # map f
-    # intercalate ","
+    # intercalate x
 
 splitLines :: String -> Array String
 splitLines str = split (Pattern "\n") str

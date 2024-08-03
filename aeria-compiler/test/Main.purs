@@ -23,7 +23,7 @@ import Test.Spec.Runner (runSpec)
 import Test.Utils.CompareJSON (compareJSON)
 import Yoga.JSON (writeJSON)
 
-syntaxTest ∷ ∀ (m4 ∷ Type -> Type) (g7 ∷ Type -> Type). Monad m4 ⇒ MonadThrow Error g7 ⇒ String → String → String → SpecT g7 Unit m4 Unit
+syntaxTest ∷ ∀ (m4 ∷ Type -> Type) (g7 ∷ Type -> Type). Monad m4 ⇒ MonadThrow Error g7 ⇒ String -> String -> String -> SpecT g7 Unit m4 Unit
 syntaxTest testName schema golden = do
   it testName do
     let program = runParserProgram testName schema
@@ -44,7 +44,7 @@ codegenTest targetModule testName schema golden = do
           let code = ppJavascript targetModule jsStatments
           formatJS code `shouldEqual` formatJS golden)
 
-typegenTest ∷ ∀ (m23 ∷ Type -> Type). Monad m23 ⇒ String → String → String → SpecT Aff Unit m23 Unit
+typegenTest ∷ ∀ (m23 ∷ Type -> Type). Monad m23 ⇒ String -> String -> String -> SpecT Aff Unit m23 Unit
 typegenTest testName schema golden = do
   it testName do
     let codegen = compile'' "<stdin>" schema
