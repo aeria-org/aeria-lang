@@ -209,15 +209,15 @@ sProperty collectionName property@(Property { type_ }) =
     PString _ -> sStringAttributes collectionName property
     PInteger _ -> sNumberAttributes collectionName property
     PRef _ (CollectionName _ "File") -> sFileAttributes collectionName property
-    PRef _ ref -> sRefProperty collectionName ref property
+    PRef _ ref -> sRefProperty ref property
     PBoolean _ -> sBooleanAttributes collectionName property
     PArray _ _ -> sArrayProperty collectionName property
     PObject _ _ _ _ -> sObjectProperty collectionName property
 
-sRefProperty :: CollectionName -> CollectionName -> Property -> SemanticM Unit
-sRefProperty collectionName ref property@(Property { span }) = do
+sRefProperty :: CollectionName -> Property -> SemanticM Unit
+sRefProperty ref property@(Property { span }) = do
   context <- ask
-  when (isNothing (lookupCollection context collectionName))
+  when (isNothing (lookupCollection context ref))
     (throwDiagnostic span ("Cannot find collection \"" <> getName ref <> "\""))
   sRefAttributes ref property
 
