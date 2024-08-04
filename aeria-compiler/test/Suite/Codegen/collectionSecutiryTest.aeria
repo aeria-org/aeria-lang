@@ -1,4 +1,8 @@
 collection CollectionSecutiryTest {
+  functions {
+    func1
+    func2
+  }
   security {
     functions {
       func1 {
@@ -8,6 +12,11 @@ collection CollectionSecutiryTest {
         rateLimiting {
           strategy "ip"
           scale 10
+        }
+      }
+      func2 {
+        logging {
+          strategy "tenant"
         }
       }
     }

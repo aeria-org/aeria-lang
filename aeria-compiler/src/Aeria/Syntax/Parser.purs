@@ -348,7 +348,9 @@ pCollectionImmutable =
   <|> try (CollectionImmutableList <$> pListProperty pPropertyName)
 
 pCollectionSecurity :: ParserM CollectionSecurity
-pCollectionSecurity = lang.braces $ many (try go)
+pCollectionSecurity = lang.braces do
+  lang.reserved "functions"
+  lang.braces $ many (try go)
   where
   go = do
     functionName <- pFunctionName

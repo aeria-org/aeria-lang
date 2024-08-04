@@ -337,9 +337,12 @@ cExposedFunctions exposedFunctions =
 
 cSecurity :: CollectionSecurity -> Js.Tree
 cSecurity secutiry =
-  map go secutiry
-    # L.toUnfoldable
-    # Js.object
+  Js.object
+    [ Js.objectProperty2 "functions"
+      $ map go secutiry
+        # L.toUnfoldable
+        # Js.object
+    ]
   where
     go (SecurityItem { functionName, rateLimiting, logging }) =
       Js.objectProperty2 (getName functionName) (Js.object secutiryProperties)
