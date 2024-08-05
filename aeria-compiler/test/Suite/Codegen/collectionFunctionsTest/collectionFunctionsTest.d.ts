@@ -2,6 +2,7 @@ import {
   Collection,
   SchemaWithId,
   ExtendCollection,
+  Context,
   get,
   insert,
   remove
@@ -23,7 +24,16 @@ export declare type CollectionFunctionsTest = SchemaWithId<
   typeof collectionFunctionsTest.description
 >;
 export declare const extendCollectionFunctionsTestCollection: <
-  const TCollection extends { [P in keyof Collection]?: Partial<Collection[P]> }
+  const TCollection extends {
+    [P in Exclude<keyof Collection, "functions">]?: Partial<Collection[P]>;
+  } & {
+    functions?: {
+      [F: string]: (
+        payload: any,
+        context: Context<typeof collectionFunctionsTest["description"]>
+      ) => unknown;
+    };
+  }
 >(
   collection: TCollection
 ) => ExtendCollection<typeof collectionFunctionsTest, TCollection>;

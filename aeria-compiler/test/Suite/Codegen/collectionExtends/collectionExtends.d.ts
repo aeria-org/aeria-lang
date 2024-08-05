@@ -1,5 +1,5 @@
 import { users as original } from "aeria";
-import { Collection, SchemaWithId, ExtendCollection, register } from "aeria";
+import { Collection, SchemaWithId, ExtendCollection, Context, register } from "aeria";
 export declare type collectionExtendsCollection = ExtendCollection<
   typeof original,
   {
@@ -18,7 +18,16 @@ export declare type CollectionExtends = SchemaWithId<
   typeof collectionExtends.description
 >;
 export declare const extendCollectionExtendsCollection: <
-  const TCollection extends { [P in keyof Collection]?: Partial<Collection[P]> }
+  const TCollection extends {
+    [P in Exclude<keyof Collection, "functions">]?: Partial<Collection[P]>;
+  } & {
+    functions?: {
+      [F: string]: (
+        payload: any,
+        context: Context<typeof collectionExtends["description"]>
+      ) => unknown;
+    };
+  }
 >(
   collection: TCollection
 ) => ExtendCollection<typeof collectionExtends, TCollection>;

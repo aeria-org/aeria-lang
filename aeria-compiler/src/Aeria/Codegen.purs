@@ -64,6 +64,7 @@ mkTsImports functions =
       [ Ts.importSpecifier1 "Collection"
       , Ts.importSpecifier1 "SchemaWithId"
       , Ts.importSpecifier1 "ExtendCollection"
+      , Ts.importSpecifier1 "Context"
       ]
 
 mkTsExtendsImport :: Maybe ExtendsName -> Maybe Ts.Statement
@@ -117,9 +118,15 @@ mkTsExtendCollectionFunction collectionName@(CollectionName _ collectionName') =
     (Ts.variableDeclaration
       ("extend" <> collectionName' <> "Collection")
       (Ts.type_ $ Ts.typeGeneric
-        [ (Ts.extends
-            (Ts.type_ $ Ts.typeRaw "const TCollection")
-            (Ts.type_ $ Ts.typeRaw "{ [P in keyof Collection]?: Partial<Collection[P]> }"))]
+        [ Ts.type_ $ Ts.typeRaw $ """
+          const TCollection extends {
+            [P in Exclude<keyof Collection, "functions">] ? : Partial <Collection[P]>
+          } &{
+            functions?: {
+              [F: string]: (payload: any, context: Context<typeof """ <> getName collectionName <> """["description"]>) => unknown
+            }
+          }"""
+        ]
         (Ts.type_ $ Ts.typeFunction
           [ (Ts.identifier "collection") /\ (Ts.type_ $ Ts.typeVariable "TCollection") ]
           (Ts.type_ $ (Ts.typeGeneric

@@ -1,4 +1,4 @@
-import { Collection, SchemaWithId, ExtendCollection } from "aeria";
+import { Collection, SchemaWithId, ExtendCollection, Context } from "aeria";
 
 export declare type collectionPropertyNumTestCollection = {
   description: {
@@ -22,7 +22,16 @@ export declare type CollectionPropertyNumTest = SchemaWithId<
   typeof collectionPropertyNumTest.description
 >;
 export declare const extendCollectionPropertyNumTestCollection: <
-  const TCollection extends { [P in keyof Collection]?: Partial<Collection[P]> }
+  const TCollection extends {
+    [P in Exclude<keyof Collection, "functions">]?: Partial<Collection[P]>;
+  } & {
+    functions?: {
+      [F: string]: (
+        payload: any,
+        context: Context<typeof collectionPropertyNumTest["description"]>
+      ) => unknown;
+    };
+  }
 >(
   collection: TCollection
 ) => ExtendCollection<typeof collectionPropertyNumTest, TCollection>;
