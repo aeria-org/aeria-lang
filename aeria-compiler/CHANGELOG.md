@@ -1,5 +1,11 @@
 # @aeria-lang/compiler
 
+## 0.0.8
+
+### Patch Changes
+
+- 2144bb5: Update syntax and output code
+
 ## 0.0.7
 
 ### Patch Changes
