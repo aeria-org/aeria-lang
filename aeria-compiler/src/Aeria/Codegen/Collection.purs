@@ -117,7 +117,8 @@ cIcon :: CollectionIcon -> Js.Tree
 cIcon (CollectionIcon icon) = Js.string icon
 
 cOwned :: CollectionOwned -> Js.Tree
-cOwned (CollectionOwned owned) = Js.boolean owned
+cOwned (CollectionOwnedBoolean _ owned) = Js.boolean owned
+cOwned (CollectionOwnedCustom _ owned) = Js.string owned
 
 cTimestamps :: CollectionTimestamps -> Js.Tree
 cTimestamps (CollectionTimestamps timestamps) = Js.boolean timestamps

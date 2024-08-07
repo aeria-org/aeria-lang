@@ -28,6 +28,7 @@ sDescription :: Collection -> SemanticM Context
 sDescription (Collection
   { name
   , properties
+  , owned
   , getters
   , table
   , tableMeta
@@ -51,6 +52,7 @@ sDescription (Collection
   where
     go = do
       sProperties name properties
+      sOwned owned
       sRequired name required
       sTableLayout name tableLayout
       sLayout name layout
@@ -68,6 +70,14 @@ sDescription (Collection
       collectionHasProperties name writable
       sSearch name search
       ask
+
+sOwned :: Maybe CollectionOwned -> SemanticM Unit
+sOwned (Just (CollectionOwnedCustom span owned)) =
+  case owned of
+    "always" -> pure unit
+    "on-write" -> pure unit
+    _ -> throwDiagnostic span "Expected value \"always\", \"on-write\" or boolean"
+sOwned _ = pure unit
 
 sFiltersPresets :: CollectionFiltersPresets -> SemanticM Unit
 sFiltersPresets = traverse_ go

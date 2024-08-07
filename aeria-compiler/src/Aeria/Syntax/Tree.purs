@@ -565,7 +565,9 @@ instance WriteForeign CollectionIcon where
       , icon: writeImpl icon
       }
 
-data CollectionOwned = CollectionOwned Boolean
+data CollectionOwned
+  = CollectionOwnedBoolean Span Boolean
+  | CollectionOwnedCustom Span String
 
 derive instance genericCollectionOwned :: Generic CollectionOwned _
 
@@ -576,9 +578,14 @@ instance eqCollectionOwned :: Eq CollectionOwned where
   eq = genericEq
 
 instance WriteForeign CollectionOwned where
-  writeImpl (CollectionOwned owned) =
+  writeImpl (CollectionOwnedBoolean _ owned) =
     writeImpl
-      { kind: "CollectionOwned"
+      { kind: "CollectionOwnedBoolean"
+      , owned: writeImpl owned
+      }
+  writeImpl (CollectionOwnedCustom _ owned) =
+    writeImpl
+      { kind: "CollectionOwnedCustom"
       , owned: writeImpl owned
       }
 

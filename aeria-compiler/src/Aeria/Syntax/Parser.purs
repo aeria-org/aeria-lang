@@ -50,7 +50,7 @@ sourcePos = do
 pName :: forall a. (Span -> String -> a) -> ParserM a
 pName constructor = do
   begin <- sourcePos
-  ident <- lang.identifier <?> "Expected an identifier"
+  ident <- lang.identifier <?> "an identifier"
   end <- sourcePos
   pure $ constructor (Span begin end) ident
 
@@ -79,7 +79,7 @@ pPropertyType p = fix \self -> choice
   , try tPrimitives
   , try tCollection
   , try (tObject self)
-  ] <?> "Expected a property type"
+  ] <?> "a property type"
   where
     tPrimitives = choice [tConst, tStr, tBool, tInt, tNum, tEnum]
     tArray self = pArrayType self
@@ -88,7 +88,7 @@ pPropertyType p = fix \self -> choice
 
     pArrayType self = do
       begin <- sourcePos
-      _ <- string "[]" <?> "Expected \"[]\" for array type"
+      _ <- string "[]" <?> "\"[]\" for array type"
       arrType <- self
       end <- sourcePos
       pure $ PArray (Span begin end) arrType
@@ -124,12 +124,12 @@ pPropertyType p = fix \self -> choice
 
     pSimpleType constructor keyword = do
       begin <- sourcePos
-      _ <- lang.reservedOp keyword <?> ("Expected \"" <> keyword <> "\"")
+      _ <- lang.reservedOp keyword <?> ("\"" <> keyword <> "\"")
       end <- sourcePos
       pure $ constructor (Span begin end)
 
 pBoolean :: ParserM Boolean
-pBoolean = pTrue <|> pFalse <?> "Expected a boolean (\"true\" or \"false\")"
+pBoolean = pTrue <|> pFalse <?> "a boolean (\"true\" or \"false\")"
   where
     pTrue :: ParserM Boolean
     pTrue = lang.reserved "true" $> true
@@ -147,7 +147,7 @@ pLiteral = fix \self -> choice
   , try pBoolean'
   , try pProp
   , pArray self
-  ] <?> "Expected a literal value"
+  ] <?> "a literal value"
   where
     pInteger = pLiteralValue LInteger lang.integer
     pNum = pLiteralValue LNum lang.float
@@ -201,13 +201,13 @@ pExpr = fix \self -> buildExprParser table (expr self)
     binary name fun assoc = Infix go assoc
       where
         go = do
-          lang.reservedOp name <?> ("Expected binary operator \"" <> name <> "\"")
+          lang.reservedOp name <?> ("binary operator \"" <> name <> "\"")
           pure fun
 
     unary name fun = Prefix go
       where
         go = do
-          lang.reservedOp name <?> ("Expected unary operator \"" <> name <> "\"")
+          lang.reservedOp name <?> ("unary operator \"" <> name <> "\"")
           pure fun
 
     expr self = lang.parens self <|> value
@@ -217,7 +217,7 @@ pExpr = fix \self -> buildExprParser table (expr self)
 pAttribute :: ParserM Attribute
 pAttribute = do
   begin <- sourcePos
-  attributeName <- lang.reservedOp "@" *> pAttributeName <?> "Expected attribute name starting with \"@\""
+  attributeName <- lang.reservedOp "@" *> pAttributeName <?> "attribute name starting with \"@\""
   attributeValue <- case attributeName of
     AttributeName _ "constraints" -> do
       beginAttributeValue <- sourcePos
@@ -250,7 +250,7 @@ pCond :: ParserM Cond
 pCond = do
   lang.reserved "@cond"
   begin <- sourcePos
-  expr <- lang.parens pExpr <?> "Expected condition expression"
+  expr <- lang.parens pExpr <?> "condition expression"
   end <- sourcePos
   pure (Cond (Span begin end) expr)
 
@@ -337,7 +337,18 @@ pCollectionIcon :: ParserM CollectionIcon
 pCollectionIcon = CollectionIcon <$> lang.stringLiteral
 
 pCollectionOwned :: ParserM CollectionOwned
-pCollectionOwned = CollectionOwned <$> pBoolean
+pCollectionOwned = pCollectionOwnedBoolean <|> pCollectionOwnedCustom
+  where
+    pCollectionOwnedBoolean = do
+      start <- sourcePos
+      value <- pBoolean
+      end <- sourcePos
+      pure $ CollectionOwnedBoolean (Span start end) value
+    pCollectionOwnedCustom =  do
+      start <- sourcePos
+      value <- lang.stringLiteral
+      end <- sourcePos
+      pure $ CollectionOwnedCustom (Span start end) value
 
 pCollectionTimestamps :: ParserM CollectionTimestamps
 pCollectionTimestamps = CollectionTimestamps <$> pBoolean
@@ -680,7 +691,7 @@ pCollectionLayout = lang.braces $ do
         , name: name'
         , options
         }
-    Nothing -> fail "Expected 'name' property in layout"
+    Nothing -> fail "'name' property in layout"
 
   where
     allParsers' =

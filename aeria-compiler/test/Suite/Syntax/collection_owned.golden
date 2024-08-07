@@ -9,7 +9,7 @@
       "kind": "Collection",
       "owned": {
         "owned": true,
-        "kind": "CollectionOwned"
+        "kind": "CollectionOwnedBoolean"
       }
     }
   ]
