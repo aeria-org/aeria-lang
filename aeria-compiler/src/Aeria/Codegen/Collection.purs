@@ -104,7 +104,7 @@ cDescription (Collection
     indexesDescription            = listProperty "indexes" cNames indexes
     presetsDescription            = listProperty "presets" cPresets presets
     writableDescription           = listProperty "writable" cNames writable
-    requiredDescription           = listProperty "required" cRequired required
+    requiredDescription           = optionalProperty "required" cRequired required
     tableMetaDescription          = listProperty "tableMeta" cNames tableMeta
     filtersPresetsDescription     = listProperty "filtersPresets" cFiltersPresets filtersPresets
     preferredDescription          = listProperty "preferred" cPreferred preferred
@@ -465,7 +465,7 @@ cProperties properties = L.toUnfoldable (map go properties)
         PObject _ required properties' additionalProperties ->
           catMaybes
             [ Just (cType "object")
-            , listProperty "required" cRequired required
+            , optionalProperty "required" cRequired required
             , optionalProperty "properties" (Js.object <<< cProperties) (Just properties')
             , optionalProperty "additionalProperties" cAdditionalProperties additionalProperties
             ]
@@ -564,6 +564,12 @@ cNames xs =
   map cName xs
     # L.toUnfoldable
     # Js.array
+
+listProperty' :: forall a. String -> (L.List a -> Js.Tree) -> L.List a -> Maybe Js.ObjectProperty
+listProperty' k f x =
+  case x of
+    L.Nil -> Just $ Js.objectProperty2 k (Js.array [])
+    _ -> Just $ Js.objectProperty2 k (f x)
 
 listProperty :: forall a. String -> (L.List a -> Js.Tree) -> L.List a -> Maybe Js.ObjectProperty
 listProperty k f x =

@@ -179,8 +179,9 @@ sSecurity functions = traverse_ go
       else throwDiagnostic span $ "Value \""<> strategy <> "\" is not assignable to strategy"
   sLogging _ = pure unit
 
-sRequired :: CollectionName -> CollectionRequired -> SemanticM Unit
-sRequired collectionName@(CollectionName _ collectionName') = traverse_ go
+sRequired :: CollectionName -> Maybe CollectionRequired -> SemanticM Unit
+sRequired _ Nothing = pure unit
+sRequired collectionName@(CollectionName _ collectionName') (Just required) = traverse_ go required
   where
     go (Required _ propertyName@(PropertyName span name) cond) = do
       context <- ask

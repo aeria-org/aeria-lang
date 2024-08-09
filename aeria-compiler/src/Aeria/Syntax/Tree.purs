@@ -7,7 +7,7 @@ import Data.Either (Either)
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.List (List, toUnfoldable)
-import Data.Maybe (Maybe)
+import Data.Maybe (Maybe(..))
 import Data.Ord.Generic (genericCompare)
 import Data.Show.Generic (genericShow)
 import Data.String.Utils (ucLower)
@@ -321,7 +321,7 @@ data PropertyType
   | PConst Span
   | PRef Span CollectionName
   | PArray Span PropertyType
-  | PObject Span CollectionRequired CollectionProperties (Maybe AdditionalProperties)
+  | PObject Span (Maybe CollectionRequired) CollectionProperties (Maybe AdditionalProperties)
 
 derive instance genericPropertyType :: Generic PropertyType _
 
@@ -370,7 +370,7 @@ instance WriteForeign PropertyType
   writeImpl (PObject _ required properties _) =
     writeImpl
     { kind: "PObject"
-    , required: writeImpl (toUnfoldable required :: Array Required)
+    , required: writeImpl (map (toUnfoldable :: _ -> Array Required) required)
     , properties: writeImpl (toUnfoldable properties :: Array Property)
     }
 
@@ -1088,7 +1088,7 @@ data Collection
     , individualActions :: CollectionIndividualActions
     , security :: CollectionSecurity
     , properties :: CollectionProperties
-    , required :: CollectionRequired
+    , required :: Maybe CollectionRequired
     , getters :: CollectionGetters
     , table :: CollectionTable
     , tableMeta :: CollectionTableMeta
@@ -1154,7 +1154,7 @@ instance WriteForeign Collection where
         , individualActions: writeImpl (toUnfoldable individualActions :: Array ActionItem)
         , security: writeImpl (toUnfoldable security :: Array SecurityItem)
         , properties: writeImpl (toUnfoldable properties :: Array Property)
-        , required: writeImpl (toUnfoldable required :: Array Required)
+        , required: writeImpl (map (toUnfoldable :: _ -> Array Required) required)
         , getters: writeImpl (toUnfoldable getters :: Array Getter)
         , table: writeImpl (toUnfoldable table :: Array PropertyName)
         , tableMeta: writeImpl (toUnfoldable tableMeta :: Array PropertyName)

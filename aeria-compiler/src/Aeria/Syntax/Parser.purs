@@ -113,7 +113,7 @@ pPropertyType p = fix \self -> choice
       let properties = unsafeCoerce $ getParserValue "properties" results
       let additionalProperties = unsafeCoerce $ getParserValue "additionalProperties" results
       end <- sourcePos
-      pure $ PObject (Span begin end) (fromMaybe L.Nil required) (fromMaybe L.Nil properties) additionalProperties
+      pure $ PObject (Span begin end) required (fromMaybe L.Nil properties) additionalProperties
 
     tStr = pSimpleType PString "str"
     tBool = pSimpleType PBoolean "bool"
@@ -867,6 +867,7 @@ pCollection = go
           , search
           , immutable
           , temporary
+          , required
           , preferred: fromMaybe L.Nil preferred
           , actions: fromMaybe L.Nil actions
           , formLayout: fromMaybe L.Nil formLayout
@@ -876,7 +877,6 @@ pCollection = go
           , functions: fromMaybe L.Nil functions
           , writable: fromMaybe L.Nil writable
           , properties: fromMaybe L.Nil properties
-          , required: fromMaybe L.Nil required
           , table: fromMaybe L.Nil table
           , getters: fromMaybe L.Nil getters
           , tableMeta: fromMaybe L.Nil tableMeta
