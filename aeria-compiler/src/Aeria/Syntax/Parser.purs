@@ -734,7 +734,8 @@ pCollectionLayout = lang.braces $ do
     pTranslateBadge = pPropertyParser "translateBadge" pBoolean
 
 pCollectionFormLayout :: ParserM CollectionFormLayout
-pCollectionFormLayout = lang.braces $ many (try pLayoutItem)
+pCollectionFormLayout = lang.braces $ do
+  pPropertyParser "fields" $ lang.braces (many (try pLayoutItem))
 
 pMacro :: String -> ParserM Macro
 pMacro prefix = do
