@@ -1,19 +1,21 @@
 collection CollectionFormLayoutTest {
   formLayout {
-    prop1 {
-      if @cond(truthy _id)
-      verticalSpacing 3.0
-      separator "top"
-      span 3.0
-      component {
-        name "componentTest"
-        props @js () => {
-          return {
-            prop1: "value1",
-            prop2: "value2",
+    fields {
+      prop1 {
+        if @cond(truthy _id)
+        verticalSpacing 3.0
+        separator "top"
+        span 3.0
+        component {
+          name "componentTest"
+          props @js () => {
+            return {
+              prop1: "value1",
+              prop2: "value2",
+            }
           }
+          @end
         }
-        @end
       }
     }
   }

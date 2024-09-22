@@ -35,7 +35,7 @@
           },
           "component": {
             "props": {
-              "macro": "{\n          return {\n            prop1: \"value1\",\n            prop2: \"value2\",\n          }\n        }\n        ",
+              "macro": "{\n            return {\n              prop1: \"value1\",\n              prop2: \"value2\",\n            }\n          }\n          ",
               "kind": "Macro"
             },
             "name": "componentTest",

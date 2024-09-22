@@ -24,7 +24,7 @@ attributes =
     , "maxLength" /\ SingleType AttrInteger
     , "default" /\ SingleType AttrString
     , "placeholder" /\ SingleType AttrString
-    , "element" /\ SingleType AttrString
+    , "element" /\ SingleType (AttrEnum ["input", "textarea"])
     , "mask" /\ MultipleTypes [AttrString, AttrArrayOf AttrString]
     , "format" /\ SingleType (AttrEnum format)
     , "inputType" /\ SingleType (AttrEnum inputType)
