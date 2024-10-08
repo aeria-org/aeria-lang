@@ -128,7 +128,7 @@ mkTsExtendCollectionFunction collectionName@(CollectionName _ collectionName') =
           }"""
         ]
         (Ts.type_ $ Ts.typeFunction
-          [ (Ts.identifier "collection") /\ (Ts.type_ $ Ts.typeVariable "TCollection") ]
+          [ (Ts.identifier "collection") /\ (Ts.type_ $ Ts.typeRaw "Pick<TCollection, keyof Collection>") ]
           (Ts.type_ $ (Ts.typeGeneric
             [ Ts.typeQuery (Ts.type_ $ Ts.typeVariable (getName collectionName))
             , Ts.type_ $ Ts.typeVariable "TCollection"

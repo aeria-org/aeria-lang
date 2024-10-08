@@ -37,5 +37,5 @@ export declare const extendCollectionSecutiryTestCollection: <
     };
   }
 >(
-  collection: TCollection
+  collection: Pick<TCollection, keyof Collection>
 ) => ExtendCollection<typeof collectionSecutiryTest, TCollection>;

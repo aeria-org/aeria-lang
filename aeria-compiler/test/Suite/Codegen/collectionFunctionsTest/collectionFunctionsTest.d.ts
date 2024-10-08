@@ -35,5 +35,5 @@ export declare const extendCollectionFunctionsTestCollection: <
     };
   }
 >(
-  collection: TCollection
+  collection: Pick<TCollection, keyof Collection>
 ) => ExtendCollection<typeof collectionFunctionsTest, TCollection>;

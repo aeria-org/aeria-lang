@@ -24,5 +24,5 @@ export declare const extendCollectionPropertyEnumTestCollection: <
     };
   }
 >(
-  collection: TCollection
+  collection: Pick<TCollection, keyof Collection>
 ) => ExtendCollection<typeof collectionPropertyEnumTest, TCollection>;

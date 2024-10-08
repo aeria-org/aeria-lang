@@ -25,5 +25,5 @@ export declare const extendCollectionPreferredCollection: <
     };
   }
 >(
-  collection: TCollection
+  collection: Pick<TCollection, keyof Collection>
 ) => ExtendCollection<typeof collectionPreferred, TCollection>;
