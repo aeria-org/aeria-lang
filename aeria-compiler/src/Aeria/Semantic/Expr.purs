@@ -30,7 +30,10 @@ sExpr context collectionName expr =
     sBinaryExpr (ELiteral (LProperty _ propertyName)) rgt = do
       collectionHasProperty' propertyName
       sExpr context collectionName rgt
-    sBinaryExpr _ _ = Left "Expected a property name to the left of the expression"
+    sBinaryExpr (ELiteral _) _ = Left "Expected a property name to the left of the expression"
+    sBinaryExpr lft rgt = do
+      sExpr context collectionName lft
+      sExpr context collectionName rgt
 
     collectionHasProperty' :: PropertyName -> Either String Unit
     collectionHasProperty' propertyName =
