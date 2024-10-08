@@ -123,8 +123,9 @@ aeriaProperties =
   ]
 
 collectionHasPropertyOrGetter :: Context -> CollectionName -> PropertyName -> Maybe Unit
-collectionHasPropertyOrGetter context collectionName propertyName =
-  when (getName propertyName `A.elem` aeriaProperties) do
+collectionHasPropertyOrGetter context collectionName propertyName
+  | getName propertyName `A.elem` aeriaProperties = Just unit
+  | otherwise = do
     case lookupGetter context collectionName propertyName of
       Nothing ->
         case lookupProperty context collectionName propertyName of
