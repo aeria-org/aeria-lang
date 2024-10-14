@@ -1,5 +1,5 @@
 const { extendCollection, defineCollection, func1, func2 } = require("aeria");
-exports.collectionSecutiryTest = defineCollection({
+const collectionSecutiryTest = defineCollection({
   description: { $id: "collectionSecutiryTest", properties: {} },
   functions: { func1, func2 },
   security: {
@@ -12,5 +12,6 @@ exports.collectionSecutiryTest = defineCollection({
     },
   },
 });
+exports.collectionSecutiryTest = collectionSecutiryTest;
 exports.extendCollectionSecutiryTestCollection = (collection) =>
   extendCollection(collectionSecutiryTest, collection);

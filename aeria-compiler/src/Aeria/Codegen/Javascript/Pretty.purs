@@ -15,14 +15,12 @@ ppStatement targetModule (ImportDeclaration specifiers ident) =
   case targetModule of
     EsNext -> "import { " <> ppSpecifiers targetModule specifiers <> " } from \"" <> ppIdentifier ident <> "\""
     CommonJs -> "const {" <> ppSpecifiers targetModule specifiers <> " } = require(\"" <> ppIdentifier ident <> "\")"
-ppStatement targetModule (VariableDeclaration ident body) =
+ppStatement _ (VariableDeclaration ident body) =
+  "const " <> ppIdentifier ident <> " = " <> ppTree body
+ppStatement targetModule (ExportDeclaration ident tree) =
   case targetModule of
-    EsNext -> "const " <> ppIdentifier ident <> " = " <> ppTree body
-    CommonJs -> ppIdentifier ident <> " = " <> ppTree body
-ppStatement targetModule (ExportDeclaration statement) =
-  case targetModule of
-    EsNext -> "export " <> ppStatement targetModule statement
-    CommonJs -> "exports." <> ppStatement targetModule statement
+    EsNext -> "export const " <> ppIdentifier ident <> " = " <> ppTree tree
+    CommonJs -> "exports." <> ppIdentifier ident <> " = " <> ppTree tree
 
 ppTree :: Tree -> String
 ppTree (Literal literal) = ppLiteral literal

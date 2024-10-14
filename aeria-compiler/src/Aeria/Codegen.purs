@@ -3,19 +3,21 @@ module Aeria.Codegen where
 import Aeria.Syntax.Tree
 
 import Aeria.Codegen.Collection (cCollection)
+import Aeria.Codegen.Javascript.Tree (TargetModule(..))
 import Aeria.Codegen.Javascript.Tree as Js
 import Aeria.Codegen.Type (typegen)
 import Aeria.Codegen.Typescript.Tree as Ts
+import Data.Array as A
 import Data.List as L
 import Data.Maybe (Maybe(..), isJust)
 import Data.String.Utils (ucLower)
 import Data.Tuple.Nested ((/\))
-import Prelude (map, not, (#), ($), (<>))
+import Prelude (map, not, otherwise, (#), ($), (<>), (==))
 
 data Codegen = Codegen String Js.Statements Ts.Statements
 
-codegen :: Program -> L.List Codegen
-codegen (Program { collections }) = map go collections
+codegen :: TargetModule -> Program -> L.List Codegen
+codegen targetModule (Program { collections }) = map go collections
   where
     go collection@(Collection { name: collectionName, functions, extends }) =
       Codegen (getName collectionName) js ts
@@ -33,7 +35,7 @@ codegen (Program { collections }) = map go collections
         collectionObjectType = typegen collectionObject
 
         ts = mkTsFile extends collectionName collectionObjectType tsImportsFunctions
-        js = mkJsFile extends collectionName collectionObject jsImportsFunctions
+        js = mkJsFile targetModule extends collectionName collectionObject jsImportsFunctions
 
 getAeriaFunctions :: L.List FunctionItem -> L.List String
 getAeriaFunctions functions =
@@ -135,18 +137,32 @@ mkTsExtendCollectionFunction collectionName@(CollectionName _ collectionName') =
             ]
             (Ts.type_ $ Ts.typeVariable "ExtendCollection"))))))
 
-mkJsFile :: Maybe ExtendsName -> CollectionName -> Js.Tree -> Array Js.ImportSpecifier -> Js.Statements
-mkJsFile extends collectionName collectionObject functions = Js.statements statements
+mkJsFile :: TargetModule -> Maybe ExtendsName -> CollectionName -> Js.Tree -> Array Js.ImportSpecifier -> Js.Statements
+mkJsFile targetModule extends collectionName collectionObject functions =
+  Js.statements statements
   where
     base =
       [ mkJsImports functions
-      , mkJsDefineCollection extends collectionName collectionObject
+      , mkJsDefineCollection targetModule extends collectionName collectionObject
       , mkJsExtendCollectionFunction collectionName
       ]
+
+    statements :: Array Js.Statement
     statements =
-      case mkJsExtendsImport extends of
-        Just extendsImport -> [extendsImport] <> base
-        Nothing -> base
+        case mkJsExtendsImport extends of
+          Just extendsImport -> [extendsImport] <> base'
+          Nothing -> base'
+      where
+          base' = go base
+
+          go :: Array Js.Statement -> Array Js.Statement
+          go b
+            | targetModule == EsNext = b
+            | otherwise =
+                case A.insertAt 2 (mkJsExportCollection collectionName) base of
+                  Just b' -> b'
+                  Nothing -> base
+
 
 mkJsImports :: Array Js.ImportSpecifier -> Js.Statement
 mkJsImports imports =
@@ -164,22 +180,26 @@ mkJsExtendsImport (Just (ExtendsName package collection'')) =
       (Js.specifiers [ Js.importSpecifier2 (ucLower collection'') "original"])
 mkJsExtendsImport Nothing = Nothing
 
-mkJsDefineCollection :: Maybe ExtendsName -> CollectionName -> Js.Tree -> Js.Statement
-mkJsDefineCollection extends collectionName collection' =
-  Js.exportDeclaration
-    (Js.variableDeclaration
-      (getName collectionName)
-      (if isJust extends
-        then Js.call (Js.variable "extendCollection") [Js.variable "original", collection']
-        else Js.call (Js.variable "defineCollection") [collection']))
+mkJsDefineCollection :: TargetModule -> Maybe ExtendsName -> CollectionName -> Js.Tree -> Js.Statement
+mkJsDefineCollection targetModule extends collectionName collection' =
+  ((if targetModule == EsNext
+    then Js.exportDeclaration
+    else Js.variableDeclaration)
+    (getName collectionName)
+    (if isJust extends
+      then Js.call (Js.variable "extendCollection") [Js.variable "original", collection']
+      else Js.call (Js.variable "defineCollection") [collection']))
+
+mkJsExportCollection :: CollectionName -> Js.Statement
+mkJsExportCollection collectionName =
+  Js.exportDeclaration (getName collectionName) (Js.variable (getName collectionName))
 
 mkJsExtendCollectionFunction :: CollectionName -> Js.Statement
 mkJsExtendCollectionFunction collectionName@(CollectionName _ collectionName') =
   Js.exportDeclaration
-    (Js.variableDeclaration
-      ("extend" <> collectionName' <> "Collection")
-      (Js.function
-        [Js.identifier "collection"]
-        (Js.call (Js.variable "extendCollection")
-          [Js.variable (getName collectionName), Js.variable "collection"]
-        )))
+    ("extend" <> collectionName' <> "Collection")
+    (Js.function
+      [Js.identifier "collection"]
+      (Js.call (Js.variable "extendCollection")
+        [Js.variable (getName collectionName), Js.variable "collection"]
+      ))

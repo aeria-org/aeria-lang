@@ -1,6 +1,6 @@
 const { extendCollection, defineCollection } = require("aeria");
 
-exports.collectionPropertyConstTest = defineCollection({
+const collectionPropertyConstTest = defineCollection({
   description: {
     $id: "collectionPropertyConstTest",
     properties: {
@@ -13,5 +13,6 @@ exports.collectionPropertyConstTest = defineCollection({
     },
   },
 });
+exports.collectionPropertyConstTest = collectionPropertyConstTest;
 exports.extendCollectionPropertyConstTestCollection = (collection) =>
   extendCollection(collectionPropertyConstTest, collection);

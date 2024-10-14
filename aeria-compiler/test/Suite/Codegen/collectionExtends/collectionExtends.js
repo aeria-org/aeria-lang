@@ -1,6 +1,6 @@
 const { users: original } = require("aeria");
 const { extendCollection, defineCollection, register } = require("aeria");
-exports.collectionExtends = extendCollection(original, {
+const collectionExtends = extendCollection(original, {
   description: {
     $id: "collectionExtends",
     properties: { prop1: { type: "string" } },
@@ -8,5 +8,6 @@ exports.collectionExtends = extendCollection(original, {
   functions: { register },
   exposedFunctions: { register: true },
 });
+exports.collectionExtends = collectionExtends;
 exports.extendCollectionExtendsCollection = (collection) =>
   extendCollection(collectionExtends, collection);

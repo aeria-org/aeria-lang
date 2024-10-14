@@ -6,7 +6,7 @@ const {
   remove,
 } = require("aeria");
 
-exports.collectionFunctionsTest = defineCollection({
+const collectionFunctionsTest = defineCollection({
   description: { $id: "collectionFunctionsTest", properties: {} },
   functions: { get, insert, remove },
   exposedFunctions: {
@@ -15,5 +15,6 @@ exports.collectionFunctionsTest = defineCollection({
     insert: ["root"],
   },
 });
+exports.collectionFunctionsTest = collectionFunctionsTest;
 exports.extendCollectionFunctionsTestCollection = (collection) =>
   extendCollection(collectionFunctionsTest, collection);

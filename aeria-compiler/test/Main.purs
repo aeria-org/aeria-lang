@@ -3,8 +3,8 @@ module Test.Main where
 import Prelude
 
 import Aeria.Codegen (Codegen(..))
-import Aeria.Codegen.Javascript.Tree (TargetModule(..))
 import Aeria.Codegen.Javascript.Pretty (ppJavascript)
+import Aeria.Codegen.Javascript.Tree (TargetModule(..))
 import Aeria.Codegen.Typescript.Pretty (ppTypescript)
 import Aeria.Diagnostic.Message (ppDiagnostic)
 import Aeria.Driver (compile'')
@@ -36,7 +36,7 @@ syntaxTest testName schema golden = do
 codegenTest :: forall m52. Monad m52 => TargetModule -> String -> String -> String -> SpecT Aff Unit m52 Unit
 codegenTest targetModule testName schema golden = do
   it testName do
-    let codegen = compile'' "<stdin>" schema
+    let codegen = compile'' targetModule "<stdin>" schema
     case codegen of
       Left err -> fail (ppDiagnostic err)
       Right codegen' -> do
@@ -47,7 +47,7 @@ codegenTest targetModule testName schema golden = do
 typegenTest ∷ ∀ (m23 ∷ Type -> Type). Monad m23 ⇒ String -> String -> String -> SpecT Aff Unit m23 Unit
 typegenTest testName schema golden = do
   it testName do
-    let codegen = compile'' "<stdin>" schema
+    let codegen = compile'' EsNext "<stdin>" schema
     case codegen of
       Left err -> fail (ppDiagnostic err)
       Right codegen' -> do

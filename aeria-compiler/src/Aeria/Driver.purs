@@ -54,7 +54,7 @@ compile :: FilePath -> String -> String -> Either Diagnostic (Array (Array Strin
 compile filepath source targetModule = do
   case parseTargetModule targetModule of
     Just targetModule' ->
-      case compile'' filepath source of
+      case compile'' targetModule' filepath source of
         Right result ->
           pure $
             result
@@ -75,23 +75,23 @@ checker filepath source = do
     Left err -> Left err
 
 compile' :: FilePath -> String -> String -> Effect Unit
-compile' filepath outputPath output = do
+compile' filepath outputPath targetModule = do
   source <- readSource filepath
-  case parseTargetModule output of
-    Just output' ->
-      case compile'' filepath source of
+  case parseTargetModule targetModule of
+    Just targetModule' ->
+      case compile'' targetModule' filepath source of
         Right program' -> for_ program' (\(Codegen name js ts) ->
-          emitCode name (ppJavascript output' js) (ppTypescript ts) outputPath output'
+          emitCode name (ppJavascript targetModule' js) (ppTypescript ts) outputPath targetModule'
         )
         Left err -> log (ppDiagnostic err)
     Nothing -> log "Usage: aeria-lang <filepath> <output> <commonjs|esnext>"
 
-compile'' :: FilePath -> String -> Either Diagnostic (L.List Codegen)
-compile'' filepath source = do
+compile'' :: TargetModule -> FilePath -> String -> Either Diagnostic (L.List Codegen)
+compile'' targetModule filepath source = do
   case runParserProgram filepath source of
     Right program' ->
       case runSemantic filepath source program' of
-        Right _ -> Right $ codegen program'
+        Right _ -> Right $ codegen targetModule program'
         Left err -> Left err
     Left err -> Left err
 

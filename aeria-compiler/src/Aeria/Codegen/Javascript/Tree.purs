@@ -10,6 +10,11 @@ data TargetModule
   = CommonJs
   | EsNext
 
+derive instance genericTargetModule :: Generic TargetModule _
+
+instance eqTargetModule :: Eq TargetModule where
+  eq x = genericEq x
+
 data Identifier = Identifier String
 
 derive instance genericIdentifier :: Generic Identifier _
@@ -71,7 +76,7 @@ instance eqTree :: Eq Tree where
 data Statement
   = ImportDeclaration Specifiers Identifier
   | VariableDeclaration Identifier Tree
-  | ExportDeclaration Statement
+  | ExportDeclaration Identifier Tree
 
 derive instance genericStatement :: Generic Statement _
 
@@ -136,8 +141,8 @@ importDeclaration i s = ImportDeclaration s (Identifier i)
 variableDeclaration ∷ String -> Tree -> Statement
 variableDeclaration n = VariableDeclaration (Identifier n)
 
-exportDeclaration ∷ Statement -> Statement
-exportDeclaration = ExportDeclaration
+exportDeclaration ∷ String -> Tree -> Statement
+exportDeclaration n = ExportDeclaration (Identifier n)
 
 specifiers :: Array ImportSpecifier -> Specifiers
 specifiers = Specifiers
