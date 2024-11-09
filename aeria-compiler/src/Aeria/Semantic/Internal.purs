@@ -4,7 +4,7 @@ import Prelude
 
 import Aeria.Diagnostic.Message (Diagnostic(..))
 import Aeria.Diagnostic.Position (Span)
-import Aeria.Syntax.Tree (CollectionGetters, CollectionName, CollectionProperties, Getter(..), Property(..), PropertyName, getName, getSpan)
+import Aeria.Syntax.Tree (CollectionName, CollectionProperties, Property(..), PropertyName, getName, getSpan)
 import Control.Monad.Error.Class (class MonadError, throwError)
 import Control.Monad.Except (Except)
 import Control.Monad.Reader (class MonadReader, ReaderT, ask)
@@ -19,7 +19,6 @@ type SemanticM a = ReaderT Context (Except Diagnostic) a
 data CollectionContext
   = CollectionContext
     { properties :: M.Map String Property
-    , getters :: M.Map String Getter
     }
 
 data Context
@@ -37,27 +36,24 @@ extendContext
   => MonadError Diagnostic m
   => CollectionName
   -> CollectionProperties
-  -> CollectionGetters
   -> Context
   -> m Context
-extendContext collectionName properties getters context@(Context { collections, source, filepath }) = do
+extendContext collectionName properties context@(Context { collections, source, filepath }) = do
   let collectionName' = getName collectionName
   case M.lookup collectionName' collections of
     Just collectionContext -> do
-      collectionContext' <- extendGetters collectionContext
-      collectionContext'' <- extendProperties collectionContext'
+      collectionContext'' <- extendProperties collectionContext
       pure $ Context { collections: M.insert collectionName' collectionContext'' collections, filepath, source }
     Nothing -> do
-      collectionContext' <- extendProperties (CollectionContext { getters: M.empty, properties: M.empty })
-      collectionContext'' <- extendGetters collectionContext'
-      pure $ Context { collections: M.insert collectionName' collectionContext'' collections, filepath, source }
+      collectionContext' <- extendProperties (CollectionContext { properties: M.empty })
+      pure $ Context { collections: M.insert collectionName' collectionContext' collections, filepath, source }
   where
     extendProperties
       :: CollectionContext
       -> m CollectionContext
-    extendProperties (CollectionContext { getters: gettersCtx, properties: propertiesCtx }) = do
+    extendProperties (CollectionContext { properties: propertiesCtx }) = do
       propertiesCtx' <- L.foldM go propertiesCtx properties
-      pure $ CollectionContext { properties: propertiesCtx', getters: gettersCtx }
+      pure $ CollectionContext { properties: propertiesCtx' }
       where
         go ctx property@(Property { name }) = do
           let name' = getName name
@@ -67,20 +63,6 @@ extendContext collectionName properties getters context@(Context { collections, 
               let diagnostic = makeDiagnostic context (getSpan name) $ "Property \"" <> name' <> "\" already defined"
               throwError diagnostic
 
-    extendGetters
-      :: CollectionContext
-      -> m CollectionContext
-    extendGetters (CollectionContext { getters: gettersCtx, properties: propertiesCtx }) = do
-      gettersCtx' <- L.foldM go gettersCtx getters
-      pure $ CollectionContext { properties: propertiesCtx, getters: gettersCtx' }
-      where
-        go ctx getter@(Getter { name }) = do
-          let name' = getName name
-          case M.lookup name' ctx of
-            Nothing -> pure (M.insert name' getter ctx)
-            Just _ -> do
-              let diagnostic = makeDiagnostic context (getSpan name) $ "Getter \"" <> name' <> "\" already defined"
-              throwError diagnostic
 
 throwDiagnostic
   :: forall m. (MonadReader Context m)
@@ -111,27 +93,10 @@ lookupProperty (Context { collections }) collectionName propertyName = do
     Just (CollectionContext { properties }) -> M.lookup (getName propertyName) properties
     Nothing -> Nothing
 
-lookupGetter :: Context -> CollectionName -> PropertyName -> Maybe Getter
-lookupGetter (Context { collections }) collectionName propertyName = do
-  case M.lookup (getName collectionName) collections of
-    Just (CollectionContext { getters }) -> M.lookup (getName propertyName) getters
-    Nothing -> Nothing
-
 aeriaProperties :: Array String
 aeriaProperties =
   ["_id"
   ]
-
-collectionHasPropertyOrGetter :: Context -> CollectionName -> PropertyName -> Maybe Unit
-collectionHasPropertyOrGetter context collectionName propertyName
-  | getName propertyName `A.elem` aeriaProperties = Just unit
-  | otherwise = do
-    case lookupGetter context collectionName propertyName of
-      Nothing ->
-        case lookupProperty context collectionName propertyName of
-          Nothing -> Nothing
-          Just _ -> Just unit
-      Just _ -> Just unit
 
 collectionHasProperty :: Context -> CollectionName -> PropertyName -> Maybe Unit
 collectionHasProperty context collectionName propertyName = do
@@ -143,7 +108,7 @@ collectionHasProperty context collectionName propertyName = do
 collectionHasProperties :: CollectionName -> L.List PropertyName -> SemanticM Unit
 collectionHasProperties collectionName = traverse_ \propertyName -> do
   context <- ask
-  case collectionHasPropertyOrGetter context collectionName propertyName of
+  case collectionHasProperty context collectionName propertyName of
     Just _  -> pure unit
     Nothing ->
       throwDiagnostic (getSpan propertyName)

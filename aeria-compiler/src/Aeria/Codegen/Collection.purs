@@ -34,7 +34,6 @@ cDescription (Collection
   { name
   , required
   , properties
-  , getters
   , table
   , tableMeta
   , form
@@ -84,7 +83,7 @@ cDescription (Collection
 
     baseDescription =
       [ Js.objectProperty2 "$id" (cName name)
-      , Js.objectProperty2 "properties" (cCollectionProperties properties getters)
+      , Js.objectProperty2 "properties" (Js.object $ cProperties properties)
       ]
 
     iconDescription               = optionalProperty "icon" cIcon icon
@@ -423,18 +422,6 @@ cCond (Cond _ expr) = cExpr expr
 cMacro :: Macro -> Js.Tree
 cMacro (Macro _ code) = Js.raw code
 
-cGetters :: CollectionGetters -> Array Js.ObjectProperty
-cGetters getters = L.toUnfoldable (map go getters)
-  where
-    go :: Getter -> Js.ObjectProperty
-    go (Getter { name, macro }) = Js.objectProperty2 (getName name) (cGetterProperties macro)
-
-    cGetterProperties :: Macro -> Js.Tree
-    cGetterProperties macro =
-      Js.object
-        [ Js.objectProperty2 "getter" (Js.function [Js.identifier "doc"] (cMacro macro))
-        ]
-
 cProperties :: CollectionProperties -> Array Js.ObjectProperty
 cProperties properties = L.toUnfoldable (map go properties)
   where
@@ -532,11 +519,6 @@ cProperties properties = L.toUnfoldable (map go properties)
       , "maxItems"
       , "uniqueItems"
       ]
-
-cCollectionProperties :: CollectionProperties -> CollectionGetters -> Js.Tree
-cCollectionProperties properties getters =
-  A.union (cProperties properties) (cGetters getters)
-    # Js.object
 
 cLiteral :: Literal -> Js.Tree
 cLiteral =

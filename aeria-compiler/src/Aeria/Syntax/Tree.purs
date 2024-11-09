@@ -7,7 +7,7 @@ import Data.Either (Either)
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.List (List, toUnfoldable)
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe)
 import Data.Ord.Generic (genericCompare)
 import Data.Show.Generic (genericShow)
 import Data.String.Utils (ucLower)
@@ -489,32 +489,6 @@ instance WriteForeign Macro where
     writeImpl
       { kind: "Macro"
       , macro: writeImpl code
-      }
-
-type CollectionGetters
-  = List Getter
-
-data Getter
-  = Getter
-    { span :: Span
-    , name :: PropertyName
-    , macro :: Macro
-    }
-
-derive instance genericGetter :: Generic Getter _
-
-instance showGetter :: Show Getter where
-  show = genericShow
-
-instance eqGetter :: Eq Getter where
-  eq = genericEq
-
-instance WriteForeign Getter where
-  writeImpl (Getter { name, macro }) =
-    writeImpl
-      { kind: "Getter"
-      , name: writeImpl name
-      , macro: writeImpl macro
       }
 
 type CollectionTable = List PropertyName
@@ -1089,7 +1063,6 @@ data Collection
     , security :: CollectionSecurity
     , properties :: CollectionProperties
     , required :: Maybe CollectionRequired
-    , getters :: CollectionGetters
     , table :: CollectionTable
     , tableMeta :: CollectionTableMeta
     , form :: CollectionForm
@@ -1125,7 +1098,6 @@ instance WriteForeign Collection where
     , security
     , properties
     , required
-    , getters
     , table
     , tableMeta
     , form
@@ -1155,7 +1127,6 @@ instance WriteForeign Collection where
         , security: writeImpl (toUnfoldable security :: Array SecurityItem)
         , properties: writeImpl (toUnfoldable properties :: Array Property)
         , required: writeImpl (map (toUnfoldable :: _ -> Array Required) required)
-        , getters: writeImpl (toUnfoldable getters :: Array Getter)
         , table: writeImpl (toUnfoldable table :: Array PropertyName)
         , tableMeta: writeImpl (toUnfoldable tableMeta :: Array PropertyName)
         , form: writeImpl (toUnfoldable form :: Array PropertyName)

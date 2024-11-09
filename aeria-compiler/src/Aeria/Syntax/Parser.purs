@@ -14,7 +14,6 @@ import Data.List as L
 import Data.Maybe (Maybe(..), fromMaybe, isJust)
 import Data.String.CodeUnits (fromCharArray)
 import Data.Tuple.Nested (type (/\), (/\))
-import Debug (traceM)
 import Parsing (ParseError(..), Parser, Position(..), fail, position, runParser)
 import Parsing.Combinators (choice, many, manyTill, optionMaybe, sepBy, try, (<?>), (<|>))
 import Parsing.Expr (Assoc(..), Operator(..), buildExprParser)
@@ -269,18 +268,6 @@ pProperty p = do
         , attributes
         }
 
-pGetter :: ParserM Getter
-pGetter = do
-  begin <- sourcePos
-  name <- pPropertyName
-  macro <- pMacro "@js (doc) =>"
-  end <- sourcePos
-  pure
-    $ Getter
-        { span: (Span begin end)
-        , name
-        , macro
-        }
 
 pCollectionProperties :: ParserM CollectionProperties
 pCollectionProperties =
@@ -329,9 +316,6 @@ pCollectionIndexes = pListProperty pPropertyName
 
 pCollectionPresets :: ParserM CollectionPresets
 pCollectionPresets = pListProperty lang.identifier
-
-pCollectionGetters :: ParserM CollectionGetters
-pCollectionGetters = lang.braces $ many (try pGetter)
 
 pCollectionIcon :: ParserM CollectionIcon
 pCollectionIcon = CollectionIcon <$> lang.stringLiteral
@@ -834,7 +818,6 @@ pCollection = go
     let properties = unsafeCoerce $ getParserValue "properties" results
     let required = unsafeCoerce $ getParserValue "required" results
     let table = unsafeCoerce $ getParserValue "table" results
-    let getters = unsafeCoerce $ getParserValue "getters" results
     let tableMeta = unsafeCoerce $ getParserValue "tableMeta" results
     let filters = unsafeCoerce $ getParserValue "filters" results
     let form = unsafeCoerce $ getParserValue "form" results
@@ -879,7 +862,6 @@ pCollection = go
           , writable: fromMaybe L.Nil writable
           , properties: fromMaybe L.Nil properties
           , table: fromMaybe L.Nil table
-          , getters: fromMaybe L.Nil getters
           , tableMeta: fromMaybe L.Nil tableMeta
           , filters: fromMaybe L.Nil filters
           , form: fromMaybe L.Nil form
@@ -894,7 +876,6 @@ pCollection = go
     , "properties"        /\ (unsafeCoerce pCollectionProperties')
     , "required"          /\ (unsafeCoerce pCollectionRequired')
     , "filters"           /\ (unsafeCoerce pCollectionFilters')
-    , "getters"           /\ (unsafeCoerce pCollectionGetters')
     , "indexes"           /\ (unsafeCoerce pCollectionIndexes')
     , "table"             /\ (unsafeCoerce pCollectionTable')
     , "form"              /\ (unsafeCoerce pCollectionForm')
@@ -921,7 +902,6 @@ pCollection = go
   pCollectionProperties'        = pPropertyParser "properties" pCollectionProperties
   pCollectionRequired'          = pPropertyParser "required" pCollectionRequired
   pCollectionFilters'           = pPropertyParser "filters" pCollectionFilters
-  pCollectionGetters'           = pPropertyParser "getters" pCollectionGetters
   pCollectionIndexes'           = pPropertyParser "indexes" pCollectionIndexes
   pCollectionTable'             = pPropertyParser "table" pCollectionTable
   pCollectionForm'              = pPropertyParser "form" pCollectionForm

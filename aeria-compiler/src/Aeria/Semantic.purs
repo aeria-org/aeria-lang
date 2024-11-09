@@ -6,7 +6,7 @@ import Prelude
 import Aeria.Diagnostic.Message (Diagnostic)
 import Aeria.Semantic.Constraints (arrayAttributeNames, sArrayAttributes, sBooleanAttributes, sConstAttributes, sEnumAttributes, sFileAttributes, sNumberAttributes, sRefAttributes, sStringAttributes)
 import Aeria.Semantic.Expr (sExpr)
-import Aeria.Semantic.Internal (Context, SemanticM, collectionHasProperties, collectionHasProperty, emptyContext, extendContext, lookupCollection, lookupProperty, throwDiagnostic)
+import Aeria.Semantic.Internal (Context, SemanticM, collectionHasProperties, collectionHasProperty, emptyContext, extendContext, lookupCollection, throwDiagnostic)
 import Control.Monad.Except (runExcept)
 import Control.Monad.Reader (ask, local, runReaderT)
 import Data.Array (elem)
@@ -14,7 +14,7 @@ import Data.Array as A
 import Data.Either (Either(..))
 import Data.Foldable (traverse_)
 import Data.List as L
-import Data.Maybe (Maybe(..), isJust, isNothing)
+import Data.Maybe (Maybe(..), isNothing)
 import Effect.Exception (throw)
 import Effect.Unsafe (unsafePerformEffect)
 
@@ -29,7 +29,6 @@ sDescription (Collection
   { name
   , properties
   , owned
-  , getters
   , table
   , tableMeta
   , filters
@@ -47,7 +46,7 @@ sDescription (Collection
   , writable
   , immutable
   }) = do
-  context <- ask >>= extendContext name properties getters
+  context <- ask >>= extendContext name properties
   local (const context) go
   where
     go = do
@@ -239,7 +238,7 @@ sObjectProperty = go 0
       case type_ of
         PObject _ required properties _ -> do
           let collectionName' =  (CollectionName span (getName collectionName <> (show idx)))
-          context <- ask >>= extendContext collectionName' properties L.Nil
+          context <- ask >>= extendContext collectionName' properties
           local (const context) $ do
             sRequired collectionName' required
             traverse_ (sProperty collectionName') properties
