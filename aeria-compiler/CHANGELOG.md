@@ -1,5 +1,11 @@
 # @aeria-lang/compiler
 
+## 0.0.9
+
+### Patch Changes
+
+- 18004b4: Add missing attributes
+
 ## 0.0.8
 
 ### Patch Changes
