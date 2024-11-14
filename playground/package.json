@@ -23,9 +23,10 @@
   "dependencies": {
     "@aeria-lang/build": "file:../aeria-build",
     "@aeria-lang/compiler": "file:../aeria-compiler",
-    "aeria": "^0.0.138",
+    "@aeriajs/cli": "^0.0.144",
+    "aeria": "^0.0.213",
     "aeria-lang": "latest",
-    "aeria-sdk": "^0.0.109",
+    "aeria-sdk": "^0.0.154",
     "typescript": "^5.5.3"
   }
 }
