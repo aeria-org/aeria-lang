@@ -21,15 +21,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Build packages
-        run: |
-          pnpm --filter='./aeria-compiler' build
-          pnpm --filter='./aeria-compiler' bundle
-          pnpm --filter='./aeria-build' build
-          pnpm --filter='./aeria-lang' build
-          pnpm --filter=playground build
+        run: pnpm build
       - name: Test packages
         run: pnpm -r test
-
       - name: Create release PR
         uses: changesets/action@v1
         with:
