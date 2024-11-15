@@ -71,10 +71,10 @@ export const build = async (patterns: string[], options: BuildOptions) => {
   const inputs = await glob(patterns)
 
   if( inputs.length === 0 ) {
-    return <const>{
+    return {
       success: true,
       emittedFiles: [],
-    }
+    } as const
   }
 
   for( const input of inputs ) {
@@ -89,10 +89,10 @@ export const build = async (patterns: string[], options: BuildOptions) => {
     })
 
     if( isLeft(resultEither) ) {
-      return <const>{
+      return {
         success: false,
         diagnostics: unwrap(resultEither),
-      }
+      } as const
     }
 
     const result = unwrap(resultEither)
@@ -119,9 +119,9 @@ export const build = async (patterns: string[], options: BuildOptions) => {
     ])
   }
 
-  return <const>{
+  return {
     success: true,
     emittedFiles,
-  }
+  } as const
 }
 

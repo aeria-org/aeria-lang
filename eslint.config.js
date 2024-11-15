@@ -1,6 +1,7 @@
-const eslintConfigAeria = require('eslint-config-aeria')
-eslintConfigAeria.languageOptions.parserOptions.project = ['./tsconfig.eslint.json']
-eslintConfigAeria.languageOptions.parserOptions.tsconfigRootDir = __dirname
+import { srcRules, testRules } from '@eslint-aeria/config'
 
+export default [
+  srcRules,
+  testRules,
+]
 
-module.exports = [eslintConfigAeria]
