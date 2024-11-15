@@ -28,5 +28,8 @@
     "aeria-lang": "latest",
     "aeria-sdk": "^0.0.154",
     "typescript": "^5.5.3"
+  },
+  "devDependencies": {
+    "mongodb": "*"
   }
 }

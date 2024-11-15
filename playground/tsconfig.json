@@ -1,7 +1,12 @@
 {
     "extends": "@aeriajs/cli/config/tsconfig.json",
     "compilerOptions": {
-        "outDir": "dist"
+        "outDir": "dist",
+        "paths": {
+          "mongodb": [
+            "./node_modules/mongodb"
+          ]
+        }
     },
     "include": [
         "@types/*.d.ts",
